@@ -1,12 +1,16 @@
 #include <stdio.h>
 
+#define transformA 3.785
+#define transformB 1.609
+
 int main(void) {
-    float nums;
-    printf("Enter the number of cups: ");
-    scanf("%f", &nums);
-    printf("Pint: %f\n", nums * 0.5);
-    printf("Ounce: %f\n", nums * 8);
-    printf("Soupspoon: %f\n", nums * 8 * 2);
-    printf("Teaspoon: %f\n", nums * 8 * 2 * 3);
+    float distance, gasoline;
+    printf("Enter the distance(miles): ");
+    scanf("%f", &distance);
+    printf("Enter gasoline consumption(gallons)): ");
+    scanf("%f", &gasoline);
+    printf("%0.1f mpg", distance / gasoline);
+    printf("\n");
+    printf("%0.1f L/100km", (gasoline * transformA) / (distance * transformB / 100));
     return 0;
 }
