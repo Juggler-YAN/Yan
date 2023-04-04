@@ -1,21 +1,12 @@
 #include <stdio.h>
 
-void one(void);
-void two(void);
-
 int main(void) {
-    printf("starting now:\n");
-    one();
-    printf("done!");
+    float nums;
+    printf("Enter the number of cups: ");
+    scanf("%f", &nums);
+    printf("Pint: %f\n", nums * 0.5);
+    printf("Ounce: %f\n", nums * 8);
+    printf("Soupspoon: %f\n", nums * 8 * 2);
+    printf("Teaspoon: %f\n", nums * 8 * 2 * 3);
     return 0;
-}
-
-void one(void) {
-    printf("one\n");
-    two();
-    printf("three\n");
-}
-
-void two(void) {
-    printf("two\n");
 }
