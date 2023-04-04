@@ -1,16 +1,24 @@
 #include <stdio.h>
 
-#define transformA 3.785
-#define transformB 1.609
+void Temperatures(double);
 
 int main(void) {
-    float distance, gasoline;
-    printf("Enter the distance(miles): ");
-    scanf("%f", &distance);
-    printf("Enter gasoline consumption(gallons)): ");
-    scanf("%f", &gasoline);
-    printf("%0.1f mpg", distance / gasoline);
-    printf("\n");
-    printf("%0.1f L/100km", (gasoline * transformA) / (distance * transformB / 100));
+    double val;
+    printf("Please enter the temperature (Fahrenheit): ");
+    while (scanf("%lf", &val)) {
+        Temperatures(val);
+        printf("Please enter the temperature (Fahrenheit): ");
+    }
+    printf("bye");
     return 0;
+}
+
+void Temperatures(double val) {
+    const double tran1 = 5.0;
+    const double tran2 = 9.0;
+    const double tran3 = 32.0;
+    const double tran4 = 273.16;
+    printf("Fahrenheit: %0.2f\n", val);
+    printf("Celsius: %0.2f\n", tran1/tran2*(val-tran3));
+    printf("Kelvin: %0.2f\n", tran1/tran2*(val-tran3)+tran4);
 }
