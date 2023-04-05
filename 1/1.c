@@ -1,102 +1,73 @@
 #include <stdio.h>
 
-#define PRICE1 2.05
-#define PRICE2 1.15
-#define PRICE3 1.09
-#define PRICEVAL 100
-#define PRICERATE 0.05
-#define BASE1 5
-#define BASE2 20
-#define MONEY1 6.5
-#define MONEY2 14
-#define MONEY3 0.5
-
 void menu(void);
-void sumPrice(double, double, double);
+float getNum(void);
+void choose(char, float, float);
 
 int main(void) {
-    char choice;
+    char ch;
     menu();
-    scanf("%c", &choice);
-    double a = 0.0,
-           b = 0.0,
-           c = 0.0,
-           tem;
-    while (choice != 'q') {
-        switch (choice) {
-            case 'a': {
-                printf("Please select the purchase weight: ");
-                scanf("%lf", &tem);
-                a += tem;
-                break;
-            }
-            case 'b': {
-                printf("Please select the purchase weight: ");
-                scanf("%lf", &tem);
-                b += tem;
-                break;
-            }
-            case 'c': {
-                printf("Please select the purchase weight: ");
-                scanf("%lf", &tem);
-                c += tem;
-                break;
-            }
-            default: {
-                printf("Input Error!\n");
-            }
+    scanf("%c", &ch);
+    while (ch != 'q') {
+        float num1, num2;
+        printf("Enter first number:");
+        num1 = getNum();
+        printf("Enter Second number:");
+        num2 = getNum();
+        while (ch == 'd' && num2 == 0.0) {
+            printf("Enter a number other than 0:");
+            num2 = getNum();
         }
+        choose(ch, num1, num2);
         menu();
         while (getchar() != '\n') {
             continue;
         }
-        scanf("%c", &choice);
+        scanf("%c", &ch);
     }
-    sumPrice(a, b, c);
     return 0;
 }
 
 void menu(void) {
-    printf("*****************************************************************\n");
-    printf("Please select the type of vegetables: \n");
-    printf("a)Artichoke                   b)Beet\n");
-    printf("c)Carrot                      q)quit\n");
-    printf("*****************************************************************\n");
+    printf("************************************************************\n");
+    printf("Enter the operation of your choice\n");
+    printf("a) add                       b) subtract\n");
+    printf("c) multiply                  d) divide\n");
+    printf("q) quit\n");
+    printf("************************************************************\n");
 }
 
-void sumPrice(double a, double b, double c) {
-    printf("Artichoke: %.2f $/lb\n", PRICE1);
-    printf("Beet: %.2f $/lb\n", PRICE2);
-    printf("Carrot: %.2f $/lb\n", PRICE3);
-    printf("Artichoke: %.2f lb\n", a);
-    printf("Beet: %.2f lb\n", b);
-    printf("Carrot: %.2f lb\n", c);
-    double allPrice, discount;
-    allPrice = a * PRICE1 + b * PRICE2 + c * PRICE3;
-    printf("Total order cost: %.2f\n", allPrice);
-    if (allPrice > PRICEVAL) {
-        discount = allPrice * PRICERATE;
-        printf("Discount: %.2f\n", discount);
-        allPrice *= (1 - PRICERATE);
-        printf("Total order cost(After discount): %.2f\n", allPrice);
+float getNum(void) {
+    float num;
+    char error[10];
+    while (!(scanf("%f", &num))) {
+        scanf("%s", error);
+        printf("%s is not a number.\n", error);
+        printf("Please enter a number, such as 2.5, -1.78E8, or 3:");
     }
-    double otherPrice;
-    if (a + b + c == 0) {
-        otherPrice = 0;
+    return num;
+}
+
+void choose(char ch, float num1, float num2) {
+    switch (ch) {
+        case 'a': {
+            printf("%.2f + %.2f = %.2f\n", num1, num2, num1 + num2);
+            break;
+        }
+        case 's': {
+            printf("%.2f - %.2f = %.2f\n", num1, num2, num1 - num2);
+            break;
+        }
+        case 'm': {
+            printf("%.2f * %.2f = %.2f\n", num1, num2, num1 * num2);
+            break;
+        }
+        case 'd': {
+            printf("%.2f / %.2f = %.2f\n", num1, num2, num1 / num2);
+            break;
+        }
+        default: {
+            printf("Input Error!\n");
+        }
     }
-    else if (a + b + c < BASE1) {
-        otherPrice = MONEY1;
-    }
-    else if (a + b + c < BASE2) {
-        otherPrice = MONEY2;
-    }
-    else {
-        otherPrice = ((a + b + c) - BASE2) * MONEY3 + MONEY2;
-    }
-    printf("Freight and packaging: %.2f\n", otherPrice);
-    double sumPrice;
-    if (allPrice != 0) {
-        sumPrice = allPrice + otherPrice;
-    }
-    printf("Total cost: %.2f\n", sumPrice);
 }
