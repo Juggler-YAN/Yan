@@ -1,23 +1,37 @@
 #include <stdio.h>
-#include <ctype.h>
 #include <string.h>
+#include <stdlib.h>
 
-int main(int argc, char * argv[]) {
-    int ch;
-    if (argc == 1 || (argc == 2 && !strcmp(argv[1], "-p"))) {
-        while ((ch = getchar()) != EOF) {
-            putchar(ch);
-        }
+#define LEN 100
+
+int main(void) {
+    char **pt;
+    char temp[LEN];
+    int n, len;
+
+    printf("How many words do you wish to enter? ");
+    scanf("%d", &n);
+    pt = (char **) malloc(n * sizeof(char *));
+    if (pt == NULL) {
+        printf("Memory allocation failed!\n");
+        exit(EXIT_FAILURE);
     }
-    if(!strcmp(argv[1], "-u")) {
-        while ((ch = getchar()) != EOF) {
-            putchar(toupper(ch));
+    printf("Enter %d words now: \n", n);
+    for (int i = 0; i < n; i++) {
+        scanf("%99s", temp);
+        len = strlen(temp) + 1;
+        pt[i] = (char *)malloc(len * sizeof(char));
+        if (pt[i] == NULL) {
+            printf("Memory allocation failed!\n");
+            exit(EXIT_FAILURE);
         }
+        strcpy(pt[i], temp);
     }
-    if(!strcmp(argv[1], "-l")) {
-        while ((ch = getchar()) != EOF) {
-            putchar(tolower(ch));
-        }
+    printf("Here are your words:\n");
+    for (int i = 0; i < n; i++) {
+        puts(pt[i]);
+        free(pt[i]);
     }
+    free(pt);
     return 0;
 }
