@@ -1,23 +1,30 @@
 #include <iostream>
-#include <fstream>
+#include "Sales_item.h"
 
-#define N 16
-#define NUM 7
+int main() 
+{
+    Sales_item total; // variable to hold data for the next transaction
 
-using namespace std;
-
-int main() {
-    ofstream out("chapter"+to_string(N)+".md");
-    out << "# Chapter " << N << endl;
-    out << endl;
-    for (int i = 1; i <= NUM; ++i) {
-        out << "### Q" << i << endl;
-        out << endl;
-        out << "```c" << endl;
-        out << endl;
-        out << "```" << endl;
-        out << endl;
+    // read the first transaction and ensure that there are data to process
+    if (std::cin >> total) {
+		Sales_item trans; // variable to hold the running sum
+        // read and process the remaining transactions
+        while (std::cin >> trans) {
+			// if we're still processing the same book
+            if (total.isbn() == trans.isbn()) 
+                total += trans; // update the running total 
+            else {              
+		        // print results for the previous book 
+                std::cout << total << std::endl;  
+                total = trans;  // total now refers to the next book
+            }
+		}
+        std::cout << total << std::endl; // print the last transaction
+    } else {
+        // no input! warn the user
+        std::cerr << "No data?!" << std::endl;
+        return -1;  // indicate failure
     }
-    out.close();
+
     return 0;
 }
