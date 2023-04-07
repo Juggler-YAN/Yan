@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 
-#define N 15
+#define N 16
 #define NUM 7
 
 using namespace std;
