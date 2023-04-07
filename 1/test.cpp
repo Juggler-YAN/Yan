@@ -1,8 +1,8 @@
 #include <iostream>
 #include <fstream>
 
-#define N 14
-#define NUM 11
+#define N 15
+#define NUM 7
 
 using namespace std;
 
