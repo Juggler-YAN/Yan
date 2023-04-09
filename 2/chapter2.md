@@ -136,8 +136,8 @@ int main() {
 
 1. 空串
 2. 0
-3. 空串
-4. 未定义
+3. 未定义
+4. 空串
 
 ```c++
 #include <iostream>
@@ -147,8 +147,7 @@ using namespace std;
 
 string global_str;
 int global_int;
-int main()
-{
+int main() {
     int local_int;
     string local_str;
     cout << global_str << endl;
@@ -167,9 +166,9 @@ int main()
 
 ### Q12
 
-1. (a)非法，变量名不能为关键字
-2. (c)非法，变量名不能包含中划线
-3. (d)非法，变量名不能以数字开头
+1. (a) 非法，变量名不能为关键字
+2. (c) 非法，变量名不能包含中划线
+3. (d) 非法，变量名不能以数字开头
 
 ### Q13
 
@@ -181,8 +180,7 @@ int main()
 using namespace std;
 
 int i = 42;
-int main()
-{
+int main() {
     int i = 100;
     int j = i;
     cout  << j << endl;
@@ -196,20 +194,35 @@ int main()
 ```c++
 #include <iostream>
 
+using namespace std;
+
 int main() {
     int i = 100, sum = 0;
     for (int i = 0; i != 10; ++i)
         sum += i;
-    std::cout << i << " " << sum << std::endl;
+    cout << i << " " << sum << endl;
     return 0;
 }
-
 ```
 
 ### Q15
 
-1. (b)不合法，引用的初始值必须是一个对象
-2. (d)不合法，引用必须初始化
+1. (b) 不合法，引用的初始值必须是一个对象
+2. (d) 不合法，引用必须初始化
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int ival = 1.01;
+    int &rval1 = 1.01;
+    int &rval2 = ival;
+    int &rval3;
+    return 0;
+}
+```
 
 ### Q16
 
@@ -219,6 +232,26 @@ int main() {
 3. (c) 将r2绑定的对象d的值赋给i
 4. (d) 将d的值赋给r1绑定的对象i
 
+```c++
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int i = 0, &r1 = i;
+    double d = 0, &r2 = d;
+    r2 = 3.14159;
+    cout << i << " " << d << endl;
+    r2 = r1;
+    cout << i << " " << d << endl;
+    i = r2;
+    cout << i << " " << d << endl;
+    r1 = d;
+    cout << i << " " << d << endl;
+    return 0;
+}
+```
+
 ### Q17
 
 10 10
@@ -226,10 +259,12 @@ int main() {
 ```c++
 #include <iostream>
 
+using namespace std;
+
 int main() {
     int i, &ri = i;
     i = 5; ri = 10;
-    std::cout << i << " " << ri << std::endl;
+    cout << i << " " << ri << endl;
 }
 ```
 
@@ -279,8 +314,22 @@ int main() {
 
 ### Q21
 
-1. (a)非法，左边为double *，右边为int *
-2. (b)非法，左边为int *，右边为int
+1. (a) 非法，左边为double *，右边为int *
+2. (b) 非法，左边为int *，右边为int
+
+```c
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int i = 0;
+    double* dp = &i;
+    int* ip = i;
+    int* p = &i;
+    return 0;
+}
+```
 
 ### Q22
 
@@ -297,14 +346,28 @@ void指针可以指向任何类型
 
 ### Q25
 
-1. int类型的指针，int类型，int的引用；
+1. int类型的指针，int类型，int类型的引用；
 2. int类型，int类型的指针；
 3. int类型的指针，int类型。
 
 ### Q26
 
-1. (a)const对象必须初始化
-2. (d)const对象值一旦确定，不能更改
+1. (a) const对象必须初始化
+2. (d) const对象值一旦确定，不能更改
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    const int buf;
+    int cnt = 0;
+    const int sz = cnt;
+    ++cnt; ++sz;
+    return 0;
+}
+```
 
 ### Q27
 
@@ -312,12 +375,52 @@ void指针可以指向任何类型
 2. (b) 不合法，i2可能为const int
 3. (f) 不合法，引用初始化后就无法再与其他对象绑定，所以没有这一用法
 
+```c++
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    // int i = -1, &r = 0;
+    // int i2 = 0;
+    // const int i2 = 0;
+    // int *const p2 = &i2;
+    // const int i = -1, &r = 0;
+    // int i2 = 0;
+    // const int i2 = 0;
+    // const int *const p3 = &i2;
+    // int i2 = 0;
+    // const int i2 = 0;
+    // const int *p1 = &i2;
+    // const int &const r2;
+    // int i = 0;
+    const int i = 0;
+    const int i2 = i, &r = i;
+    return 0;
+}
+```
+
 ### Q28
 
 1. (a) 不合法，常量指针未初始化
 2. (b) 不合法，常量指针未初始化
 3. (c) 不合法，常量未初始化
 4. (d) 不合法，指向常量的常量指针未初始化
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int i, *const cp;
+    int *p1, *const p2;
+    const int ic, &r = ic;
+    const int *const p3;
+    const int *p;
+    return 0;
+}
+```
 
 ### Q29
 
@@ -327,11 +430,32 @@ void指针可以指向任何类型
 4. (e) 不合法，常量指针不能再次赋值
 5. (f) 不合法，常量不能再次赋值
 
+```c++
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int i, *const cp;
+    int *p1, *const p2;
+    const int ic, &r = ic;
+    const int *const p3;
+    const int *p;
+    i = ic;
+    p1 = p3;
+    p1 = &ic;
+    p3 = &ic;
+    p2 = p1;
+    ic = *p3;
+    return 0;
+}
+```
+
 ### Q30
 
 1. v2：顶层
 2. p2：底层
-3. p3：顶层和底层
+3. p3：顶层/底层
 4. p4：底层
 
 ### Q31
@@ -342,19 +466,60 @@ void指针可以指向任何类型
 4. (d) 不合法，const int* -> int*，且p3为底层const
 5. (e) 合法，p2,p3均为底层const
 
+```c++
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    // int i = 0;
+    const int i = 0;
+    const int v2 = 0;
+    int v1 = v2;
+    int *p1 = &v1, &r1 = v1;
+    const int *p2 = &v2, *const p3 = &i, &r2 = v2;
+    r1 = v2;
+    p1 = v2; p2 = p1;
+    p1 = p3; p2 = p3;
+    return 0;
+}
+```
+
 ### Q32
 
-不合法，应该改为int null = 0, *p = null;
+不合法，应该改为int null = 0, *p = &null;
 
 ### Q33
 
-1. (d)非法，int -> int *
-2. (e)非法，int -> const int *
-3. (f)非法
+1. (d) 非法，int -> int *
+2. (e) 非法，int -> const int *
+3. (f) 非法
 
 ### Q34
 
-见Q33
+```c++
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int i = 0, &r = i;
+    auto a = r;
+    const int ci = i, &cr = ci;
+    auto b = ci;
+    auto c = cr;
+    auto d = &i;
+    auto e = &ci;
+    auto &g = ci;
+    a = 42;
+    b = 42;
+    c = 42;
+    d = 42;
+    e = 42;
+    g = 42;
+    return 0;
+}
+```
 
 ### Q35
 
@@ -364,6 +529,22 @@ void指针可以指向任何类型
 4. const int
 5. const int &
 
+```c++
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    // const int i = 42;
+    // auto j = i; const auto &k = i; auto *p = &i;
+    // const auto j2 = i, &k2 = i;
+    const int i = 42;
+    int j = i; const int &k = i; const int *p = &i;
+    const int j2 = i, &k2 = i;
+    return 0;
+}
+```
+
 ### Q36
 
 1. a,int,4
@@ -371,12 +552,44 @@ void指针可以指向任何类型
 3. c,int,4
 4. d,int&,4
 
+```c++
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int a = 3, b = 4;
+    decltype(a) c = a;
+    decltype((b)) d = a;
+    ++c;
+    ++d;
+    cout << a << " " << b << " " << c << " "
+         << d << endl;
+    return 0;
+}
+```
+
 ### Q37
 
 1. a,int,3
 2. b,int,4
 3. c,int,3
 4. d,int&,3
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int a = 3, b = 4;
+    decltype(a) c = a;
+    decltype(a = b) d = a;
+    cout << a << " " << b << " " << c << " "
+         << d << endl;
+    return 0;
+}
+```
 
 ### Q38
 
@@ -387,16 +600,18 @@ using namespace std;
 
 int main() {
     int a = 0;
-    auto &b = a;
+    auto b = a;
     decltype(a) c = a;
-    decltype((a)) d = a;
-    cout << a << b << c << d << endl;
-    b++;
-    cout << a << b << c << d << endl;
-    c++;
-    cout << a << b << c << d << endl;
-    d++;
-    cout << a << b << c << d << endl;
+    cout << a << b << c << endl;
+    ++a;
+    cout << a << b << c << endl;
+    int &d = a;
+    auto e = d;
+    decltype(d) f = d;
+    cout << d << e << f << endl;
+    ++d;
+    cout << d << e << f << endl;
+    return 0;
 }
 ```
 
