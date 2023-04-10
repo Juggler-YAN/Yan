@@ -1,5 +1,3 @@
-# Chapter 3
-
 ### Q1
 
 ```c++
@@ -57,6 +55,34 @@ int main() {
 ```
 
 ```c++
+// Sales_data.h
+#ifndef SALES_DATA_H
+#define SALES_DATA_H
+
+#include <string>
+
+struct Sales_data {
+    std::string bookNo;
+    unsigned units_sold;
+    double revenue;
+};
+#endif
+```
+
+```
+0-201-70353-X 4 24.99
+0-201-82470-1 4 45.39
+0-201-88954-4 2 15.00 
+0-201-88954-4 5 12.00 
+0-201-88954-4 7 12.00 
+0-201-88954-4 2 12.00 
+0-399-82477-1 2 45.39
+0-399-82477-1 3 45.39
+0-201-78345-X 3 20.00
+0-201-78345-X 2 25.00
+```
+
+```c++
 #include <iostream>
 #include <string>
 
@@ -78,6 +104,11 @@ int main() {
     }
     return 0;
 }
+```
+
+```
+0-201-78345-X 3 20.00
+0-201-78345-X 2 25.00
 ```
 
 ```c++
@@ -108,6 +139,13 @@ int main() {
 }
 ```
 
+```
+0-201-78345-X 3 20.00
+0-201-78345-X 3 20.00
+0-201-78345-X 2 25.00
+0-201-78345-X 2 25.00
+```
+
 ```c++
 #include <iostream>
 #include <string>
@@ -136,6 +174,19 @@ int main() {
     }
     return 0;
 }
+```
+
+```
+0-201-70353-X 4 24.99
+0-201-82470-1 4 45.39
+0-201-88954-4 2 15.00 
+0-201-88954-4 5 12.00 
+0-201-88954-4 7 12.00 
+0-201-88954-4 2 12.00 
+0-399-82477-1 2 45.39
+0-399-82477-1 3 45.39
+0-201-78345-X 3 20.00
+0-201-78345-X 2 25.00
 ```
 
 ```c++
@@ -176,6 +227,19 @@ int main() {
     }
     return 0;
 }
+```
+
+```
+0-201-70353-X 4 24.99
+0-201-82470-1 4 45.39
+0-201-88954-4 2 15.00 
+0-201-88954-4 5 12.00 
+0-201-88954-4 7 12.00 
+0-201-88954-4 2 12.00 
+0-399-82477-1 2 45.39
+0-399-82477-1 3 45.39
+0-201-78345-X 3 20.00
+0-201-78345-X 2 25.00
 ```
 
 ```c++
@@ -377,7 +441,7 @@ using namespace std;
 int main() {
     string s;
     cin >> s;
-    for (auto c : s) {
+    for (char c : s) {
         c = 'X';
     }
     cout << s << endl;
@@ -480,7 +544,6 @@ int main() {
     for(auto &c : s){ /* ... */ }
     return 0;
 }
-
 ```
 
 ### Q12
@@ -672,6 +735,18 @@ int main() {
     vector<int> v1(10,42);
     vector<int> v2{42, 42, 42, 42, 42, 42, 42, 42, 42, 42};
     vector<int> v3 = {42, 42, 42, 42, 42, 42, 42, 42, 42, 42};
+    for (auto c : v1) {
+        cout << c << " ";
+    }
+    cout << endl;
+    for (auto c : v2) {
+        cout << c << " ";
+    }
+    cout << endl;
+    for (auto c : v3) {
+        cout << c << " ";
+    }
+    cout << endl;
     return 0;
 }
 ```
@@ -1007,6 +1082,10 @@ using namespace std;
 
 int main() {
     int a[5] = {1,2,3,4,5};
+    for (auto i : a) {
+        cout << i << " ";
+    }
+    cout << endl;
     int * pbeg = begin(a);
     int * pend = end(a);
     while (pbeg != pend) {
@@ -1014,8 +1093,9 @@ int main() {
         ++pbeg;
     }
     for (auto i : a) {
-        cout << i << endl;
+        cout << i << " ";
     }
+    cout << endl;
     return 0;
 }
 ```

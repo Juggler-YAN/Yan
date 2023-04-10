@@ -1,35 +1,35 @@
 #include <iostream>
-#include <string>
-#include "Sales_data.h"
+#include <vector>
 
 using namespace std;
 
 int main() {
-    double allprice, num;
-    Sales_data sum;
-    if (cin >> sum.bookNo >> sum.units_sold >> sum.revenue) {
-        Sales_data item;
-        allprice = sum.units_sold * sum.revenue;
-        num = sum.units_sold;
-        while (cin >> item.bookNo >> item.units_sold >> item.revenue) {
-            if (sum.bookNo == item.bookNo) {
-                allprice += item.units_sold * item.revenue;
-                num += item.units_sold;
-            }
-            else {
-                cout << sum.bookNo << " " << num << " " << allprice << " " << allprice/num << " " << endl;
-                sum.bookNo = item.bookNo;
-                sum.units_sold = item.units_sold;
-                sum.revenue = item.revenue;
-                allprice = sum.units_sold * sum.revenue;
-                num = sum.units_sold;
-            }
+
+    int ia[3][4] = {
+        {0,1,2,3},
+        {4,5,6,7},
+        {8,9,10,11}
+    };
+
+    for (const auto &row : ia) {
+        for (int i: row) {
+            cout << i << " ";
         }
-        cout << sum.bookNo << " " << num << " " << allprice << " " << allprice/num << " " << endl;
+        cout << endl;
     }
-    else {
-        cerr << "No data?!" << endl;
-        return -1;
+    
+    for (size_t i = 0; i < 3; i++) {
+        for (size_t j = 0; j < 4; j++) {
+            cout << ia[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    for (auto p = begin(ia); p != end(ia); p++) {
+        for (auto q = begin(*p); q != end(*p); q++) {
+            cout << *q << " ";
+        }
+        cout << endl;
     }
     return 0;
 }
