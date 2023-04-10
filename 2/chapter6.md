@@ -2,7 +2,7 @@
 
 ### Q1
 
-形参在函数的定义中声明；实参是形参的初始值;实参的类型必须与对应的形参类型匹配。
+形参在函数的定义中声明；实参是形参的初始值，实参的类型必须与对应的形参类型匹配。
 
 ### Q2
 
@@ -196,12 +196,14 @@ int fact(int val) {
 #include <iostream>
 #include "Chapter6.h"
 
+using namespace std;
+
 int fact(int);
 
 int main() {
     int num;
-    std::cin >> num;
-    std::cout << fact(num) << std::endl;
+    cin >> num;
+    cout << fact(num) << endl;
     return 0;
 }
 ```
@@ -211,13 +213,15 @@ int main() {
 ```c++
 #include <iostream>
 
+using namespace std;
+
 void swap(int *, int *);
 
 int main() {
     int a = 1, b = 2;
-    std::cout << a << " " << b << std::endl;
+    cout << a << " " << b << endl;
     swap(&a, &b);
-    std::cout << a << " " << b << std::endl;
+    cout << a << " " << b << endl;
     return 0;
 }
 
@@ -234,13 +238,15 @@ void swap(int * a, int * b) {
 ```c++
 #include <iostream>
 
+using namespace std;
+
 void reset(int &);
 
 int main() {
 	int i = 42;
-	std::cout << i << std::endl;
+	cout << i << endl;
 	reset(i);
-	std::cout << i << std::endl;
+	cout << i << endl;
 	return 0;
 }
 
@@ -256,13 +262,15 @@ void reset(int &i) {
 ```c++
 #include <iostream>
 
+using namespace std;
+
 void swap(int &, int &);
 
 int main() {
     int a = 1, b = 2;
-    std::cout << a << " " << b << std::endl;
+    cout << a << " " << b << endl;
     swap(a, b);
-    std::cout << a << " " << b << std::endl;
+    cout << a << " " << b << endl;
     return 0;
 }
 
@@ -289,9 +297,9 @@ void reset(int &i) {
 
 ```c++
 // 非引用
-void print(std::vector<int>::iterator begin, std::vector<int>::iterator end) {
-        for (std::vector<int>::iterator iter = begin; iter != end; ++iter)
-                std::cout << *iter << std::endl;
+void print(vector<int>::iterator begin, vector<int>::iterator end) {
+        for (vector<int>::iterator iter = begin; iter != end; ++iter)
+                cout << *iter << endl;
 }
 ```
 
@@ -354,8 +362,10 @@ void toLower(string &s) {
 
 ### Q18
 
-1. （a）bool compare(matrix &,matrix &);
-2. （b）vector<int>::iterator change_val(int,vector<int>::iterator);
+```c++
+bool compare(matrix &,matrix &);
+vector<int>::iterator change_val(int,vector<int>::iterator);
+```
 
 ### Q19
 
@@ -375,16 +385,15 @@ void toLower(string &s) {
 
 using namespace std;
 
-int compare(int, int *);
+int compare(int, const int *);
 
-int main()
-{
+int main() {
 	int i = 0, j = 1;
 	cout << compare(i, &j) << endl;
 	return 0;
 }
 
-int compare(int i, int *j) {
+int compare(int i, const int *j) {
 	return i > *j ? i : *j; 
 }
 ```
@@ -394,14 +403,16 @@ int compare(int i, int *j) {
 ```c++
 #include <iostream>
 
+using namespace std;
+
 void swap(int *&, int *&);
 
 int main() {
 	int i = 0, j = 1;
 	int *pi = &i, *pj = &j;
-	std::cout << *pi << " " << *pj << std::endl;
+	cout << *pi << " " << *pj << endl;
 	swap(pi, pj);
-	std::cout << *pi << " " << *pj << std::endl;
+	cout << *pi << " " << *pj << endl;
 	return 0;
 }
 
@@ -530,7 +541,7 @@ int sum(initializer_list<int> list) {
 
 ### Q28
 
-const std::string&
+const string&
 
 ### Q29
 
@@ -561,12 +572,21 @@ bool str_subrange(const string &str1, const string &str2)
 返回数组指定下标成员的引用
 
 ```c++
+#include <iostream>
+
+using namespace std;
+
 int &get(int *array, int index) { return array[index]; }
 int main()
 {
     int ia[10];
     for (int i = 0; i != 10; ++i)
         get(ia, i) = i;
+    for (auto x : ia) {
+        cout << x << " ";
+    }
+    cout << endl;
+    return 0;
 }
 ```
 

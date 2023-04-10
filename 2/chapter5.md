@@ -2,7 +2,7 @@
 
 ### Q1
 
-只有一个分号的语句。在程序的某个地方，语法上需要一条语句但是逻辑上不需要，此时应该使用空语句
+只有一个分号的语句。在程序的某个地方，语法上需要一条语句但是逻辑上不需要，此时应该使用空语句。
 
 ### Q2
 
@@ -46,8 +46,7 @@ if (!status) { /* . . . */ }
 
 using namespace std;
 
-int main()
-{
+int main() {
     vector<string> scores = {"F", "D", "C", "B", "A", "S"};
     int grade;
     while (cin >> grade) {
@@ -72,8 +71,7 @@ int main()
 
 using namespace std;
 
-int main()
-{
+int main() {
     vector<string> scores = {"F", "D", "C", "B", "A", "S"};
     int grade;
     while (cin >> grade) {
@@ -123,8 +121,7 @@ if (ival == 0)
 
 using namespace std;
 
-int main()
-{
+int main() {
 	char c;
 	unsigned aCnt = 0, eCnt = 0, iCnt = 0, oCnt = 0, uCnt = 0;
 	while (cin >> c) {
@@ -421,14 +418,16 @@ int main() {
 ix只能在循环体内部使用
 
 ```c++
-for (int ix = 0; ix != sz; ++ix) {}
+int ix;
+for (ix = 0; ix != sz; ++ix) {}
+if (ix != sz)
 ```
 
 循环缺少初始化语句
 
 ```c++
 int ix;
-for (int ix = 0; ix != sz; ++ix) {}
+for (ix = 0; ix != sz; ++ix) {}
 ```
 
 sz为0不会进入循环，sz不为0循环内部必须有结束循环的语句，否则会一直执行下去
