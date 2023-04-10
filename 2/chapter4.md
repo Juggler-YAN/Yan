@@ -1,5 +1,3 @@
-# Chapter 4
-
 ### Q1
 
 105
@@ -35,6 +33,20 @@ int main() {
 -18
 0
 -2
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    cout << -30*3+21/5 << endl;
+    cout << -30+3*21/5 << endl;
+    cout << 30/3*21%5 << endl;
+    cout << -30/3*21%4 << endl;
+    return 0;
+}
+```
 
 ### Q6
 
@@ -187,7 +199,7 @@ int main() {
 
 1. （a）指针ptr不为空时，判断指针所指的值是不是不为0，最后递增指针ptr；
 2. （b）判断ival和ival+1是不是不为0；
-3. （c）不正确，vec[ival] <= vec[ival+1]。
+3. （c）比较vec[ival]和vec[ival+1]。
 
 ### Q20
 
@@ -396,9 +408,16 @@ int main() {
 
 后置版本需要保存未修改的值，如果不需要未修改的值就使用前置版本。使用后置版本无需改动。
 
+```c++
+vector<int>::size_type cnt = ivec.size();
+for (vector<int>::size_type ix = 0; ix != ivec.size(); ix++, cnt--) {
+    ivec[ix] = cnt;
+}
+```
+
 ### Q32
 
-遍历数组，ix是以索引方式变现，ptr是以指针方式变现
+遍历数组，ix是以索引方式实现，ptr是以指针方式实现
 
 ### Q33
 
@@ -419,7 +438,9 @@ int main() {
 
 ### Q36
 
+```c++
 i *= static_cast<int>(d)
+```
 
 ### Q37
 
