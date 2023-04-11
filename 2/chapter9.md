@@ -335,7 +335,7 @@ void fun(vector<int>& iv, int some_val) {
 
 ### Q23
 
-均为同一个元素
+均为c[0]
 
 ### Q24
 
@@ -346,7 +346,7 @@ void fun(vector<int>& iv, int some_val) {
 using namespace std;
 
 int main() {
-    vector<int> v;
+    vector<int> v{0};
     cout << v[0] << endl;
     cout << v.at(0) << endl;
     cout << v.front() << endl;
@@ -639,14 +639,14 @@ int main() {
 
 ### Q39
 
-为svec分配至少能容纳1024个string的空间，将输入添加到svec中，将svec的size增加当前size的一半。
+为svec分配至少能容纳1024个string的空间，将输入添加到svec中，占满空间后，将svec的size增加当前size的一半。
 
 ### Q40
 
 1. 256，size为384，capacity为1024；
 2. 512，size为768，capacity为1024；
-3. 1000，size为1500，capacity至少为可以容纳当前size；
-4. 1048，size为1572，capacity至少为可以容纳当前size。
+3. 1000，size为1500，capacity为2048；
+4. 1048，size为1572，capacity为2048。
 
 ### Q41
 
