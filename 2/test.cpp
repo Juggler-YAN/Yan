@@ -1,34 +1,41 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <vector>
+#include <string>
 
 using namespace std;
 
-int add(int, int);
-int subtract(int, int);
-int multiply(int, int);
-int divide(int, int);
+struct PersonInfo {
+    string name;
+    vector<string> phones;
+};
 
 int main() {
-    int a = 1, b = 2;
-    vector<int (*)(int, int)> vf{add, subtract, multiply, divide};
-    for (auto i : vf) {
-        cout << (*i)(a,b) << endl;
-    }
-    return 0;
-}
+	string line, word;
+	vector<PersonInfo> people;
+	istringstream record;
+    ifstream in("./test.txt");
 
-int add(int a, int b) {
-    return a + b;
-}
+	while(getline(in, line)) {
+		record.str(line);
+		PersonInfo info;
+		record >> info.name;
+		while(record >> word)
+			info.phones.push_back(word);
+		record.clear();
+		people.push_back(info);
+	}
 
-int subtract(int a, int b) {
-    return a - b;
-}
+	for(const auto &person : people) {
+		cout << person.name << "  ";
+		for(const auto &ph : person.phones) {
+			cout << ph << " ";
+		}
+		cout << endl;
+	}
 
-int multiply(int a, int b) {
-    return a * b;
-}
+	in.close();
 
-int divide(int a, int b) {
-    return b != 0 ? a / b : 0;
+	return 0;
 }

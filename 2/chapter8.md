@@ -1,5 +1,3 @@
-# Chapter 8
-
 ### Q1
 
 ```c++
@@ -17,10 +15,9 @@ int main() {
 
 istream& myread(istream& in) {
     string s;
-    while (in >> s) {
-        cout << s << " ";
+    while (getline(in, s)) {
+        cout << s << endl;
     }
-    cout << endl;
     in.clear();
     return in;
 }
@@ -474,6 +471,12 @@ void myread(ifstream& in, vector<string>& v) {
 
 ### Q11
 
+```
+morgan 2015552368 8625550123
+drew 9735550130
+lee 6095550132 2015550175 8005550000
+```
+
 ```c++
 #include <iostream>
 #include <sstream>
@@ -519,6 +522,12 @@ int main() {
 string和vector可以自己初始化
 
 ### Q13
+
+```
+morgan 2015552368 8625550123
+drew 9735550130
+lee 6095550132 2015550175 8005550000
+```
 
 ```c++
 #include <iostream>
