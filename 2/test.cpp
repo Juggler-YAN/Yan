@@ -1,63 +1,28 @@
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <unordered_map>
+#include <algorithm>
+#include <list>
 #include <string>
 
 using namespace std;
 
-unordered_map<string, string> buildMap(ifstream &);
-const string & transform(const string &, const unordered_map<string, string> &);
-void word_transform(ifstream &, ifstream &);
+void elimDups(list<string>&);
 
 int main() {
-    ifstream map_file("./map.txt"), input("./file.txt");
-    word_transform(map_file, input);
-    map_file.close();
-    input.close();
+    list<string> words;
+    string s;
+    while (cin >> s) {
+        words.push_back(s);
+    }
+    elimDups(words);
+    for (const auto &s : words) {
+        cout << s << " ";
+    }
+    cout << endl;
+    
     return 0;
 }
 
-unordered_map<string, string> buildMap(ifstream &map_file) {
-    unordered_map<string, string> trans_map;
-    string key, value;
-    while (map_file >> key && getline(map_file, value)) {
-        if (value.size() > 1) {
-            trans_map[key] = value.substr(1);
-        }
-        else {
-            throw runtime_error("no rule for" + key);
-        }
-    }
-    return trans_map;
-}
-
-const string & transform(const string &s, const unordered_map<string, string> &m) {
-    auto map_it = m.find(s);
-    if (map_it != m.cend()) {
-        return map_it->second;
-    }
-    else {
-        return s;
-    }
-}
-
-void word_transform(ifstream &map_file, ifstream &input) {
-    auto trans_map = buildMap(map_file);
-    string text;
-    while (getline(input, text)) {
-        istringstream stream(text);
-        string word;
-        bool firstword = true;
-        while (stream >> word) {
-            if (firstword) {
-                firstword = false;
-            }
-            else {
-                cout <<  " ";
-            }
-            cout << transform(word, trans_map);
-        }
-        cout << endl;
-    }
+void elimDups(list<string> &words) {
+    words.sort();
+    words.unique();
 }

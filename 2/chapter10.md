@@ -327,7 +327,7 @@ using namespace std;
 
 int main() {
     int a = 1;
-    auto add = [a](int b) { return a+b; };
+    auto add = [=](int b) { return a+b; };
     cout << add(2) << endl;
     return 0;
 }
@@ -615,7 +615,7 @@ bool fun(int, const string &);
 int main() {
     string s{"hello"};
     vector<int> v{1,3,5,8,9,7};
-    cout << *(find_if(v.begin(), v.end(), bind(fun, placeholders::_1, cref(s)))) << endl;
+    cout << *(find_if(v.begin(), v.end(), bind(fun, placeholders::_1, s))) << endl;
     return 0;
 }
 
@@ -687,7 +687,7 @@ using namespace std;
 int main() {
     vector<int> v{1,1,2,3,5,8};
     list<int> l;
-    unique_copy(v.cbegin(), v.cend(), inserter(l, l.begin()));
+    unique_copy(v.cbegin(), v.cend(), back_inserter(l));
     for (const auto &i : l) {
         cout << i << " ";
     }
