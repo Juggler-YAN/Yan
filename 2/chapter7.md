@@ -563,6 +563,8 @@ int main() {
 
 #include <string>
 
+using namespace std;
+
 struct Sales_data {
 
     string bookNo;
@@ -933,7 +935,7 @@ class Screen {
         using pos = string::size_type;
 
         Screen() = default;
-        Screen(pos ht, pos wd) : height(ht), width(wd) {}
+        Screen(pos ht, pos wd) : height(ht), width(wd), contents(ht*wd, ' ') {}
         Screen(pos ht, pos wd, char c) : height(ht), width(wd), contents(ht*wd, c) {}
 
         char get() const { return contents[cursor]; }
@@ -1109,6 +1111,7 @@ int main() {
     cout << "\n";
     myScreen.display(cout);
     cout << "\n";
+    return 0;
 }
 ```
 
@@ -1196,6 +1199,7 @@ int main() {
     cout << "\n";
     myScreen.display(cout);
     cout << "\n";
+    return 0;
 }
 ```
 
@@ -1564,11 +1568,13 @@ Sales_data add(const Sales_data &lhs, const Sales_data &rhs) {
 #include <iostream>
 #include "Sales_data.h"
 
+using namespace std;
+
 int main() {
     Sales_data item1;
     Sales_data item2("A");
     Sales_data item3("A",0,0);
-    Sales_data item4(std::cin);
+    Sales_data item4(cin);
     return 0;
 }
 ```
@@ -1653,26 +1659,28 @@ private:
 
 #include <string>
 
+using namespace std;
+
 struct Person {
-    friend std::istream& read(std::istream&, Person&);
-    friend std::ostream& print(std::ostream&, const Person&);
+    friend istream& read(istream&, Person&);
+    friend ostream& print(ostream&, const Person&);
 private:
-    std::string name{""};
-    std::string address{""};
+    string name{""};
+    string address{""};
 public:
-    std::string getName() const { return name; }
-    std::string getAddress() const { return address; }
+    string getName() const { return name; }
+    string getAddress() const { return address; }
     Person() = default;
-    Person(const std::string & n, const std::string & a) : name(n), address(a) {}
-    explicit Person(std::istream &is) { read(is, *this); }
+    Person(const string & n, const string & a) : name(n), address(a) {}
+    explicit Person(istream &is) { read(is, *this); }
 };
 
-std::istream& read(std::istream& is, Person& item) {
+istream& read(istream& is, Person& item) {
     is >> item.name >> item.address;
     return is;
 }
 
-std::ostream& print(std::ostream& os, const Person& item) {
+ostream& print(ostream& os, const Person& item) {
     os << item.name << " " << item.address;
     return os;
 }
@@ -1764,7 +1772,7 @@ double Account::interestRate = initRate();
 class Example {
 public:
     static double rate;
-    static const int vecSize = 20;
+    static constexpr int vecSize = 20;
     static vector<double> vec;
 };
 ```
@@ -1774,9 +1782,4 @@ public:
 #include "example.h"
 double Example::rate = 6.5;
 vector<double> Example::vec(vecSize);
-
-int main() {
-    Sales_data item = {"9999",36,15.88};
-    return 0;
-}
 ```

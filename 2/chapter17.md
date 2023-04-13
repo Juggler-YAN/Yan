@@ -6,11 +6,13 @@
 #include <iostream>
 #include <tuple>
 
+using namespace std;
+
 int main() {
-    std::tuple<int, int, int> threeD{10, 20, 30};
-    std::cout << std::get<0>(threeD) << std::endl;
-    std::cout << std::get<1>(threeD) << std::endl;
-    std::cout << std::get<2>(threeD) << std::endl;
+    tuple<int, int, int> threeD{10, 20, 30};
+    cout << get<0>(threeD) << endl;
+    cout << get<1>(threeD) << endl;
+    cout << get<2>(threeD) << endl;
     return 0;
 }
 ```
@@ -24,13 +26,15 @@ int main() {
 #include <utility>
 #include <tuple>
 
+using namespace std;
+
 int main() {
-    std::tuple<std::string, std::vector<std::string>, std::pair<std::string, int>> three{"a", {"b1", "b2", "b3"}, {"c1", 3}};
-    std::cout << std::get<0>(three) << std::endl;
-    for (const auto &i : std::get<1>(three)) {
-        std::cout << i << std::endl;
+    tuple<string, vector<string>, pair<string, int>> three{"a", {"b1", "b2", "b3"}, {"c1", 3}};
+    cout << get<0>(three) << endl;
+    for (const auto &i : get<1>(three)) {
+        cout << i << endl;
     }
-    std::cout << std::get<2>(three).first << " " << std::get<2>(three).second << std::endl;
+    cout << get<2>(three).first << " " << get<2>(three).second << endl;
     return 0;
 }
 ```
@@ -56,64 +60,64 @@ int main() {
 class QueryResult;
 class TextQuery {
 public:
-    using line_no = std::vector<std::string>::size_type;
-    TextQuery(std::ifstream&);
-    std::tuple<std::string, std::shared_ptr<std::set<TextQuery::line_no>>, std::shared_ptr<std::vector<std::string>>> query(const std::string&) const;
+    using line_no = vector<string>::size_type;
+    TextQuery(ifstream&);
+    tuple<string, shared_ptr<set<TextQuery::line_no>>, shared_ptr<vector<string>>> query(const string&) const;
 private:
-    std::shared_ptr<std::vector<std::string>> file;
-    std::map<std::string, std::shared_ptr<std::set<line_no>>> wm;
+    shared_ptr<vector<string>> file;
+    map<string, shared_ptr<set<line_no>>> wm;
 };
 
 class QueryResult {
-friend std::ostream& print(std::ostream&, const QueryResult&);
+friend ostream& print(ostream&, const QueryResult&);
 public:
-    QueryResult(std::string s,
-                std::shared_ptr<std::set<TextQuery::line_no>> p,
-                std::shared_ptr<std::vector<std::string>> f) :
+    QueryResult(string s,
+                shared_ptr<set<TextQuery::line_no>> p,
+                shared_ptr<vector<string>> f) :
         sought(s), lines(p), file(f) {}
     auto begin() const { return lines->cbegin(); }
     auto end() const { return lines->cend(); }
     auto get_file() const { return file; }
 private:
-    std::string sought;
-    std::shared_ptr<std::set<TextQuery::line_no>> lines;
-    std::shared_ptr<std::vector<std::string>> file;
+    string sought;
+    shared_ptr<set<TextQuery::line_no>> lines;
+    shared_ptr<vector<string>> file;
 };
 
-TextQuery::TextQuery(std::ifstream &is) : file(new std::vector<std::string>) {
-    std::string text;
+TextQuery::TextQuery(ifstream &is) : file(new vector<string>) {
+    string text;
     while (getline(is, text)) {
         file->push_back(text);
         int n = file->size() - 1;
-        std::istringstream line(text);
-        std::string word;
+        istringstream line(text);
+        string word;
         while (line >> word) {
             auto &lines = wm[word];
             if (!lines)
-                lines.reset(new std::set<line_no>);
+                lines.reset(new set<line_no>);
             lines->insert(n);
         }
     }
 }
 
-std::tuple<std::string, std::shared_ptr<std::set<TextQuery::line_no>>, std::shared_ptr<std::vector<std::string>>> TextQuery::query(const std::string &sought) const {
-    static std::shared_ptr<std::set<line_no>> nodata(new std::set<line_no>);
+tuple<string, shared_ptr<set<TextQuery::line_no>>, shared_ptr<vector<string>>> TextQuery::query(const string &sought) const {
+    static shared_ptr<set<line_no>> nodata(new set<line_no>);
     auto loc = wm.find(sought);
     if (loc == wm.end())
-        return std::tuple<std::string, std::shared_ptr<std::set<TextQuery::line_no>>, std::shared_ptr<std::vector<std::string>>>(sought, nodata, file);
+        return tuple<string, shared_ptr<set<TextQuery::line_no>>, shared_ptr<vector<string>>>(sought, nodata, file);
     else
-        return std::tuple<std::string, std::shared_ptr<std::set<TextQuery::line_no>>, std::shared_ptr<std::vector<std::string>>>(sought, loc->second, file);
+        return tuple<string, shared_ptr<set<TextQuery::line_no>>, shared_ptr<vector<string>>>(sought, loc->second, file);
 }
 
-std::string make_plural(size_t ctr, const std::string &word, const std::string &ending) {
+string make_plural(size_t ctr, const string &word, const string &ending) {
     return (ctr > 1) ? word + ending : word;
 }
 
-std::ostream &print(std::ostream & os, std::tuple<std::string, std::shared_ptr<std::set<TextQuery::line_no>>, std::shared_ptr<std::vector<std::string>>> qr) {
-    os << std::get<0>(qr) << " occurs " << std::get<1>(qr)->size() << " "
-        << make_plural(std::get<1>(qr)->size(), "times", "s") << std::endl;
-    for (auto num : *std::get<1>(qr))
-        os << "\t(line " << num+1 << ") " << *(std::get<2>(qr)->begin()+num) << std::endl;
+ostream &print(ostream & os, tuple<string, shared_ptr<set<TextQuery::line_no>>, shared_ptr<vector<string>>> qr) {
+    os << get<0>(qr) << " occurs " << get<1>(qr)->size() << " "
+        << make_plural(get<1>(qr)->size(), "times", "s") << endl;
+    for (auto num : *get<1>(qr))
+        os << "\t(line " << num+1 << ") " << *(get<2>(qr)->begin()+num) << endl;
     return os;
 }
 
@@ -125,21 +129,21 @@ std::ostream &print(std::ostream & os, std::tuple<std::string, std::shared_ptr<s
 #include <fstream>
 #include "TextQuery.h"
 
-void runQueries(std::ifstream &);
+void runQueries(ifstream &);
 
 int main() {
-    std::ifstream in("./data/17-3");
+    ifstream in("./data/17-3");
     runQueries(in);
     return 0;
 }
 
-void runQueries(std::ifstream &infile) {
+void runQueries(ifstream &infile) {
     TextQuery tq(infile);
     while (true) {
-        std::cout << "enter word to look for, or q to quit: ";
-        std::string s;
-        if (!(std::cin >> s) || s == "q") break;
-        print(std::cout, tq.query(s)) << std::endl;
+        cout << "enter word to look for, or q to quit: ";
+        string s;
+        if (!(cin >> s) || s == "q") break;
+        print(cout, tq.query(s)) << endl;
     }
 }
 ```
@@ -159,24 +163,24 @@ void runQueries(std::ifstream &infile) {
 
 struct Sales_data {
 
-    friend std::istream& operator>>(std::istream&, Sales_data&);
-    friend std::ostream& operator<<(std::ostream&, const Sales_data&);
+    friend istream& operator>>(istream&, Sales_data&);
+    friend ostream& operator<<(ostream&, const Sales_data&);
     friend Sales_data operator+(const Sales_data&, const Sales_data&);
     friend bool operator==(const Sales_data&, const Sales_data&);
-	friend class std::hash<Sales_data>;
+	friend class hash<Sales_data>;
 
 public:
-    Sales_data(std::string s, unsigned n, double p) :
+    Sales_data(string s, unsigned n, double p) :
                 bookNo(s), units_sold(n), revenue(p*n) {};
     Sales_data() : Sales_data("", 0, 0) {}
-    Sales_data(std::string s) : Sales_data(s, 0, 0) {}
-    Sales_data(std::istream &is) : Sales_data() { is >> *this; }
-    std::string isbn() const { return bookNo; }
+    Sales_data(string s) : Sales_data(s, 0, 0) {}
+    Sales_data(istream &is) : Sales_data() { is >> *this; }
+    string isbn() const { return bookNo; }
     Sales_data& operator+=(const Sales_data&);
 
 private:
     inline double avg_price() const;
-    std::string bookNo;
+    string bookNo;
     unsigned units_sold = 0;
     double revenue = 0.0;
 
@@ -197,7 +201,7 @@ Sales_data& Sales_data::operator+=(const Sales_data &rhs) {
     return *this;
 }
 
-std::istream& operator>>(std::istream &is, Sales_data &item) {
+istream& operator>>(istream &is, Sales_data &item) {
 	double price = 0;
 	is >> item.bookNo >> item.units_sold >> price;
     if (is) {
@@ -209,7 +213,7 @@ std::istream& operator>>(std::istream &is, Sales_data &item) {
 	return is;
 }
 
-std::ostream& operator<<(std::ostream &os, const Sales_data &item) {
+ostream& operator<<(ostream &os, const Sales_data &item) {
 	os << item.isbn() << " " << item.units_sold << " " << item.revenue << " " << item.avg_price();
 	return os;
 }
@@ -230,33 +234,33 @@ bool compareIsbn(const Sales_data &sale1, const Sales_data &sale2) {
     return sale1.isbn() < sale2.isbn();
 }
 
-typedef std::tuple<std::vector<Sales_data>::size_type,
-                   std::vector<Sales_data>::const_iterator,
-                   std::vector<Sales_data>::const_iterator> matches;
+typedef tuple<vector<Sales_data>::size_type,
+                   vector<Sales_data>::const_iterator,
+                   vector<Sales_data>::const_iterator> matches;
 
-std::vector<matches> findBook(const std::vector<std::vector<Sales_data>> &files,
-                              const std::string &book) {
-    std::vector<matches> ret;
+vector<matches> findBook(const vector<vector<Sales_data>> &files,
+                              const string &book) {
+    vector<matches> ret;
     for (auto it = files.cbegin(); it != files.cend(); ++it) {
         auto found = equal_range(it->cbegin(), it->cend(), book, compareIsbn);
         if (found.first != found.second) {
-            ret.push_back(std::make_tuple(it-files.cbegin(), found.first, found.second));
+            ret.push_back(make_tuple(it-files.cbegin(), found.first, found.second));
         }
     }
     return ret;
 }
 
-void reportResults(std::istream &in, std::ostream &os, const std::vector<std::vector<Sales_data>> &files) {
-    std::string s;
+void reportResults(istream &in, ostream &os, const vector<vector<Sales_data>> &files) {
+    string s;
     while (in >> s) {
         auto trans = findBook(files, s);
         if (trans.empty()) {
-            std::cout << s << " not found in any stores" << std::endl;
+            cout << s << " not found in any stores" << endl;
             continue;
         }
         for (const auto &store : trans)
-            os << "store " << std::get<0>(store) << " sales " << std::accumulate(std::get<1>(store), 
-                std::get<2>(store), Sales_data(s)) << std::endl;
+            os << "store " << get<0>(store) << " sales " << accumulate(get<1>(store), 
+                get<2>(store), Sales_data(s)) << endl;
     }
 }
 
@@ -272,10 +276,10 @@ int main() {
     Sales_data s1("a", 1, 100);
     Sales_data s2("a", 1, 200);
     Sales_data s3("b", 2, 100);
-    std::vector<Sales_data> v1 = {s1, s3};
-    std::vector<Sales_data> v2 = {s2};
-    std::vector<std::vector<Sales_data>> v = {v1, v2};
-    reportResults(std::cin, std::cout, v);
+    vector<Sales_data> v1 = {s1, s3};
+    vector<Sales_data> v2 = {s2};
+    vector<vector<Sales_data>> v = {v1, v2};
+    reportResults(cin, cout, v);
     return 0;
 }
 ```
@@ -295,24 +299,24 @@ int main() {
 
 struct Sales_data {
 
-    friend std::istream& operator>>(std::istream&, Sales_data&);
-    friend std::ostream& operator<<(std::ostream&, const Sales_data&);
+    friend istream& operator>>(istream&, Sales_data&);
+    friend ostream& operator<<(ostream&, const Sales_data&);
     friend Sales_data operator+(const Sales_data&, const Sales_data&);
     friend bool operator==(const Sales_data&, const Sales_data&);
-	friend class std::hash<Sales_data>;
+	friend class hash<Sales_data>;
 
 public:
-    Sales_data(std::string s, unsigned n, double p) :
+    Sales_data(string s, unsigned n, double p) :
                 bookNo(s), units_sold(n), revenue(p*n) {};
     Sales_data() : Sales_data("", 0, 0) {}
-    Sales_data(std::string s) : Sales_data(s, 0, 0) {}
-    Sales_data(std::istream &is) : Sales_data() { is >> *this; }
-    std::string isbn() const { return bookNo; }
+    Sales_data(string s) : Sales_data(s, 0, 0) {}
+    Sales_data(istream &is) : Sales_data() { is >> *this; }
+    string isbn() const { return bookNo; }
     Sales_data& operator+=(const Sales_data&);
 
 private:
     inline double avg_price() const;
-    std::string bookNo;
+    string bookNo;
     unsigned units_sold = 0;
     double revenue = 0.0;
 
@@ -333,7 +337,7 @@ Sales_data& Sales_data::operator+=(const Sales_data &rhs) {
     return *this;
 }
 
-std::istream& operator>>(std::istream &is, Sales_data &item) {
+istream& operator>>(istream &is, Sales_data &item) {
 	double price = 0;
 	is >> item.bookNo >> item.units_sold >> price;
     if (is) {
@@ -345,7 +349,7 @@ std::istream& operator>>(std::istream &is, Sales_data &item) {
 	return is;
 }
 
-std::ostream& operator<<(std::ostream &os, const Sales_data &item) {
+ostream& operator<<(ostream &os, const Sales_data &item) {
 	os << item.isbn() << " " << item.units_sold << " " << item.revenue << " " << item.avg_price();
 	return os;
 }
@@ -366,32 +370,32 @@ bool compareIsbn(const Sales_data &sale1, const Sales_data &sale2) {
     return sale1.isbn() < sale2.isbn();
 }
 
-typedef std::pair<std::vector<Sales_data>::size_type,
-    std::pair<std::vector<Sales_data>::const_iterator, std::vector<Sales_data>::const_iterator>> matches;
+typedef pair<vector<Sales_data>::size_type,
+    pair<vector<Sales_data>::const_iterator, vector<Sales_data>::const_iterator>> matches;
 
-std::vector<matches> findBook(const std::vector<std::vector<Sales_data>> &files,
-                              const std::string &book) {
-    std::vector<matches> ret;
+vector<matches> findBook(const vector<vector<Sales_data>> &files,
+                              const string &book) {
+    vector<matches> ret;
     for (auto it = files.cbegin(); it != files.cend(); ++it) {
         auto found = equal_range(it->cbegin(), it->cend(), book, compareIsbn);
         if (found.first != found.second) {
-            ret.push_back(std::make_pair(it-files.cbegin(), make_pair(found.first, found.second)));
+            ret.push_back(make_pair(it-files.cbegin(), make_pair(found.first, found.second)));
         }
     }
     return ret;
 }
 
-void reportResults(std::istream &in, std::ostream &os, const std::vector<std::vector<Sales_data>> &files) {
-    std::string s;
+void reportResults(istream &in, ostream &os, const vector<vector<Sales_data>> &files) {
+    string s;
     while (in >> s) {
         auto trans = findBook(files, s);
         if (trans.empty()) {
-            std::cout << s << " not found in any stores" << std::endl;
+            cout << s << " not found in any stores" << endl;
             continue;
         }
         for (const auto &store : trans)
-            os << "store " << store.first << " sales " << std::accumulate(store.second.first, 
-                store.second.second, Sales_data(s)) << std::endl;
+            os << "store " << store.first << " sales " << accumulate(store.second.first, 
+                store.second.second, Sales_data(s)) << endl;
     }
 }
 
@@ -407,10 +411,10 @@ int main() {
     Sales_data s1("a", 1, 100);
     Sales_data s2("a", 1, 200);
     Sales_data s3("b", 2, 100);
-    std::vector<Sales_data> v1 = {s1, s3};
-    std::vector<Sales_data> v2 = {s2};
-    std::vector<std::vector<Sales_data>> v = {v1, v2};
-    reportResults(std::cin, std::cout, v);
+    vector<Sales_data> v1 = {s1, s3};
+    vector<Sales_data> v2 = {s2};
+    vector<vector<Sales_data>> v = {v1, v2};
+    reportResults(cin, cout, v);
     return 0;
 }
 ```
@@ -429,24 +433,24 @@ int main() {
 
 struct Sales_data {
 
-    friend std::istream& operator>>(std::istream&, Sales_data&);
-    friend std::ostream& operator<<(std::ostream&, const Sales_data&);
+    friend istream& operator>>(istream&, Sales_data&);
+    friend ostream& operator<<(ostream&, const Sales_data&);
     friend Sales_data operator+(const Sales_data&, const Sales_data&);
     friend bool operator==(const Sales_data&, const Sales_data&);
-	friend class std::hash<Sales_data>;
+	friend class hash<Sales_data>;
 
 public:
-    Sales_data(std::string s, unsigned n, double p) :
+    Sales_data(string s, unsigned n, double p) :
                 bookNo(s), units_sold(n), revenue(p*n) {};
     Sales_data() : Sales_data("", 0, 0) {}
-    Sales_data(std::string s) : Sales_data(s, 0, 0) {}
-    Sales_data(std::istream &is) : Sales_data() { is >> *this; }
-    std::string isbn() const { return bookNo; }
+    Sales_data(string s) : Sales_data(s, 0, 0) {}
+    Sales_data(istream &is) : Sales_data() { is >> *this; }
+    string isbn() const { return bookNo; }
     Sales_data& operator+=(const Sales_data&);
 
 private:
     inline double avg_price() const;
-    std::string bookNo;
+    string bookNo;
     unsigned units_sold = 0;
     double revenue = 0.0;
 
@@ -467,7 +471,7 @@ Sales_data& Sales_data::operator+=(const Sales_data &rhs) {
     return *this;
 }
 
-std::istream& operator>>(std::istream &is, Sales_data &item) {
+istream& operator>>(istream &is, Sales_data &item) {
 	double price = 0;
 	is >> item.bookNo >> item.units_sold >> price;
     if (is) {
@@ -479,7 +483,7 @@ std::istream& operator>>(std::istream &is, Sales_data &item) {
 	return is;
 }
 
-std::ostream& operator<<(std::ostream &os, const Sales_data &item) {
+ostream& operator<<(ostream &os, const Sales_data &item) {
 	os << item.isbn() << " " << item.units_sold << " " << item.revenue << " " << item.avg_price();
 	return os;
 }
@@ -501,16 +505,16 @@ bool compareIsbn(const Sales_data &sale1, const Sales_data &sale2) {
 }
 
 struct matches {
-    std::vector<Sales_data>::size_type index;
-    std::vector<Sales_data>::const_iterator first;
-    std::vector<Sales_data>::const_iterator last;
-    matches(std::vector<Sales_data>::size_type i, std::vector<Sales_data>::const_iterator f, std::vector<Sales_data>::const_iterator l) : 
+    vector<Sales_data>::size_type index;
+    vector<Sales_data>::const_iterator first;
+    vector<Sales_data>::const_iterator last;
+    matches(vector<Sales_data>::size_type i, vector<Sales_data>::const_iterator f, vector<Sales_data>::const_iterator l) : 
         index(i), first(f), last(l) {}
 };
 
-std::vector<matches> findBook(const std::vector<std::vector<Sales_data>> &files,
-                              const std::string &book) {
-    std::vector<matches> ret;
+vector<matches> findBook(const vector<vector<Sales_data>> &files,
+                              const string &book) {
+    vector<matches> ret;
     for (auto it = files.cbegin(); it != files.cend(); ++it) {
         auto found = equal_range(it->cbegin(), it->cend(), book, compareIsbn);
         if (found.first != found.second) {
@@ -520,17 +524,17 @@ std::vector<matches> findBook(const std::vector<std::vector<Sales_data>> &files,
     return ret;
 }
 
-void reportResults(std::istream &in, std::ostream &os, const std::vector<std::vector<Sales_data>> &files) {
-    std::string s;
+void reportResults(istream &in, ostream &os, const vector<vector<Sales_data>> &files) {
+    string s;
     while (in >> s) {
         auto trans = findBook(files, s);
         if (trans.empty()) {
-            std::cout << s << " not found in any stores" << std::endl;
+            cout << s << " not found in any stores" << endl;
             continue;
         }
         for (const auto &store : trans)
-            os << "store " << store.index << " sales " << std::accumulate(store.first, 
-                store.last, Sales_data(s)) << std::endl;
+            os << "store " << store.index << " sales " << accumulate(store.first, 
+                store.last, Sales_data(s)) << endl;
     }
 }
 
@@ -546,10 +550,10 @@ int main() {
     Sales_data s1("a", 1, 100);
     Sales_data s2("a", 1, 200);
     Sales_data s3("b", 2, 100);
-    std::vector<Sales_data> v1 = {s1, s3};
-    std::vector<Sales_data> v2 = {s2};
-    std::vector<std::vector<Sales_data>> v = {v1, v2};
-    reportResults(std::cin, std::cout, v);
+    vector<Sales_data> v1 = {s1, s3};
+    vector<Sales_data> v2 = {s2};
+    vector<vector<Sales_data>> v = {v1, v2};
+    reportResults(cin, cout, v);
     return 0;
 }
 ```
@@ -576,14 +580,14 @@ int main() {
 #include <bitset>
 
 int main() {
-    std::vector<int> v{1,2,3,5,8,13,21};
-    std::bitset<32> b1;
+    vector<int> v{1,2,3,5,8,13,21};
+    bitset<32> b1;
     for (auto i : v) {
         b1.set(i);
     }
-    std::cout << b1 << std::endl;
-    std::bitset<32> b2(2105646ULL);
-    std::cout << b2 << std::endl;
+    cout << b1 << endl;
+    bitset<32> b2(2105646ULL);
+    cout << b2 << endl;
     return 0;
 }
 ```
@@ -597,29 +601,29 @@ int main() {
 
 template <unsigned> class quiz;
 template <unsigned N>
-    std::ostream& operator<<(std::ostream&, const quiz<N>&);
+    ostream& operator<<(ostream&, const quiz<N>&);
 
 template <unsigned N>
 class quiz {
-    friend std::ostream& operator<<<N>(std::ostream&, const quiz<N>&);
+    friend ostream& operator<<<N>(ostream&, const quiz<N>&);
 public:
-    quiz(const std::string &s) : b(s) {}
-    std::bitset<N>& get_bitset() { return b; }
+    quiz(const string &s) : b(s) {}
+    bitset<N>& get_bitset() { return b; }
 private:
-    std::bitset<N> b;
+    bitset<N> b;
 };
 
 template <unsigned N>
-std::ostream& operator<<(std::ostream& os, const quiz<N> &q) {
+ostream& operator<<(ostream& os, const quiz<N> &q) {
     os << q.b;
     return os;
 }
 
 int main() {
-    quiz<10> q1(std::string("01010101010101"));
-    quiz<100> q2(std::string("01010101010101"));
-    std::cout << q1 << std::endl;
-    std::cout << q2 << std::endl;
+    quiz<10> q1(string("01010101010101"));
+    quiz<100> q2(string("01010101010101"));
+    cout << q1 << endl;
+    cout << q2 << endl;
     return 0;
 }
 ```
@@ -633,33 +637,33 @@ int main() {
 
 template <unsigned> class quiz;
 template <unsigned N>
-    std::ostream& operator<<(std::ostream&, const quiz<N>&);
+    ostream& operator<<(ostream&, const quiz<N>&);
 
 template <unsigned N>
 class quiz {
-    friend std::ostream& operator<<<N>(std::ostream&, const quiz<N>&);
+    friend ostream& operator<<<N>(ostream&, const quiz<N>&);
 public:
-    quiz(const std::string &s) : b(s) {}
-    void update(std::size_t n, bool res) {
+    quiz(const string &s) : b(s) {}
+    void update(size_t n, bool res) {
         if (n < N) {
             b[n] = res;
         }
     }
 private:
-    std::bitset<N> b;
+    bitset<N> b;
 };
 
 template <unsigned N>
-std::ostream& operator<<(std::ostream& os, const quiz<N> &q) {
+ostream& operator<<(ostream& os, const quiz<N> &q) {
     os << q.b;
     return os;
 }
 
 int main() {
-    quiz<10> q(std::string("01010101010101"));
-    std::cout << q << std::endl;
+    quiz<10> q(string("01010101010101"));
+    cout << q << endl;
     q.update(1,true);
-    std::cout << q << std::endl;
+    cout << q << endl;
     return 0;
 }
 ```
@@ -673,40 +677,40 @@ int main() {
 
 template <unsigned> class quiz;
 template <unsigned N>
-    std::ostream& operator<<(std::ostream&, const quiz<N>&);
+    ostream& operator<<(ostream&, const quiz<N>&);
 template <unsigned N>
-    std::size_t grade(const quiz<N>&, const quiz<N>&);
+    size_t grade(const quiz<N>&, const quiz<N>&);
 
 template <unsigned N>
 class quiz {
-    friend std::ostream& operator<<<N>(std::ostream&, const quiz<N>&);
-    friend std::size_t grade<N>(const quiz<N>&, const quiz<N>&);
+    friend ostream& operator<<<N>(ostream&, const quiz<N>&);
+    friend size_t grade<N>(const quiz<N>&, const quiz<N>&);
 public:
-    quiz(const std::string &s) : b(s) {}
-    void update(std::size_t n, bool res) {
+    quiz(const string &s) : b(s) {}
+    void update(size_t n, bool res) {
         if (n < N) {
             b[n] = res;
         }
     }
 private:
-    std::bitset<N> b;
+    bitset<N> b;
 };
 
 template <unsigned N>
-std::ostream& operator<<(std::ostream& os, const quiz<N> &q) {
+ostream& operator<<(ostream& os, const quiz<N> &q) {
     os << q.b;
     return os;
 }
 
 template <unsigned N>
-std::size_t grade(const quiz<N> &lhs, const quiz<N> &rhs) {
+size_t grade(const quiz<N> &lhs, const quiz<N> &rhs) {
     return (lhs.b^rhs.b).flip().count();    
 }
 
 int main() {
-    quiz<10> q1(std::string("0101010101"));
-    quiz<10> q2(std::string("1101011100"));
-    std::cout << grade(q1,q2) << std::endl;
+    quiz<10> q1(string("0101010101"));
+    quiz<10> q2(string("1101011100"));
+    cout << grade(q1,q2) << endl;
     return 0;
 }
 ```
@@ -719,16 +723,16 @@ int main() {
 
 int main() {
     try {
-        std::regex r("[[:alnum:]+\\.(cpp|cxx|cc)$", std::regex::icase);
+        regex r("[[:alnum:]+\\.(cpp|cxx|cc)$", regex::icase);
     }
-    catch (std::regex_error e) {
-        std::cout << e.what() << "\ncode: " << e.code() << std::endl;
+    catch (regex_error e) {
+        cout << e.what() << "\ncode: " << e.code() << endl;
     }
     try {
-        std::regex r("[[:alnum:]]+\\.(cpp|cxx|cc$", std::regex::icase);
+        regex r("[[:alnum:]]+\\.(cpp|cxx|cc$", regex::icase);
     }
-    catch (std::regex_error e) {
-        std::cout << e.what() << "\ncode: " << e.code() << std::endl;
+    catch (regex_error e) {
+        cout << e.what() << "\ncode: " << e.code() << endl;
     }
     return 0;
 }
@@ -742,18 +746,18 @@ int main() {
 #include <regex>
 
 int main() {
-    std::string pattern("[^c]ei");
+    string pattern("[^c]ei");
     pattern = "[[:alpha:]]*" + pattern + "[[:alpha:]]*";
-    std::regex r(pattern);
-    std::smatch results;
-    std::string s;
-    while (std::cin >> s) {
-        if (std::regex_search(s, results, r)) {
-            std::cout << s << " : correct." << std::endl;
-            std::cout << results.str() << std::endl;
+    regex r(pattern);
+    smatch results;
+    string s;
+    while (cin >> s) {
+        if (regex_search(s, results, r)) {
+            cout << s << " : correct." << endl;
+            cout << results.str() << endl;
         }
         else {
-            std::cout << s << " : error." << std::endl;
+            cout << s << " : error." << endl;
         }
     }
     return 0;
@@ -770,17 +774,17 @@ int main() {
 #include <regex>
 
 int main() {
-    std::string pattern("[^c]ei");
-    std::regex r(pattern);
-    std::smatch results;
-    std::string s;
-    while (std::cin >> s) {
-        if (std::regex_search(s, results, r)) {
-            std::cout << s << " : correct." << std::endl;
-            std::cout << results.str() << std::endl;
+    string pattern("[^c]ei");
+    regex r(pattern);
+    smatch results;
+    string s;
+    while (cin >> s) {
+        if (regex_search(s, results, r)) {
+            cout << s << " : correct." << endl;
+            cout << results.str() << endl;
         }
         else {
-            std::cout << s << " : error." << std::endl;
+            cout << s << " : error." << endl;
         }
     }
     return 0;
@@ -795,12 +799,12 @@ int main() {
 #include <regex>
 
 int main() {
-    std::string pattern("[^c]ei");
+    string pattern("[^c]ei");
     pattern = "[[:alpha:]]*" + pattern + "[[:alpha:]]*";
-    std::regex r(pattern, std::regex::icase);
-	std::string file("freind receipt theif receive");
-    for (std::sregex_iterator it(file.begin(), file.end(), r), end_it; it != end_it; ++it)
-        std::cout << it->str() << std::endl;
+    regex r(pattern, regex::icase);
+	string file("freind receipt theif receive");
+    for (sregex_iterator it(file.begin(), file.end(), r), end_it; it != end_it; ++it)
+        cout << it->str() << endl;
     return 0;
 }
 ```
@@ -815,16 +819,16 @@ int main() {
 #include <regex>
 
 int main() {
-    std::string pattern("[^c]ei");
+    string pattern("[^c]ei");
     pattern = "[[:alpha:]]*" + pattern + "[[:alpha:]]*";
-    std::regex r(pattern, std::regex::icase);
-	std::string file("albeit neighbor freind receipt theif receive");
-    std::vector<std::string> v{"albeit", "neighbor"};
-    for (std::sregex_iterator it(file.begin(), file.end(), r), end_it; it != end_it; ++it) {
+    regex r(pattern, regex::icase);
+	string file("albeit neighbor freind receipt theif receive");
+    vector<string> v{"albeit", "neighbor"};
+    for (sregex_iterator it(file.begin(), file.end(), r), end_it; it != end_it; ++it) {
         if (find(v.begin(), v.end(),it->str()) != v.end()) {
             continue;
         }
-        std::cout << it->str() << std::endl;
+        cout << it->str() << endl;
     }
     return 0;
 }
@@ -841,27 +845,27 @@ int main() {
 #include <string>
 #include <regex>
 
-bool valid(const std::smatch&);
+bool valid(const smatch&);
 
 int main() {
-    std::string phone = "(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})";
-    std::regex r(phone);
-    std::smatch m;
-    std::string s;
-    while (getline(std::cin, s)) {
-        for (std::sregex_iterator it(s.begin(), s.end(), r), end_it; it != end_it; ++it) {
+    string phone = "(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})";
+    regex r(phone);
+    smatch m;
+    string s;
+    while (getline(cin, s)) {
+        for (sregex_iterator it(s.begin(), s.end(), r), end_it; it != end_it; ++it) {
             if (valid(*it)) {
-                std::cout << "valid: " << it->str() << std::endl;
+                cout << "valid: " << it->str() << endl;
             }
             else {
-                std::cout << "not valid: " << it->str() << std::endl;
+                cout << "not valid: " << it->str() << endl;
             }
         }
     }
     return 0;
 }
 
-bool valid(const std::smatch &m) {
+bool valid(const smatch &m) {
     if (m[1].matched) {
         return m[3].matched && (m[4].matched == 0 || m[4].str() == " ");
     }
@@ -881,18 +885,18 @@ bool valid(const std::smatch &m) {
 #include <string>
 #include <regex>
 
-bool valid(const std::smatch&);
+bool valid(const smatch&);
 
 struct PersonInfo {
-    std::string name;
-    std::vector<std::string> phones;
+    string name;
+    vector<string> phones;
 };
 
 int main() {
-	std::string line, word;
-	std::vector<PersonInfo> people;
-	std::istringstream record;
-    std::ifstream in("./data/17-21");
+	string line, word;
+	vector<PersonInfo> people;
+	istringstream record;
+    ifstream in("./data/17-21");
 
 	while(getline(in, line)) {
 		record.str(line);
@@ -905,20 +909,20 @@ int main() {
 	}
 
     
-    std::string phone = "(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})";
-    std::regex r(phone);
-    std::smatch m;
+    string phone = "(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})";
+    regex r(phone);
+    smatch m;
 
 	for(const auto &person : people) {
-		std::cout << person.name << "  ";
+		cout << person.name << "  ";
 		for(const auto &ph : person.phones) {
-            for (std::sregex_iterator it(ph.begin(), ph.end(), r), end_it; it != end_it; ++it) {
+            for (sregex_iterator it(ph.begin(), ph.end(), r), end_it; it != end_it; ++it) {
                 if (valid(*it)) {
-                    std::cout << it->str() << " ";
+                    cout << it->str() << " ";
                 }
             }
 		}
-		std::cout << std::endl;
+		cout << endl;
 	}
 
 	in.close();
@@ -926,7 +930,7 @@ int main() {
 	return 0;
 }
 
-bool valid(const std::smatch &m) {
+bool valid(const smatch &m) {
     if (m[1].matched) {
         return m[3].matched && (m[4].matched == 0 || m[4].str() == " ");
     }
@@ -943,27 +947,27 @@ bool valid(const std::smatch &m) {
 #include <string>
 #include <regex>
 
-bool valid(const std::smatch&);
+bool valid(const smatch&);
 
 int main() {
-    std::string phone = "(\\()?(\\d{3})(\\))?([-. ])?([ ]*)?(\\d{3})([-. ])?([ ]*)?(\\d{4})";
-    std::regex r(phone);
-    std::smatch m;
-    std::string s;
-    while (getline(std::cin, s)) {
-        for (std::sregex_iterator it(s.begin(), s.end(), r), end_it; it != end_it; ++it) {
+    string phone = "(\\()?(\\d{3})(\\))?([-. ])?([ ]*)?(\\d{3})([-. ])?([ ]*)?(\\d{4})";
+    regex r(phone);
+    smatch m;
+    string s;
+    while (getline(cin, s)) {
+        for (sregex_iterator it(s.begin(), s.end(), r), end_it; it != end_it; ++it) {
             if (valid(*it)) {
-                std::cout << "valid: " << it->str() << std::endl;
+                cout << "valid: " << it->str() << endl;
             }
             else {
-                std::cout << "not valid: " << it->str() << std::endl;
+                cout << "not valid: " << it->str() << endl;
             }
         }
     }
     return 0;
 }
 
-bool valid(const std::smatch &m) {
+bool valid(const smatch &m) {
     if (m[1].matched) {
         return m[3].matched && (m[4].matched == 0 || m[4].str() == " ");
     }
@@ -980,27 +984,27 @@ bool valid(const std::smatch &m) {
 #include <string>
 #include <regex>
 
-bool valid(const std::smatch&);
+bool valid(const smatch&);
 
 int main() {
-    std::string mail = "(\\d{5})(-)?(\\d{4})?";
-    std::regex r(mail);
-    std::smatch m;
-    std::string s;
-    while (getline(std::cin, s)) {
-        for (std::sregex_iterator it(s.begin(), s.end(), r), end_it; it != end_it; ++it) {
+    string mail = "(\\d{5})(-)?(\\d{4})?";
+    regex r(mail);
+    smatch m;
+    string s;
+    while (getline(cin, s)) {
+        for (sregex_iterator it(s.begin(), s.end(), r), end_it; it != end_it; ++it) {
             if (valid(*it)) {
-                std::cout << "valid: " << it->str() << std::endl;
+                cout << "valid: " << it->str() << endl;
             }
             else {
-                std::cout << "not valid: " << it->str() << std::endl;
+                cout << "not valid: " << it->str() << endl;
             }
         }
     }
     return 0;
 }
 
-bool valid(const std::smatch &m) {
+bool valid(const smatch &m) {
     if (!m[3].matched) {
         return !m[2].matched;
     }
@@ -1016,13 +1020,13 @@ bool valid(const std::smatch &m) {
 #include <regex>
 
 int main() {
-    std::string phone = "(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})";
-    std::regex r(phone);
-    std::smatch m;
-    std::string s;
-    std::string fmt = "$2.$5.$7";
-    while (getline(std::cin, s)) {
-        std::cout << std::regex_replace(s, r, fmt) << std::endl;
+    string phone = "(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})";
+    regex r(phone);
+    smatch m;
+    string s;
+    string fmt = "$2.$5.$7";
+    while (getline(cin, s)) {
+        cout << regex_replace(s, r, fmt) << endl;
     }
     return 0;
 }
@@ -1037,16 +1041,16 @@ int main() {
 #include <regex>
 
 int main() {
-    std::string phone = "(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})";
-    std::regex r(phone);
-    std::string fmt("$2.$5.$7");
-    std::ifstream in("./data/17-25");
-    std::string line;
+    string phone = "(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})";
+    regex r(phone);
+    string fmt("$2.$5.$7");
+    ifstream in("./data/17-25");
+    string line;
 	while(getline(in, line)) {
-    	std::smatch m;
-		std::regex_search(line, m, r);
+    	smatch m;
+		regex_search(line, m, r);
 		if (!m.empty()) {
-			std::cout << m.prefix().str() << m.format(fmt) << std::endl;
+			cout << m.prefix().str() << m.format(fmt) << endl;
 		}
 	}
 	in.close();
@@ -1063,17 +1067,17 @@ int main() {
 #include <string>
 #include <regex>
 
-bool valid(const std::smatch&);
+bool valid(const smatch&);
 
 int main() {
-    std::string phone = "(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})";
-    std::regex r(phone);
-    std::smatch m;
-    std::ifstream in("./data/17-26");
-    std::string line;
+    string phone = "(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})";
+    regex r(phone);
+    smatch m;
+    ifstream in("./data/17-26");
+    string line;
 	while(getline(in, line)) {
-        std::vector<std::string> v;
-        for (std::sregex_iterator it(line.begin(), line.end(), r), end_it; it != end_it; ++it) {
+        vector<string> v;
+        for (sregex_iterator it(line.begin(), line.end(), r), end_it; it != end_it; ++it) {
             if (valid(*it)) {
                 v.push_back(it->str());
             }
@@ -1082,20 +1086,20 @@ int main() {
             continue;
         }
         else if (v.size() == 1) {
-            std::cout << v[0] << std::endl;
+            cout << v[0] << endl;
         }
         else {
             for (decltype(v.size()) i = 1; i != v.size(); ++i) {
-                std::cout << v[i] << " ";
+                cout << v[i] << " ";
             }
-            std::cout << std::endl;
+            cout << endl;
         }
 	}
 	in.close();
 	return 0;
 }
 
-bool valid(const std::smatch &m) {
+bool valid(const smatch &m) {
     if (m[1].matched) {
         return m[3].matched && (m[4].matched == 0 || m[4].str() == " ");
     }
@@ -1112,25 +1116,25 @@ bool valid(const std::smatch &m) {
 #include <string>
 #include <regex>
 
-bool valid(const std::smatch&);
+bool valid(const smatch&);
 
 int main() {
-    std::string mail = "(\\d{5})(-)?(\\d{4})?";
-    std::regex r(mail);
-	std::string fmt("$1-$3");
-    std::smatch m;
-    std::string s;
-    while (getline(std::cin, s)) {
-        for (std::sregex_iterator it(s.begin(), s.end(), r), end_it; it != end_it; ++it) {
+    string mail = "(\\d{5})(-)?(\\d{4})?";
+    regex r(mail);
+	string fmt("$1-$3");
+    smatch m;
+    string s;
+    while (getline(cin, s)) {
+        for (sregex_iterator it(s.begin(), s.end(), r), end_it; it != end_it; ++it) {
             if (valid(*it)) {
-                std::cout << (*it).format(fmt) << std::endl;
+                cout << (*it).format(fmt) << endl;
             }
         }
     }
     return 0;
 }
 
-bool valid(const std::smatch &m) {
+bool valid(const smatch &m) {
     if (!m[3].matched) {
         return false;
     }
@@ -1147,14 +1151,14 @@ bool valid(const std::smatch &m) {
 unsigned int myrand();
 
 int main() {
-    std::cout << myrand() << std::endl;
-    std::cout << myrand() << std::endl;
+    cout << myrand() << endl;
+    cout << myrand() << endl;
     return 0;
 }
 
 unsigned int myrand() {
-    static std::default_random_engine e;
-    static std::uniform_int_distribution<unsigned int> u;
+    static default_random_engine e;
+    static uniform_int_distribution<unsigned int> u;
     return u(e);
 }
 ```
@@ -1169,22 +1173,22 @@ unsigned int myrand();
 unsigned int myrand(unsigned int);
 
 int main() {
-    std::cout << myrand() << std::endl;
-    std::cout << myrand() << std::endl;
-    std::cout << myrand(2) << std::endl;
-    std::cout << myrand(2) << std::endl;
+    cout << myrand() << endl;
+    cout << myrand() << endl;
+    cout << myrand(2) << endl;
+    cout << myrand(2) << endl;
     return 0;
 }
 
 unsigned int myrand() {
-    static std::default_random_engine e;
-    static std::uniform_int_distribution<unsigned int> u;
+    static default_random_engine e;
+    static uniform_int_distribution<unsigned int> u;
     return u(e);
 }
 
 unsigned int myrand(unsigned int i) {
-    static std::default_random_engine e(i);
-    static std::uniform_int_distribution<unsigned int> u;
+    static default_random_engine e(i);
+    static uniform_int_distribution<unsigned int> u;
     return u(e);
 }
 ```
@@ -1200,30 +1204,30 @@ unsigned int myrand(unsigned int);
 unsigned int myrand(unsigned int, unsigned int, unsigned int);
 
 int main() {
-    std::cout << myrand() << std::endl;
-    std::cout << myrand() << std::endl;
-    std::cout << myrand(2) << std::endl;
-    std::cout << myrand(2) << std::endl;
-    std::cout << myrand(2,0,9) << std::endl;
-    std::cout << myrand(2,0,9) << std::endl;
+    cout << myrand() << endl;
+    cout << myrand() << endl;
+    cout << myrand(2) << endl;
+    cout << myrand(2) << endl;
+    cout << myrand(2,0,9) << endl;
+    cout << myrand(2,0,9) << endl;
     return 0;
 }
 
 unsigned int myrand() {
-    static std::default_random_engine e;
-    static std::uniform_int_distribution<unsigned int> u;
+    static default_random_engine e;
+    static uniform_int_distribution<unsigned int> u;
     return u(e);
 }
 
 unsigned int myrand(unsigned int i) {
-    static std::default_random_engine e(i);
-    static std::uniform_int_distribution<unsigned int> u;
+    static default_random_engine e(i);
+    static uniform_int_distribution<unsigned int> u;
     return u(e);
 }
 
 unsigned int myrand(unsigned int i, unsigned int minval, unsigned int maxval) {
-    static std::default_random_engine e(i);
-    static std::uniform_int_distribution<unsigned int> u(minval, maxval);
+    static default_random_engine e(i);
+    static uniform_int_distribution<unsigned int> u(minval, maxval);
     return u(e);
 }
 ```
@@ -1319,52 +1323,52 @@ int main()
 #include <cmath>
 
 int main() {
-    std::cout << true << " " << std::boolalpha << true << " " << std::noboolalpha << std::endl;
-    std::cout << 20 << " " 
-              << std::oct << 20 << " "
-              << std::hex << 20 << " "
-              << std::dec << 20 << " "
-              << std::showbase
+    cout << true << " " << boolalpha << true << " " << noboolalpha << endl;
+    cout << 20 << " " 
+              << oct << 20 << " "
+              << hex << 20 << " "
+              << dec << 20 << " "
+              << showbase
               << 20 << " "
-              << std::oct << 20 << " "
-              << std::uppercase
-              << std::hex << 20 << " "
-              << std::nouppercase
-              << std::hex << 20 << " "
-              << std::dec << 20 << " "
-              << std::noshowbase
-              << std::endl;
-    std::cout << sqrt(2.0) << " "
-              << std::cout.precision(12) << " " << sqrt(2.0) << " "
-              << std::setprecision(3) << sqrt(2.0) 
-              << std::setprecision(6)
-              << std::endl;
-    std::cout << 100 * sqrt(2.0) << " "
-              << std::scientific << 100 * sqrt(2.0) << " "
-              << std::fixed << 100 * sqrt(2.0) << " "
-              << std::hexfloat << 100 * sqrt(2.0) << " " 
-              << std::defaultfloat << 100 * sqrt(2.0) << " "
-              << std::endl;
-    std::cout << 10.0 << " "
-              << std::showpoint << 10.0 << " "
-              << std::noshowpoint << 10.0
-              << std::endl;
+              << oct << 20 << " "
+              << uppercase
+              << hex << 20 << " "
+              << nouppercase
+              << hex << 20 << " "
+              << dec << 20 << " "
+              << noshowbase
+              << endl;
+    cout << sqrt(2.0) << " "
+              << cout.precision(12) << " " << sqrt(2.0) << " "
+              << setprecision(3) << sqrt(2.0) 
+              << setprecision(6)
+              << endl;
+    cout << 100 * sqrt(2.0) << " "
+              << scientific << 100 * sqrt(2.0) << " "
+              << fixed << 100 * sqrt(2.0) << " "
+              << hexfloat << 100 * sqrt(2.0) << " " 
+              << defaultfloat << 100 * sqrt(2.0) << " "
+              << endl;
+    cout << 10.0 << " "
+              << showpoint << 10.0 << " "
+              << noshowpoint << 10.0
+              << endl;
     int i = -16;
     double d = 3.14159;
-    std::cout << std::setw(12) << i << '\n' 
-              << std::setw(12) << d << std::endl;
-    std::cout << std::left << std::setw(12) << i << '\n' 
-                           << std::setw(12) << d << std::right << std::endl;
-    std::cout << std::internal << std::setw(12) << i << '\n' 
-                               << std::setw(12) << d << std::endl;
-    std::cout << std::setfill('#') << std::setw(12) << i << '\n' 
-                                   << std::setw(12) << d << std::setfill(' ') << std::endl;
+    cout << setw(12) << i << '\n' 
+              << setw(12) << d << endl;
+    cout << left << setw(12) << i << '\n' 
+                           << setw(12) << d << right << endl;
+    cout << internal << setw(12) << i << '\n' 
+                               << setw(12) << d << endl;
+    cout << setfill('#') << setw(12) << i << '\n' 
+                                   << setw(12) << d << setfill(' ') << endl;
     char ch;
-    std::cin >> std::noskipws;
-    while (std::cin >> ch) {
-        std::cout << ch;
+    cin >> noskipws;
+    while (cin >> ch) {
+        cout << ch;
     }
-    std::cin >> std::skipws;
+    cin >> skipws;
     return 0;
 }
 ```
@@ -1376,10 +1380,10 @@ int main() {
 #include <cmath>
 
 int main() {
-    std::cout << std::uppercase << std::hexfloat
+    cout << uppercase << hexfloat
               << sqrt(2)
-              << std::nouppercase << std::defaultfloat
-              << std::endl;
+              << nouppercase << defaultfloat
+              << endl;
     return 0;
 }
 ```
@@ -1392,12 +1396,12 @@ int main() {
 #include <cmath>
 
 int main() {
-    std::cout << std::left << std::setw(20) << 100 * sqrt(2.0) << '\n'
-              << std::left << std::setw(20) << std::scientific << 100 * sqrt(2.0) << '\n'
-              << std::left << std::setw(20) << std::fixed << 100 * sqrt(2.0) << '\n'
-              << std::left << std::setw(20) << std::hexfloat << 100 * sqrt(2.0) << '\n'
-              << std::left << std::setw(20) << std::defaultfloat << 100 * sqrt(2.0) << '\n'
-              << std::endl;
+    cout << left << setw(20) << 100 * sqrt(2.0) << '\n'
+              << left << setw(20) << scientific << 100 * sqrt(2.0) << '\n'
+              << left << setw(20) << fixed << 100 * sqrt(2.0) << '\n'
+              << left << setw(20) << hexfloat << 100 * sqrt(2.0) << '\n'
+              << left << setw(20) << defaultfloat << 100 * sqrt(2.0) << '\n'
+              << endl;
     return 0;
 }
 ```
@@ -1410,21 +1414,21 @@ int main() {
 #include <string>
 
 int main() {
-    std::fstream is("./data/17-37");
+    fstream is("./data/17-37");
     char temp[20];
     is.getline(temp, 4, '\n');
-    std::cout << temp << std::endl;
-    std::cout << is.gcount() << std::endl;
+    cout << temp << endl;
+    cout << is.gcount() << endl;
     is.getline(temp, 4, '\n');
-    std::cout << temp << std::endl;
-    std::cout << is.gcount() << std::endl;
-	std::cout << std::boolalpha << (is.rdstate() == std::ios_base::failbit) << std::endl;
+    cout << temp << endl;
+    cout << is.gcount() << endl;
+	cout << boolalpha << (is.rdstate() == ios_base::failbit) << endl;
     is.getline(temp, 4, '\n');
-    std::cout << temp << std::endl;
-    std::cout << is.gcount() << std::endl;
+    cout << temp << endl;
+    cout << is.gcount() << endl;
     is.getline(temp, 4, '\n');
-    std::cout << temp << std::endl;
-    std::cout << is.gcount() << std::endl;
+    cout << temp << endl;
+    cout << is.gcount() << endl;
     return 0;
 }
 ```
@@ -1442,24 +1446,24 @@ int main() {
 #include <fstream>
 
 int main() {
-    std::fstream inOut("./data/17-39", std::fstream::ate | std::fstream::in | std::fstream::out);
+    fstream inOut("./data/17-39", fstream::ate | fstream::in | fstream::out);
     if (!inOut) {
-        std::cerr << "Unable to open file!" << std::endl;
+        cerr << "Unable to open file!" << endl;
         return EXIT_FAILURE;
     }
     auto end_mark = inOut.tellg();
-    inOut.seekg(0, std::fstream::beg);
+    inOut.seekg(0, fstream::beg);
     size_t cnt = 0;
-    std::string line;
+    string line;
     while (inOut && inOut.tellg() != end_mark && getline(inOut, line)) {
         cnt += line.size() + 1;
         auto mark = inOut.tellg();
-        inOut.seekp(0, std::fstream::end);
+        inOut.seekp(0, fstream::end);
         inOut << cnt;
         if (mark != end_mark) inOut << " ";
         inOut.seekg(mark);
     }
-    inOut.seekp(0, std::fstream::end);
+    inOut.seekp(0, fstream::end);
     inOut << "\n";
     return 0;
 }
