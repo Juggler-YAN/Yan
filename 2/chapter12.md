@@ -1,5 +1,3 @@
-# Chapter 12
-
 ### Q1
 
 b1：4个元素
@@ -326,7 +324,6 @@ int main() {
 
 ```c++
 // StrBlob.h
-
 #ifndef STRBLOB_H
 #define STRBLOB_H
 
@@ -597,7 +594,6 @@ int main() {
 
 ```c++
 // StrBlob.h
-
 #ifndef STRBLOB_H
 #define STRBLOB_H
 

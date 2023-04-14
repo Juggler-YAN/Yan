@@ -1,5 +1,3 @@
-# Chapter 18
-
 ### Q1
 
 range_error
