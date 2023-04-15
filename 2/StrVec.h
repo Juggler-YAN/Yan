@@ -10,6 +10,12 @@
 using namespace std;
 
 class StrVec {
+    friend bool operator==(StrVec&, StrVec&);
+    friend bool operator!=(StrVec&, StrVec&);
+    friend bool operator<(StrVec&, StrVec&);
+    friend bool operator>(StrVec&, StrVec&);
+    friend bool operator<=(StrVec&, StrVec&);
+    friend bool operator>=(StrVec&, StrVec&);
 public:
     StrVec() : elements(nullptr), first_free(nullptr), cap(nullptr) {};
     StrVec(initializer_list<string>);
@@ -17,6 +23,7 @@ public:
     StrVec(StrVec&&) noexcept;
     StrVec& operator=(const StrVec&);
     StrVec& operator=(StrVec&&) noexcept;
+    StrVec& operator=(const initializer_list<string>);
     ~StrVec();
     void push_back(const string&);
     size_t size() const { return first_free - elements; }
@@ -74,6 +81,14 @@ StrVec& StrVec::operator=(StrVec&& s) noexcept {
         cap = std::move(s.cap);
         s.elements = s.first_free = s.cap = nullptr;
     }
+    return *this;
+}
+
+StrVec& StrVec::operator=(const initializer_list<string> l) {
+    auto newdata = alloc_n_copy(l.begin(), l.end());
+    free();
+    elements = newdata.first;
+    first_free = cap = newdata.second;
     return *this;
 }
 
@@ -146,6 +161,29 @@ void StrVec::reallocate() {
     elements = newdata;
     first_free = dest;
     cap = elements + newcapacity;
+}
+
+bool operator==(StrVec &lhs, StrVec &rhs) {
+    return lhs.size() == rhs.size() && equal(lhs.begin(), lhs.end(), rhs.begin());
+}
+bool operator!=(StrVec &lhs, StrVec &rhs) {
+    return !(lhs == rhs);
+}
+
+bool operator<(StrVec &lhs, StrVec &rhs) {
+    return lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+}
+
+bool operator>(StrVec &lhs, StrVec &rhs) {
+    return rhs < lhs;
+}
+
+bool operator<=(StrVec &lhs, StrVec &rhs) {
+    return !(rhs < lhs);
+}
+
+bool operator>=(StrVec &lhs, StrVec &rhs) {
+    return !(lhs < rhs);
 }
 
 #endif

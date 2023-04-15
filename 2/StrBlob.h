@@ -12,13 +12,21 @@ using namespace std;
 class ConstStrBlobPtr;
 
 class StrBlob {
-public:
     friend class ConstStrBlobPtr;
+    friend bool operator==(const StrBlob&, const StrBlob&);
+    friend bool operator!=(const StrBlob&, const StrBlob&);
+    friend bool operator<(const StrBlob&, const StrBlob&);
+    friend bool operator>(const StrBlob&, const StrBlob&);
+    friend bool operator<=(const StrBlob&, const StrBlob&);
+    friend bool operator>=(const StrBlob&, const StrBlob&);
+public:
     typedef vector<string>::size_type size_type;
     StrBlob();
     StrBlob(initializer_list<string> i1);
     StrBlob(const StrBlob&);
     StrBlob& operator=(const StrBlob&);
+    string& operator[](size_t n) { return (*data)[n]; }
+    const string& operator[](size_t n) const { return (*data)[n]; }
     size_type size() const { return data->size(); }
     bool empty() const { return data->empty(); }
     void push_back(const string &t) { data->push_back(t); }
@@ -37,14 +45,36 @@ private:
 
 class ConstStrBlobPtr {
 public:
+    friend bool operator==(const ConstStrBlobPtr&, const ConstStrBlobPtr&);
+    friend bool operator!=(const ConstStrBlobPtr&, const ConstStrBlobPtr&);
     ConstStrBlobPtr() : curr(0) {}
     ConstStrBlobPtr(const StrBlob &a, size_t sz = 0) : wptr(a.data), curr(sz) {}
     string& deref() const;
     ConstStrBlobPtr& incr();
+    ConstStrBlobPtr& operator++();
+    ConstStrBlobPtr& operator--();
+    ConstStrBlobPtr operator++(int);
+    ConstStrBlobPtr operator--(int);
+    const string& operator*() const {
+        auto p = check(curr, "dereference past end");
+        return (*p)[curr];
+    }
+    const string* operator->() const {
+        return & this->operator*();
+    }
 private:
     shared_ptr<vector<string>> check(size_t, const string&) const;
     weak_ptr<vector<string>> wptr;
     size_t curr;
+};
+
+class ConstStrBlobPtrPtr {
+public:
+    const string* operator->() const {
+        return p->operator->();
+    }
+private:
+    ConstStrBlobPtr * p;
 };
 
 ConstStrBlobPtr StrBlob::begin() { return ConstStrBlobPtr(*this); }
@@ -106,6 +136,62 @@ ConstStrBlobPtr& ConstStrBlobPtr::incr() {
     check(curr, "increment past end of StrBlobPtr");
     ++curr;
     return *this;
+}
+
+ConstStrBlobPtr& ConstStrBlobPtr::operator++() {
+    check(curr, "increment past end of ConstStrBlobPtr");
+    ++curr;
+    return *this;
+}
+
+ConstStrBlobPtr& ConstStrBlobPtr::operator--() {
+    --curr;
+    check(curr, "decrement past begin of ConstStrBlobPtr");
+    return *this;
+}
+
+ConstStrBlobPtr ConstStrBlobPtr::operator++(int) {
+    ConstStrBlobPtr ret = *this;
+    ++*this;
+    return ret;
+}
+
+ConstStrBlobPtr ConstStrBlobPtr::operator--(int) {
+    ConstStrBlobPtr ret = *this;
+    --*this;
+    return ret;
+}
+
+bool operator==(const StrBlob &lhs, const StrBlob &rhs) {
+    return *lhs.data == *rhs.data;
+
+}
+bool operator!=(const StrBlob &lhs, const StrBlob &rhs) {
+    return !(lhs == rhs);
+}
+
+bool operator==(const ConstStrBlobPtr &lhs, const ConstStrBlobPtr &rhs) {
+    return lhs.wptr.lock() == rhs.wptr.lock() && lhs.curr == rhs.curr;
+}
+
+bool operator!=(const ConstStrBlobPtr &lhs, const ConstStrBlobPtr &rhs) {
+    return !(lhs == rhs);
+}
+
+bool operator<(const StrBlob &lhs, const StrBlob &rhs) {
+    return lexicographical_compare(lhs.data->begin(), lhs.data->end(), rhs.data->begin(), rhs.data->end());
+}
+
+bool operator>(const StrBlob &lhs, const StrBlob &rhs) {
+    return rhs < lhs;
+}
+
+bool operator<=(const StrBlob &lhs, const StrBlob &rhs) {
+    return !(rhs < lhs);
+}
+
+bool operator>=(const StrBlob &lhs, const StrBlob &rhs) {
+    return !(lhs < rhs);
 }
 
 #endif

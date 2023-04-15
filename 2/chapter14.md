@@ -14,24 +14,26 @@
 
 #include <string>
 
+using namespace std;
+
 struct Sales_data {
 
-    friend std::istream& operator>>(std::istream&, Sales_data&);
-    friend std::ostream& operator<<(std::ostream&, const Sales_data&);
+    friend istream& operator>>(istream&, Sales_data&);
+    friend ostream& operator<<(ostream&, const Sales_data&);
     friend Sales_data operator+(const Sales_data&, const Sales_data&);
 
 public:
-    Sales_data(std::string s, unsigned n, double p) :
+    Sales_data(string s, unsigned n, double p) :
                 bookNo(s), units_sold(n), revenue(p*n) {};
     Sales_data() : Sales_data("", 0, 0) {}
-    Sales_data(std::string s) : Sales_data(s, 0, 0) {}
-    Sales_data(std::istream &is) : Sales_data() { is >> *this; }
-    std::string isbn() const { return bookNo; }
+    Sales_data(string s) : Sales_data(s, 0, 0) {}
+    Sales_data(istream &is) : Sales_data() { is >> *this; }
+    string isbn() const { return bookNo; }
     Sales_data& operator+=(const Sales_data&);
 
 private:
     inline double avg_price() const;
-    std::string bookNo;
+    string bookNo;
     unsigned units_sold = 0;
     double revenue = 0.0;
 
@@ -52,7 +54,7 @@ Sales_data& Sales_data::operator+=(const Sales_data &rhs) {
     return *this;
 }
 
-std::istream& operator>>(std::istream &is, Sales_data &item) {
+istream& operator>>(istream &is, Sales_data &item) {
 	double price = 0;
 	is >> item.bookNo >> item.units_sold >> price;
     if (is) {
@@ -64,7 +66,7 @@ std::istream& operator>>(std::istream &is, Sales_data &item) {
 	return is;
 }
 
-std::ostream& operator<<(std::ostream &os, const Sales_data &item) {
+ostream& operator<<(ostream &os, const Sales_data &item) {
 	os << item.isbn() << " " << item.units_sold << " " << item.revenue << " " << item.avg_price();
 	return os;
 }
@@ -104,32 +106,34 @@ string
 
 #include <string>
 
+using namespace std;
+
 class Book {
 
-    friend std::istream& operator>>(std::istream&, Book&);
-    friend std::ostream& operator<<(std::ostream&, const Book&);
+    friend istream& operator>>(istream&, Book&);
+    friend ostream& operator<<(ostream&, const Book&);
     friend bool operator==(const Book&, const Book&);
     friend bool operator!=(const Book&, const Book&);
 
 public:
     Book() = default;
-    Book(unsigned int a, std::string b, std::string c) : 
+    Book(unsigned int a, string b, string c) : 
         no(a), name(b), author(c) {}
-    Book(std::istream &is) { is >> *this; }
+    Book(istream &is) { is >> *this; }
 
 private:
     unsigned int no;
-    std::string name;
-    std::string author;
+    string name;
+    string author;
 
 };
 
-std::istream& operator>>(std::istream &is, Book &book) {
+istream& operator>>(istream &is, Book &book) {
     is >> book.no >> book.name >> book.author;
     return is;
 }
 
-std::ostream& operator<<(std::ostream &os, const Book &book) {
+ostream& operator<<(ostream &os, const Book &book) {
     os << book.no << " " << book.name << " " << book.author;
     return os;
 }
@@ -160,8 +164,10 @@ bool operator!=(const Book &book1, const Book &book2) {
 #include <memory>
 #include <cstring>
 
+using namespace std;
+
 class String {
-    friend std::ostream& operator<<(std::ostream&, const String&);
+    friend ostream& operator<<(ostream&, const String&);
 public:
     String(): elements(nullptr), first_free(nullptr) {}
     String(const char *);
@@ -173,8 +179,8 @@ public:
     char * begin() const { return elements; }
     char * end() const { return first_free; }
 private:
-    std::allocator<char> alloc;
-    std::pair<char*, char*> alloc_n_copy(const char*, const char*);
+    allocator<char> alloc;
+    pair<char*, char*> alloc_n_copy(const char*, const char*);
     void free();
     char * elements;
     char * first_free;
@@ -198,7 +204,7 @@ String::String(String &&s) noexcept {
     elements = std::move(s.elements);
     first_free = std::move(s.first_free);
     s.elements = s.first_free = nullptr;
-    std::cout << "String(String &&s) noexcept" << std::endl;
+    cout << "String(String &&s) noexcept" << endl;
 }
 
 String& String::operator=(const String &s) {
@@ -217,7 +223,7 @@ String& String::operator=(String &&s) noexcept {
         first_free = std::move(s.first_free);
         s.elements = s.first_free = nullptr;
     }
-    std::cout << "String& operator=(String &&s) noexcept" << std::endl;
+    cout << "String& operator=(String &&s) noexcept" << endl;
     return *this;
 }
 
@@ -225,7 +231,7 @@ String::~String() {
     free();
 }
 
-std::ostream& operator<<(std::ostream &os, const String &s) {
+ostream& operator<<(ostream &os, const String &s) {
     for (auto i = s.elements; i != s.first_free; ++i) {
         os << *i;
     }
@@ -241,10 +247,10 @@ void String::free() {
     }
 }
 
-std::pair<char*, char*> String::alloc_n_copy
+pair<char*, char*> String::alloc_n_copy
         (const char *b, const char *e) {
     auto data = alloc.allocate(e-b);
-    return {data, std::uninitialized_copy(b, e, data)};
+    return {data, uninitialized_copy(b, e, data)};
 }
 
 #endif
@@ -261,11 +267,11 @@ std::pair<char*, char*> String::alloc_n_copy
 ### Q10
 
 输入正确
-输入错误，10读入bookNo，24读入units_sold，.95读入revenue，与想要得到的结果不符
+输入错误，10读入bookNo，24读入units_sold，.95读入revenue，与想要得到的结果不符，会被赋予默认的状态
 
 ### Q11
 
-没有对读取操作失败的处理，与上题结果一样
+没有对读取操作失败的处理，与上题结果一样，但不会被赋予默认的状态
 
 ### Q12
 
@@ -275,27 +281,29 @@ std::pair<char*, char*> String::alloc_n_copy
 
 #include <string>
 
+using namespace std;
+
 class Book {
 
-    friend std::istream& operator>>(std::istream&, Book&);
-    friend std::ostream& operator<<(std::ostream&, const Book&);
+    friend istream& operator>>(istream&, Book&);
+    friend ostream& operator<<(ostream&, const Book&);
     friend bool operator==(const Book&, const Book&);
     friend bool operator!=(const Book&, const Book&);
 
 public:
     Book() = default;
-    Book(unsigned int a, std::string b, std::string c) : 
+    Book(unsigned int a, string b, string c) : 
         no(a), name(b), author(c) {}
-    Book(std::istream &is) { is >> *this; }
+    Book(istream &is) { is >> *this; }
 
 private:
     unsigned int no;
-    std::string name;
-    std::string author;
+    string name;
+    string author;
 
 };
 
-std::istream& operator>>(std::istream &is, Book &book) {
+istream& operator>>(istream &is, Book &book) {
     is >> book.no >> book.name >> book.author;
     if (!is) {
         book = Book();
@@ -303,7 +311,7 @@ std::istream& operator>>(std::istream &is, Book &book) {
     return is;
 }
 
-std::ostream& operator<<(std::ostream &os, const Book &book) {
+ostream& operator<<(ostream &os, const Book &book) {
     os << book.no << " " << book.name << " " << book.author;
     return os;
 }
@@ -344,6 +352,8 @@ bool operator!=(const Book &book1, const Book &book2) {
 #include <string>
 #include <stdexcept>
 
+using namespace std;
+
 class ConstStrBlobPtr;
 
 class StrBlob {
@@ -351,25 +361,25 @@ class StrBlob {
     friend bool operator==(const StrBlob&, const StrBlob&);
     friend bool operator!=(const StrBlob&, const StrBlob&);
 public:
-    typedef std::vector<std::string>::size_type size_type;
+    typedef vector<string>::size_type size_type;
     StrBlob();
-    StrBlob(std::initializer_list<std::string> i1);
+    StrBlob(initializer_list<string> i1);
     StrBlob(const StrBlob&);
     StrBlob& operator=(const StrBlob&);
     size_type size() const { return data->size(); }
     bool empty() const { return data->empty(); }
-    void push_back(const std::string &t) { data->push_back(t); }
-	void push_back(std::string &&t) { data->push_back(std::move(t)); }
+    void push_back(const string &t) { data->push_back(t); }
+	void push_back(string &&t) { data->push_back(std::move(t)); }
     void pop_back();
-    std::string& front();
-    std::string& back();
-    const std::string& front() const;
-    const std::string& back() const;
+    string& front();
+    string& back();
+    const string& front() const;
+    const string& back() const;
 	ConstStrBlobPtr begin();
 	ConstStrBlobPtr end();
 private:
-    std::shared_ptr<std::vector<std::string>> data;
-    void check(size_type i, const std::string &msg) const;
+    shared_ptr<vector<string>> data;
+    void check(size_type i, const string &msg) const;
 };
 
 class ConstStrBlobPtr {
@@ -378,12 +388,12 @@ public:
     friend bool operator!=(const ConstStrBlobPtr&, const ConstStrBlobPtr&);
     ConstStrBlobPtr() : curr(0) {}
     ConstStrBlobPtr(const StrBlob &a, size_t sz = 0) : wptr(a.data), curr(sz) {}
-    std::string& deref() const;
+    string& deref() const;
     ConstStrBlobPtr& incr();
 private:
-    std::shared_ptr<std::vector<std::string>> check(std::size_t, const std::string&) const;
-    std::weak_ptr<std::vector<std::string>> wptr;
-    std::size_t curr;
+    shared_ptr<vector<string>> check(size_t, const string&) const;
+    weak_ptr<vector<string>> wptr;
+    size_t curr;
 };
 
 ConstStrBlobPtr StrBlob::begin() { return ConstStrBlobPtr(*this); }
@@ -392,32 +402,32 @@ ConstStrBlobPtr StrBlob::end() {
     return ret;
 }
 
-StrBlob::StrBlob(): data(std::make_shared<std::vector<std::string>>()) {};
-StrBlob::StrBlob(std::initializer_list<std::string> i1): data(std::make_shared<std::vector<std::string>>(i1)) {};
-StrBlob::StrBlob(const StrBlob& sb) { data = std::make_shared<std::vector<std::string>>(*sb.data); }
-StrBlob& StrBlob::operator=(const StrBlob& sb) { data = std::make_shared<std::vector<std::string>>(*sb.data); return *this; }
+StrBlob::StrBlob(): data(make_shared<vector<string>>()) {};
+StrBlob::StrBlob(initializer_list<string> i1): data(make_shared<vector<string>>(i1)) {};
+StrBlob::StrBlob(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); }
+StrBlob& StrBlob::operator=(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); return *this; }
 
-void StrBlob::check(size_type i, const std::string &msg) const {
+void StrBlob::check(size_type i, const string &msg) const {
     if (i >= data->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
 }
 
-std::string& StrBlob::front() {
+string& StrBlob::front() {
     check(0, "front on empty StrBlob");
     return data->front();
 }
 
-std::string& StrBlob::back() {
+string& StrBlob::back() {
     check(0, "back on empty StrBlob");
     return data->back();
 }
 
-const std::string& StrBlob::front() const {
+const string& StrBlob::front() const {
     check(0, "front on empty StrBlob");
     return data->front();
 }
 
-const std::string& StrBlob::back() const {
+const string& StrBlob::back() const {
     check(0, "back on empty StrBlob");
     return data->back();
 }
@@ -427,16 +437,16 @@ void StrBlob::pop_back() {
     return data->pop_back();
 }
 
-std::shared_ptr<std::vector<std::string>> ConstStrBlobPtr::check(std::size_t i, const std::string& msg) const {
+shared_ptr<vector<string>> ConstStrBlobPtr::check(size_t i, const string& msg) const {
     auto ret = wptr.lock();
     if (!ret)
-        throw std::runtime_error("unbound StrBlobPtr");
+        throw runtime_error("unbound StrBlobPtr");
     if (i >= ret->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
     return ret;
 }
 
-std::string& ConstStrBlobPtr::deref() const {
+string& ConstStrBlobPtr::deref() const {
     auto p = check(curr, "dereference past end");
     return (*p)[curr];
 }
@@ -477,37 +487,39 @@ bool operator!=(const ConstStrBlobPtr &lhs, const ConstStrBlobPtr &rhs) {
 #include <string>
 #include <initializer_list>
 
+using namespace std;
+
 class StrVec {
     friend bool operator==(StrVec&, StrVec&);
     friend bool operator!=(StrVec&, StrVec&);
 public:
     StrVec() : elements(nullptr), first_free(nullptr), cap(nullptr) {};
-    StrVec(std::initializer_list<std::string>);
+    StrVec(initializer_list<string>);
     StrVec(const StrVec&);
     StrVec(StrVec&&) noexcept;
     StrVec& operator=(const StrVec&);
     StrVec& operator=(StrVec&&) noexcept;
     ~StrVec();
-    void push_back(const std::string&);
+    void push_back(const string&);
     size_t size() const { return first_free - elements; }
     size_t capacity() const { return cap - elements; }
-    std::string *begin() const { return elements; }
-    std::string *end() const { return first_free; }
+    string *begin() const { return elements; }
+    string *end() const { return first_free; }
     void reserve(size_t);
     void resize(size_t);
-    void resize(size_t, const std::string&);
+    void resize(size_t, const string&);
 private:
-    std::allocator<std::string> alloc;
+    allocator<string> alloc;
     void chk_n_alloc() { if (size() == capacity()) reallocate(); }
-    std::pair<std::string*, std::string*> alloc_n_copy(const std::string*, const std::string*);
+    pair<string*, string*> alloc_n_copy(const string*, const string*);
     void free();
     void reallocate();
-    std::string *elements;
-    std::string *first_free;
-    std::string *cap;
+    string *elements;
+    string *first_free;
+    string *cap;
 };
 
-StrVec::StrVec(std::initializer_list<std::string> l) {
+StrVec::StrVec(initializer_list<string> l) {
     auto newdata = alloc_n_copy(l.begin(), l.end());
     elements = newdata.first;
     first_free = cap = newdata.second;
@@ -551,7 +563,7 @@ StrVec::~StrVec() {
     free();
 }
 
-void StrVec::push_back(const std::string& s) {
+void StrVec::push_back(const string& s) {
     chk_n_alloc();
     alloc.construct(first_free++, s);
 }
@@ -571,10 +583,10 @@ void StrVec::reserve(size_t n) {
 }
 
 void StrVec::resize(size_t n) {
-    resize(n, std::string());
+    resize(n, string());
 }
 
-void StrVec::resize(size_t n, const std::string& s) {
+void StrVec::resize(size_t n, const string& s) {
     if (n < size()) {
         while (n < size()) {
             alloc.destroy(--first_free);
@@ -587,8 +599,8 @@ void StrVec::resize(size_t n, const std::string& s) {
     }
 }
 
-std::pair<std::string*, std::string*> StrVec::alloc_n_copy
-        (const std::string *b, const std::string *e) {
+pair<string*, string*> StrVec::alloc_n_copy
+        (const string *b, const string *e) {
     auto data = alloc.allocate(e-b);
     return {data, uninitialized_copy(b, e, data)};
 }
@@ -596,7 +608,7 @@ std::pair<std::string*, std::string*> StrVec::alloc_n_copy
 void StrVec::free() {
 
     if (elements) {
-        std::for_each(elements, first_free, [this](std::string &p) { alloc.destroy(&p); });
+        for_each(elements, first_free, [this](string &p) { alloc.destroy(&p); });
         // for (auto p = first_free; p != elements; ) {
         //     alloc.destroy(--p);
         // }
@@ -619,7 +631,7 @@ void StrVec::reallocate() {
 }
 
 bool operator==(StrVec &lhs, StrVec &rhs) {
-    return lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return lhs.size() == rhs.size() && equal(lhs.begin(), lhs.end(), rhs.begin());
 }
 bool operator!=(StrVec &lhs, StrVec &rhs) {
     return !(lhs == rhs);
@@ -637,8 +649,10 @@ bool operator!=(StrVec &lhs, StrVec &rhs) {
 #include <memory>
 #include <cstring>
 
+using namespace std;
+
 class String {
-    friend std::ostream& operator<<(std::ostream&, const String&);
+    friend ostream& operator<<(ostream&, const String&);
     friend bool operator==(const String&, const String&);
     friend bool operator!=(const String&, const String&);
 public:
@@ -652,8 +666,8 @@ public:
     char * begin() const { return elements; }
     char * end() const { return first_free; }
 private:
-    std::allocator<char> alloc;
-    std::pair<char*, char*> alloc_n_copy(const char*, const char*);
+    allocator<char> alloc;
+    pair<char*, char*> alloc_n_copy(const char*, const char*);
     void free();
     char * elements;
     char * first_free;
@@ -677,7 +691,7 @@ String::String(String &&s) noexcept {
     elements = std::move(s.elements);
     first_free = std::move(s.first_free);
     s.elements = s.first_free = nullptr;
-    std::cout << "String(String &&s) noexcept" << std::endl;
+    cout << "String(String &&s) noexcept" << endl;
 }
 
 String& String::operator=(const String &s) {
@@ -696,7 +710,7 @@ String& String::operator=(String &&s) noexcept {
         first_free = std::move(s.first_free);
         s.elements = s.first_free = nullptr;
     }
-    std::cout << "String& operator=(String &&s) noexcept" << std::endl;
+    cout << "String& operator=(String &&s) noexcept" << endl;
     return *this;
 }
 
@@ -704,7 +718,7 @@ String::~String() {
     free();
 }
 
-std::ostream& operator<<(std::ostream &os, const String &s) {
+ostream& operator<<(ostream &os, const String &s) {
     for (auto i = s.elements; i != s.first_free; ++i) {
         os << *i;
     }
@@ -720,15 +734,15 @@ void String::free() {
     }
 }
 
-std::pair<char*, char*> String::alloc_n_copy
+pair<char*, char*> String::alloc_n_copy
         (const char *b, const char *e) {
     auto data = alloc.allocate(e-b);
-    return {data, std::uninitialized_copy(b, e, data)};
+    return {data, uninitialized_copy(b, e, data)};
 }
 
 bool operator==(const String &lhs, const String &rhs) {
     return (lhs.first_free-lhs.elements) == (rhs.first_free-rhs.elements) &&
-           std::equal(lhs.begin(), lhs.end(), rhs.begin());
+           equal(lhs.begin(), lhs.end(), rhs.begin());
 }
 
 bool operator!=(const String &lhs, const String &rhs) {
@@ -755,6 +769,8 @@ bool operator!=(const String &lhs, const String &rhs) {
 #include <string>
 #include <stdexcept>
 
+using namespace std;
+
 class ConstStrBlobPtr;
 
 class StrBlob {
@@ -766,25 +782,25 @@ class StrBlob {
     friend bool operator<=(const StrBlob&, const StrBlob&);
     friend bool operator>=(const StrBlob&, const StrBlob&);
 public:
-    typedef std::vector<std::string>::size_type size_type;
+    typedef vector<string>::size_type size_type;
     StrBlob();
-    StrBlob(std::initializer_list<std::string> i1);
+    StrBlob(initializer_list<string> i1);
     StrBlob(const StrBlob&);
     StrBlob& operator=(const StrBlob&);
     size_type size() const { return data->size(); }
     bool empty() const { return data->empty(); }
-    void push_back(const std::string &t) { data->push_back(t); }
-	void push_back(std::string &&t) { data->push_back(std::move(t)); }
+    void push_back(const string &t) { data->push_back(t); }
+	void push_back(string &&t) { data->push_back(std::move(t)); }
     void pop_back();
-    std::string& front();
-    std::string& back();
-    const std::string& front() const;
-    const std::string& back() const;
+    string& front();
+    string& back();
+    const string& front() const;
+    const string& back() const;
 	ConstStrBlobPtr begin();
 	ConstStrBlobPtr end();
 private:
-    std::shared_ptr<std::vector<std::string>> data;
-    void check(size_type i, const std::string &msg) const;
+    shared_ptr<vector<string>> data;
+    void check(size_type i, const string &msg) const;
 };
 
 class ConstStrBlobPtr {
@@ -793,12 +809,12 @@ public:
     friend bool operator!=(const ConstStrBlobPtr&, const ConstStrBlobPtr&);
     ConstStrBlobPtr() : curr(0) {}
     ConstStrBlobPtr(const StrBlob &a, size_t sz = 0) : wptr(a.data), curr(sz) {}
-    std::string& deref() const;
+    string& deref() const;
     ConstStrBlobPtr& incr();
 private:
-    std::shared_ptr<std::vector<std::string>> check(std::size_t, const std::string&) const;
-    std::weak_ptr<std::vector<std::string>> wptr;
-    std::size_t curr;
+    shared_ptr<vector<string>> check(size_t, const string&) const;
+    weak_ptr<vector<string>> wptr;
+    size_t curr;
 };
 
 ConstStrBlobPtr StrBlob::begin() { return ConstStrBlobPtr(*this); }
@@ -807,32 +823,32 @@ ConstStrBlobPtr StrBlob::end() {
     return ret;
 }
 
-StrBlob::StrBlob(): data(std::make_shared<std::vector<std::string>>()) {};
-StrBlob::StrBlob(std::initializer_list<std::string> i1): data(std::make_shared<std::vector<std::string>>(i1)) {};
-StrBlob::StrBlob(const StrBlob& sb) { data = std::make_shared<std::vector<std::string>>(*sb.data); }
-StrBlob& StrBlob::operator=(const StrBlob& sb) { data = std::make_shared<std::vector<std::string>>(*sb.data); return *this; }
+StrBlob::StrBlob(): data(make_shared<vector<string>>()) {};
+StrBlob::StrBlob(initializer_list<string> i1): data(make_shared<vector<string>>(i1)) {};
+StrBlob::StrBlob(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); }
+StrBlob& StrBlob::operator=(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); return *this; }
 
-void StrBlob::check(size_type i, const std::string &msg) const {
+void StrBlob::check(size_type i, const string &msg) const {
     if (i >= data->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
 }
 
-std::string& StrBlob::front() {
+string& StrBlob::front() {
     check(0, "front on empty StrBlob");
     return data->front();
 }
 
-std::string& StrBlob::back() {
+string& StrBlob::back() {
     check(0, "back on empty StrBlob");
     return data->back();
 }
 
-const std::string& StrBlob::front() const {
+const string& StrBlob::front() const {
     check(0, "front on empty StrBlob");
     return data->front();
 }
 
-const std::string& StrBlob::back() const {
+const string& StrBlob::back() const {
     check(0, "back on empty StrBlob");
     return data->back();
 }
@@ -842,16 +858,16 @@ void StrBlob::pop_back() {
     return data->pop_back();
 }
 
-std::shared_ptr<std::vector<std::string>> ConstStrBlobPtr::check(std::size_t i, const std::string& msg) const {
+shared_ptr<vector<string>> ConstStrBlobPtr::check(size_t i, const string& msg) const {
     auto ret = wptr.lock();
     if (!ret)
-        throw std::runtime_error("unbound StrBlobPtr");
+        throw runtime_error("unbound StrBlobPtr");
     if (i >= ret->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
     return ret;
 }
 
-std::string& ConstStrBlobPtr::deref() const {
+string& ConstStrBlobPtr::deref() const {
     auto p = check(curr, "dereference past end");
     return (*p)[curr];
 }
@@ -879,7 +895,7 @@ bool operator!=(const ConstStrBlobPtr &lhs, const ConstStrBlobPtr &rhs) {
 }
 
 bool operator<(const StrBlob &lhs, const StrBlob &rhs) {
-    return std::lexicographical_compare(lhs.data->begin(), lhs.data->end(), rhs.data->begin(), rhs.data->end());
+    return lexicographical_compare(lhs.data->begin(), lhs.data->end(), rhs.data->begin(), rhs.data->end());
 }
 
 bool operator>(const StrBlob &lhs, const StrBlob &rhs) {
@@ -908,6 +924,8 @@ bool operator>=(const StrBlob &lhs, const StrBlob &rhs) {
 #include <string>
 #include <initializer_list>
 
+using namespace std;
+
 class StrVec {
     friend bool operator==(StrVec&, StrVec&);
     friend bool operator!=(StrVec&, StrVec&);
@@ -917,32 +935,32 @@ class StrVec {
     friend bool operator>=(StrVec&, StrVec&);
 public:
     StrVec() : elements(nullptr), first_free(nullptr), cap(nullptr) {};
-    StrVec(std::initializer_list<std::string>);
+    StrVec(initializer_list<string>);
     StrVec(const StrVec&);
     StrVec(StrVec&&) noexcept;
     StrVec& operator=(const StrVec&);
     StrVec& operator=(StrVec&&) noexcept;
     ~StrVec();
-    void push_back(const std::string&);
+    void push_back(const string&);
     size_t size() const { return first_free - elements; }
     size_t capacity() const { return cap - elements; }
-    std::string *begin() const { return elements; }
-    std::string *end() const { return first_free; }
+    string *begin() const { return elements; }
+    string *end() const { return first_free; }
     void reserve(size_t);
     void resize(size_t);
-    void resize(size_t, const std::string&);
+    void resize(size_t, const string&);
 private:
-    std::allocator<std::string> alloc;
+    allocator<string> alloc;
     void chk_n_alloc() { if (size() == capacity()) reallocate(); }
-    std::pair<std::string*, std::string*> alloc_n_copy(const std::string*, const std::string*);
+    pair<string*, string*> alloc_n_copy(const string*, const string*);
     void free();
     void reallocate();
-    std::string *elements;
-    std::string *first_free;
-    std::string *cap;
+    string *elements;
+    string *first_free;
+    string *cap;
 };
 
-StrVec::StrVec(std::initializer_list<std::string> l) {
+StrVec::StrVec(initializer_list<string> l) {
     auto newdata = alloc_n_copy(l.begin(), l.end());
     elements = newdata.first;
     first_free = cap = newdata.second;
@@ -986,7 +1004,7 @@ StrVec::~StrVec() {
     free();
 }
 
-void StrVec::push_back(const std::string& s) {
+void StrVec::push_back(const string& s) {
     chk_n_alloc();
     alloc.construct(first_free++, s);
 }
@@ -1006,10 +1024,10 @@ void StrVec::reserve(size_t n) {
 }
 
 void StrVec::resize(size_t n) {
-    resize(n, std::string());
+    resize(n, string());
 }
 
-void StrVec::resize(size_t n, const std::string& s) {
+void StrVec::resize(size_t n, const string& s) {
     if (n < size()) {
         while (n < size()) {
             alloc.destroy(--first_free);
@@ -1022,8 +1040,8 @@ void StrVec::resize(size_t n, const std::string& s) {
     }
 }
 
-std::pair<std::string*, std::string*> StrVec::alloc_n_copy
-        (const std::string *b, const std::string *e) {
+pair<string*, string*> StrVec::alloc_n_copy
+        (const string *b, const string *e) {
     auto data = alloc.allocate(e-b);
     return {data, uninitialized_copy(b, e, data)};
 }
@@ -1031,7 +1049,7 @@ std::pair<std::string*, std::string*> StrVec::alloc_n_copy
 void StrVec::free() {
 
     if (elements) {
-        std::for_each(elements, first_free, [this](std::string &p) { alloc.destroy(&p); });
+        for_each(elements, first_free, [this](string &p) { alloc.destroy(&p); });
         // for (auto p = first_free; p != elements; ) {
         //     alloc.destroy(--p);
         // }
@@ -1054,14 +1072,14 @@ void StrVec::reallocate() {
 }
 
 bool operator==(StrVec &lhs, StrVec &rhs) {
-    return lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return lhs.size() == rhs.size() && equal(lhs.begin(), lhs.end(), rhs.begin());
 }
 bool operator!=(StrVec &lhs, StrVec &rhs) {
     return !(lhs == rhs);
 }
 
 bool operator<(StrVec &lhs, StrVec &rhs) {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
 
 bool operator>(StrVec &lhs, StrVec &rhs) {
@@ -1089,8 +1107,10 @@ bool operator>=(StrVec &lhs, StrVec &rhs) {
 #include <memory>
 #include <cstring>
 
+using namespace std;
+
 class String {
-    friend std::ostream& operator<<(std::ostream&, const String&);
+    friend ostream& operator<<(ostream&, const String&);
     friend bool operator==(const String&, const String&);
     friend bool operator!=(const String&, const String&);
     friend bool operator<(const String&, const String&);
@@ -1108,8 +1128,8 @@ public:
     char * begin() const { return elements; }
     char * end() const { return first_free; }
 private:
-    std::allocator<char> alloc;
-    std::pair<char*, char*> alloc_n_copy(const char*, const char*);
+    allocator<char> alloc;
+    pair<char*, char*> alloc_n_copy(const char*, const char*);
     void free();
     char * elements;
     char * first_free;
@@ -1133,7 +1153,7 @@ String::String(String &&s) noexcept {
     elements = std::move(s.elements);
     first_free = std::move(s.first_free);
     s.elements = s.first_free = nullptr;
-    std::cout << "String(String &&s) noexcept" << std::endl;
+    cout << "String(String &&s) noexcept" << endl;
 }
 
 String& String::operator=(const String &s) {
@@ -1152,7 +1172,7 @@ String& String::operator=(String &&s) noexcept {
         first_free = std::move(s.first_free);
         s.elements = s.first_free = nullptr;
     }
-    std::cout << "String& operator=(String &&s) noexcept" << std::endl;
+    cout << "String& operator=(String &&s) noexcept" << endl;
     return *this;
 }
 
@@ -1160,7 +1180,7 @@ String::~String() {
     free();
 }
 
-std::ostream& operator<<(std::ostream &os, const String &s) {
+ostream& operator<<(ostream &os, const String &s) {
     for (auto i = s.elements; i != s.first_free; ++i) {
         os << *i;
     }
@@ -1176,15 +1196,15 @@ void String::free() {
     }
 }
 
-std::pair<char*, char*> String::alloc_n_copy
+pair<char*, char*> String::alloc_n_copy
         (const char *b, const char *e) {
     auto data = alloc.allocate(e-b);
-    return {data, std::uninitialized_copy(b, e, data)};
+    return {data, uninitialized_copy(b, e, data)};
 }
 
 bool operator==(const String &lhs, const String &rhs) {
     return (lhs.first_free-lhs.elements) == (rhs.first_free-rhs.elements) &&
-           std::equal(lhs.begin(), lhs.end(), rhs.begin());
+           equal(lhs.begin(), lhs.end(), rhs.begin());
 }
 
 bool operator!=(const String &lhs, const String &rhs) {
@@ -1193,7 +1213,7 @@ bool operator!=(const String &lhs, const String &rhs) {
 
 
 bool operator<(const String &lhs, const String &rhs) {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), lhs.end());
+    return lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), lhs.end());
 }
 
 bool operator>(const String &lhs, const String &rhs) {
@@ -1219,10 +1239,12 @@ bool operator>=(const String &lhs, const String &rhs) {
 
 #include <string>
 
+using namespace std;
+
 class Book {
 
-    friend std::istream& operator>>(std::istream&, Book&);
-    friend std::ostream& operator<<(std::ostream&, const Book&);
+    friend istream& operator>>(istream&, Book&);
+    friend ostream& operator<<(ostream&, const Book&);
     friend bool operator==(const Book&, const Book&);
     friend bool operator!=(const Book&, const Book&);
     friend bool operator<(const Book&, const Book&);
@@ -1232,18 +1254,18 @@ class Book {
 
 public:
     Book() = default;
-    Book(unsigned int a, std::string b, std::string c) : 
+    Book(unsigned int a, string b, string c) : 
         no(a), name(b), author(c) {}
-    Book(std::istream &is) { is >> *this; }
+    Book(istream &is) { is >> *this; }
 
 private:
     unsigned int no;
-    std::string name;
-    std::string author;
+    string name;
+    string author;
 
 };
 
-std::istream& operator>>(std::istream &is, Book &book) {
+istream& operator>>(istream &is, Book &book) {
     is >> book.no >> book.name >> book.author;
     if (!is) {
         book = Book();
@@ -1251,7 +1273,7 @@ std::istream& operator>>(std::istream &is, Book &book) {
     return is;
 }
 
-std::ostream& operator<<(std::ostream &os, const Book &book) {
+ostream& operator<<(ostream &os, const Book &book) {
     os << book.no << " " << book.name << " " << book.author;
     return os;
 }
@@ -1297,24 +1319,26 @@ bool operator>=(const Book &book1, const Book &book2) {
 
 #include <string>
 
+using namespace std;
+
 struct Sales_data {
 
-    friend std::istream& operator>>(std::istream&, Sales_data&);
-    friend std::ostream& operator<<(std::ostream&, const Sales_data&);
+    friend istream& operator>>(istream&, Sales_data&);
+    friend ostream& operator<<(ostream&, const Sales_data&);
     friend Sales_data operator+(const Sales_data&, const Sales_data&);
 
 public:
-    Sales_data(std::string s, unsigned n, double p) :
+    Sales_data(string s, unsigned n, double p) :
                 bookNo(s), units_sold(n), revenue(p*n) {};
     Sales_data() : Sales_data("", 0, 0) {}
-    Sales_data(std::string s) : Sales_data(s, 0, 0) {}
-    Sales_data(std::istream &is) : Sales_data() { is >> *this; }
-    std::string isbn() const { return bookNo; }
+    Sales_data(string s) : Sales_data(s, 0, 0) {}
+    Sales_data(istream &is) : Sales_data() { is >> *this; }
+    string isbn() const { return bookNo; }
     Sales_data& operator+=(const Sales_data&);
 
 private:
     inline double avg_price() const;
-    std::string bookNo;
+    string bookNo;
     unsigned units_sold = 0;
     double revenue = 0.0;
 
@@ -1329,7 +1353,7 @@ inline double Sales_data::avg_price() const {
     }
 }
 
-std::istream& operator>>(std::istream &is, Sales_data &item) {
+istream& operator>>(istream &is, Sales_data &item) {
 	double price = 0;
 	is >> item.bookNo >> item.units_sold >> price;
     if (is) {
@@ -1341,7 +1365,7 @@ std::istream& operator>>(std::istream &is, Sales_data &item) {
 	return is;
 }
 
-std::ostream& operator<<(std::ostream &os, const Sales_data &item) {
+ostream& operator<<(ostream &os, const Sales_data &item) {
 	os << item.isbn() << " " << item.units_sold << " " << item.revenue << " " << item.avg_price();
 	return os;
 }
@@ -1382,25 +1406,27 @@ Sales_data& Sales_data::operator+=(const Sales_data &rhs) {
 
 #include <string>
 
+using namespace std;
+
 struct Sales_data {
 
-    friend std::istream& operator>>(std::istream&, Sales_data&);
-    friend std::ostream& operator<<(std::ostream&, const Sales_data&);
+    friend istream& operator>>(istream&, Sales_data&);
+    friend ostream& operator<<(ostream&, const Sales_data&);
     friend Sales_data operator+(const Sales_data&, const Sales_data&);
 
 public:
-    Sales_data(std::string s, unsigned n, double p) :
+    Sales_data(string s, unsigned n, double p) :
                 bookNo(s), units_sold(n), revenue(p*n) {};
     Sales_data() : Sales_data("", 0, 0) {}
-    Sales_data(std::string s) : Sales_data(s, 0, 0) {}
-    Sales_data(std::istream &is) : Sales_data() { is >> *this; }
-    std::string isbn() const { return bookNo; }
+    Sales_data(string s) : Sales_data(s, 0, 0) {}
+    Sales_data(istream &is) : Sales_data() { is >> *this; }
+    string isbn() const { return bookNo; }
     Sales_data& operator+=(const Sales_data&);
-    Sales_data& operator=(const std::string&);
+    Sales_data& operator=(const string&);
 
 private:
     inline double avg_price() const;
-    std::string bookNo;
+    string bookNo;
     unsigned units_sold = 0;
     double revenue = 0.0;
 
@@ -1415,7 +1441,7 @@ inline double Sales_data::avg_price() const {
     }
 }
 
-std::istream& operator>>(std::istream &is, Sales_data &item) {
+istream& operator>>(istream &is, Sales_data &item) {
 	double price = 0;
 	is >> item.bookNo >> item.units_sold >> price;
     if (is) {
@@ -1427,7 +1453,7 @@ std::istream& operator>>(std::istream &is, Sales_data &item) {
 	return is;
 }
 
-std::ostream& operator<<(std::ostream &os, const Sales_data &item) {
+ostream& operator<<(ostream &os, const Sales_data &item) {
 	os << item.isbn() << " " << item.units_sold << " " << item.revenue << " " << item.avg_price();
 	return os;
 }
@@ -1444,7 +1470,7 @@ Sales_data& Sales_data::operator+=(const Sales_data &rhs) {
     return *this;
 }
 
-Sales_data& Sales_data::operator=(const std::string &s) {
+Sales_data& Sales_data::operator=(const string &s) {
     *this = Sales_data(s);
     return *this;
 }
@@ -1464,6 +1490,8 @@ Sales_data& Sales_data::operator=(const std::string &s) {
 #include <string>
 #include <initializer_list>
 
+using namespace std;
+
 class StrVec {
     friend bool operator==(StrVec&, StrVec&);
     friend bool operator!=(StrVec&, StrVec&);
@@ -1473,33 +1501,33 @@ class StrVec {
     friend bool operator>=(StrVec&, StrVec&);
 public:
     StrVec() : elements(nullptr), first_free(nullptr), cap(nullptr) {};
-    StrVec(std::initializer_list<std::string>);
+    StrVec(initializer_list<string>);
     StrVec(const StrVec&);
     StrVec(StrVec&&) noexcept;
     StrVec& operator=(const StrVec&);
     StrVec& operator=(StrVec&&) noexcept;
-    StrVec& operator=(const std::initializer_list<std::string>);
+    StrVec& operator=(const initializer_list<string>);
     ~StrVec();
-    void push_back(const std::string&);
+    void push_back(const string&);
     size_t size() const { return first_free - elements; }
     size_t capacity() const { return cap - elements; }
-    std::string *begin() const { return elements; }
-    std::string *end() const { return first_free; }
+    string *begin() const { return elements; }
+    string *end() const { return first_free; }
     void reserve(size_t);
     void resize(size_t);
-    void resize(size_t, const std::string&);
+    void resize(size_t, const string&);
 private:
-    std::allocator<std::string> alloc;
+    allocator<string> alloc;
     void chk_n_alloc() { if (size() == capacity()) reallocate(); }
-    std::pair<std::string*, std::string*> alloc_n_copy(const std::string*, const std::string*);
+    pair<string*, string*> alloc_n_copy(const string*, const string*);
     void free();
     void reallocate();
-    std::string *elements;
-    std::string *first_free;
-    std::string *cap;
+    string *elements;
+    string *first_free;
+    string *cap;
 };
 
-StrVec::StrVec(std::initializer_list<std::string> l) {
+StrVec::StrVec(initializer_list<string> l) {
     auto newdata = alloc_n_copy(l.begin(), l.end());
     elements = newdata.first;
     first_free = cap = newdata.second;
@@ -1539,7 +1567,7 @@ StrVec& StrVec::operator=(StrVec&& s) noexcept {
     return *this;
 }
 
-StrVec& StrVec::operator=(const std::initializer_list<std::string> l) {
+StrVec& StrVec::operator=(const initializer_list<string> l) {
     auto newdata = alloc_n_copy(l.begin(), l.end());
     free();
     elements = newdata.first;
@@ -1551,7 +1579,7 @@ StrVec::~StrVec() {
     free();
 }
 
-void StrVec::push_back(const std::string& s) {
+void StrVec::push_back(const string& s) {
     chk_n_alloc();
     alloc.construct(first_free++, s);
 }
@@ -1571,10 +1599,10 @@ void StrVec::reserve(size_t n) {
 }
 
 void StrVec::resize(size_t n) {
-    resize(n, std::string());
+    resize(n, string());
 }
 
-void StrVec::resize(size_t n, const std::string& s) {
+void StrVec::resize(size_t n, const string& s) {
     if (n < size()) {
         while (n < size()) {
             alloc.destroy(--first_free);
@@ -1587,8 +1615,8 @@ void StrVec::resize(size_t n, const std::string& s) {
     }
 }
 
-std::pair<std::string*, std::string*> StrVec::alloc_n_copy
-        (const std::string *b, const std::string *e) {
+pair<string*, string*> StrVec::alloc_n_copy
+        (const string *b, const string *e) {
     auto data = alloc.allocate(e-b);
     return {data, uninitialized_copy(b, e, data)};
 }
@@ -1596,7 +1624,7 @@ std::pair<std::string*, std::string*> StrVec::alloc_n_copy
 void StrVec::free() {
 
     if (elements) {
-        std::for_each(elements, first_free, [this](std::string &p) { alloc.destroy(&p); });
+        for_each(elements, first_free, [this](string &p) { alloc.destroy(&p); });
         // for (auto p = first_free; p != elements; ) {
         //     alloc.destroy(--p);
         // }
@@ -1619,14 +1647,14 @@ void StrVec::reallocate() {
 }
 
 bool operator==(StrVec &lhs, StrVec &rhs) {
-    return lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return lhs.size() == rhs.size() && equal(lhs.begin(), lhs.end(), rhs.begin());
 }
 bool operator!=(StrVec &lhs, StrVec &rhs) {
     return !(lhs == rhs);
 }
 
 bool operator<(StrVec &lhs, StrVec &rhs) {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
 
 bool operator>(StrVec &lhs, StrVec &rhs) {
@@ -1652,10 +1680,12 @@ bool operator>=(StrVec &lhs, StrVec &rhs) {
 
 #include <string>
 
+using namespace std;
+
 class Book {
 
-    friend std::istream& operator>>(std::istream&, Book&);
-    friend std::ostream& operator<<(std::ostream&, const Book&);
+    friend istream& operator>>(istream&, Book&);
+    friend ostream& operator<<(ostream&, const Book&);
     friend bool operator==(const Book&, const Book&);
     friend bool operator!=(const Book&, const Book&);
     friend bool operator<(const Book&, const Book&);
@@ -1665,20 +1695,20 @@ class Book {
 
 public:
     Book() = default;
-    Book(unsigned int a, std::string b, std::string c) : 
+    Book(unsigned int a, string b, string c) : 
         no(a), name(b), author(c) {}
-    Book(std::istream &is) { is >> *this; }
+    Book(istream &is) { is >> *this; }
     Book& operator=(const Book &);
     Book& operator=(Book&&) noexcept;
 
 private:
     unsigned int no;
-    std::string name;
-    std::string author;
+    string name;
+    string author;
 
 };
 
-std::istream& operator>>(std::istream &is, Book &book) {
+istream& operator>>(istream &is, Book &book) {
     is >> book.no >> book.name >> book.author;
     if (!is) {
         book = Book();
@@ -1686,7 +1716,7 @@ std::istream& operator>>(std::istream &is, Book &book) {
     return is;
 }
 
-std::ostream& operator<<(std::ostream &os, const Book &book) {
+ostream& operator<<(ostream &os, const Book &book) {
     os << book.no << " " << book.name << " " << book.author;
     return os;
 }
@@ -1750,6 +1780,8 @@ Book& Book::operator=(Book &&book) noexcept {
 #include <string>
 #include <stdexcept>
 
+using namespace std;
+
 class ConstStrBlobPtr;
 
 class StrBlob {
@@ -1761,27 +1793,27 @@ class StrBlob {
     friend bool operator<=(const StrBlob&, const StrBlob&);
     friend bool operator>=(const StrBlob&, const StrBlob&);
 public:
-    typedef std::vector<std::string>::size_type size_type;
+    typedef vector<string>::size_type size_type;
     StrBlob();
-    StrBlob(std::initializer_list<std::string> i1);
+    StrBlob(initializer_list<string> i1);
     StrBlob(const StrBlob&);
     StrBlob& operator=(const StrBlob&);
-    std::string& operator[](size_t n) { return (*data)[n]; }
-    const std::string& operator[](size_t n) const { return (*data)[n]; }
+    string& operator[](size_t n) { return (*data)[n]; }
+    const string& operator[](size_t n) const { return (*data)[n]; }
     size_type size() const { return data->size(); }
     bool empty() const { return data->empty(); }
-    void push_back(const std::string &t) { data->push_back(t); }
-	void push_back(std::string &&t) { data->push_back(std::move(t)); }
+    void push_back(const string &t) { data->push_back(t); }
+	void push_back(string &&t) { data->push_back(std::move(t)); }
     void pop_back();
-    std::string& front();
-    std::string& back();
-    const std::string& front() const;
-    const std::string& back() const;
+    string& front();
+    string& back();
+    const string& front() const;
+    const string& back() const;
 	ConstStrBlobPtr begin();
 	ConstStrBlobPtr end();
 private:
-    std::shared_ptr<std::vector<std::string>> data;
-    void check(size_type i, const std::string &msg) const;
+    shared_ptr<vector<string>> data;
+    void check(size_type i, const string &msg) const;
 };
 
 class ConstStrBlobPtr {
@@ -1790,12 +1822,12 @@ public:
     friend bool operator!=(const ConstStrBlobPtr&, const ConstStrBlobPtr&);
     ConstStrBlobPtr() : curr(0) {}
     ConstStrBlobPtr(const StrBlob &a, size_t sz = 0) : wptr(a.data), curr(sz) {}
-    std::string& deref() const;
+    string& deref() const;
     ConstStrBlobPtr& incr();
 private:
-    std::shared_ptr<std::vector<std::string>> check(std::size_t, const std::string&) const;
-    std::weak_ptr<std::vector<std::string>> wptr;
-    std::size_t curr;
+    shared_ptr<vector<string>> check(size_t, const string&) const;
+    weak_ptr<vector<string>> wptr;
+    size_t curr;
 };
 
 ConstStrBlobPtr StrBlob::begin() { return ConstStrBlobPtr(*this); }
@@ -1804,32 +1836,32 @@ ConstStrBlobPtr StrBlob::end() {
     return ret;
 }
 
-StrBlob::StrBlob(): data(std::make_shared<std::vector<std::string>>()) {};
-StrBlob::StrBlob(std::initializer_list<std::string> i1): data(std::make_shared<std::vector<std::string>>(i1)) {};
-StrBlob::StrBlob(const StrBlob& sb) { data = std::make_shared<std::vector<std::string>>(*sb.data); }
-StrBlob& StrBlob::operator=(const StrBlob& sb) { data = std::make_shared<std::vector<std::string>>(*sb.data); return *this; }
+StrBlob::StrBlob(): data(make_shared<vector<string>>()) {};
+StrBlob::StrBlob(initializer_list<string> i1): data(make_shared<vector<string>>(i1)) {};
+StrBlob::StrBlob(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); }
+StrBlob& StrBlob::operator=(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); return *this; }
 
-void StrBlob::check(size_type i, const std::string &msg) const {
+void StrBlob::check(size_type i, const string &msg) const {
     if (i >= data->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
 }
 
-std::string& StrBlob::front() {
+string& StrBlob::front() {
     check(0, "front on empty StrBlob");
     return data->front();
 }
 
-std::string& StrBlob::back() {
+string& StrBlob::back() {
     check(0, "back on empty StrBlob");
     return data->back();
 }
 
-const std::string& StrBlob::front() const {
+const string& StrBlob::front() const {
     check(0, "front on empty StrBlob");
     return data->front();
 }
 
-const std::string& StrBlob::back() const {
+const string& StrBlob::back() const {
     check(0, "back on empty StrBlob");
     return data->back();
 }
@@ -1839,16 +1871,16 @@ void StrBlob::pop_back() {
     return data->pop_back();
 }
 
-std::shared_ptr<std::vector<std::string>> ConstStrBlobPtr::check(std::size_t i, const std::string& msg) const {
+shared_ptr<vector<string>> ConstStrBlobPtr::check(size_t i, const string& msg) const {
     auto ret = wptr.lock();
     if (!ret)
-        throw std::runtime_error("unbound StrBlobPtr");
+        throw runtime_error("unbound StrBlobPtr");
     if (i >= ret->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
     return ret;
 }
 
-std::string& ConstStrBlobPtr::deref() const {
+string& ConstStrBlobPtr::deref() const {
     auto p = check(curr, "dereference past end");
     return (*p)[curr];
 }
@@ -1876,7 +1908,7 @@ bool operator!=(const ConstStrBlobPtr &lhs, const ConstStrBlobPtr &rhs) {
 }
 
 bool operator<(const StrBlob &lhs, const StrBlob &rhs) {
-    return std::lexicographical_compare(lhs.data->begin(), lhs.data->end(), rhs.data->begin(), rhs.data->end());
+    return lexicographical_compare(lhs.data->begin(), lhs.data->end(), rhs.data->begin(), rhs.data->end());
 }
 
 bool operator>(const StrBlob &lhs, const StrBlob &rhs) {
@@ -1904,6 +1936,8 @@ bool operator>=(const StrBlob &lhs, const StrBlob &rhs) {
 #include <algorithm>
 #include <string>
 
+using namespace std;
+
 class StrVec {
     friend bool operator==(StrVec&, StrVec&);
     friend bool operator!=(StrVec&, StrVec&);
@@ -1913,31 +1947,32 @@ class StrVec {
     friend bool operator>=(StrVec&, StrVec&);
 public:
     StrVec() : elements(nullptr), first_free(nullptr), cap(nullptr) {};
-    StrVec(std::initializer_list<std::string>);
+    StrVec(initializer_list<string>);
     StrVec(const StrVec&);
     StrVec(StrVec&&) noexcept;
     StrVec& operator=(const StrVec&);
     StrVec& operator=(StrVec&&) noexcept;
-    std::string& operator[](std::size_t n) { return elements[n]; }
-    const std::string& operator[](std::size_t n) const { return elements[n]; }
+    StrVec& operator=(const initializer_list<string>);
+    string& operator[](size_t n) { return elements[n]; }
+    const string& operator[](size_t n) const { return elements[n]; }
     ~StrVec();
-    void push_back(const std::string&);
+    void push_back(const string&);
     size_t size() const { return first_free - elements; }
     size_t capacity() const { return cap - elements; }
-    std::string *begin() const { return elements; }
-    std::string *end() const { return first_free; }
+    string *begin() const { return elements; }
+    string *end() const { return first_free; }
     void reserve(size_t);
     void resize(size_t);
-    void resize(size_t, const std::string&);
+    void resize(size_t, const string&);
 private:
-    std::allocator<std::string> alloc;
+    allocator<string> alloc;
     void chk_n_alloc() { if (size() == capacity()) reallocate(); }
-    std::pair<std::string*, std::string*> alloc_n_copy(const std::string*, const std::string*);
+    pair<string*, string*> alloc_n_copy(const string*, const string*);
     void free();
     void reallocate();
-    std::string *elements;
-    std::string *first_free;
-    std::string *cap;
+    string *elements;
+    string *first_free;
+    string *cap;
 };
 
 StrVec::StrVec(const StrVec &s) {
@@ -1974,7 +2009,7 @@ StrVec& StrVec::operator=(StrVec&& s) noexcept {
     return *this;
 }
 
-StrVec& StrVec::operator=(const std::initializer_list<std::string> l) {
+StrVec& StrVec::operator=(const initializer_list<string> l) {
     auto newdata = alloc_n_copy(l.begin(), l.end());
     free();
     elements = newdata.first;
@@ -1986,7 +2021,7 @@ StrVec::~StrVec() {
     free();
 }
 
-void StrVec::push_back(const std::string& s) {
+void StrVec::push_back(const string& s) {
     chk_n_alloc();
     alloc.construct(first_free++, s);
 }
@@ -2006,10 +2041,10 @@ void StrVec::reserve(size_t n) {
 }
 
 void StrVec::resize(size_t n) {
-    resize(n, std::string());
+    resize(n, string());
 }
 
-void StrVec::resize(size_t n, const std::string& s) {
+void StrVec::resize(size_t n, const string& s) {
     if (n < size()) {
         while (n < size()) {
             alloc.destroy(--first_free);
@@ -2022,8 +2057,8 @@ void StrVec::resize(size_t n, const std::string& s) {
     }
 }
 
-std::pair<std::string*, std::string*> StrVec::alloc_n_copy
-        (const std::string *b, const std::string *e) {
+pair<string*, string*> StrVec::alloc_n_copy
+        (const string *b, const string *e) {
     auto data = alloc.allocate(e-b);
     return {data, uninitialized_copy(b, e, data)};
 }
@@ -2031,7 +2066,7 @@ std::pair<std::string*, std::string*> StrVec::alloc_n_copy
 void StrVec::free() {
 
     if (elements) {
-        std::for_each(elements, first_free, [this](std::string &p) { alloc.destroy(&p); });
+        for_each(elements, first_free, [this](string &p) { alloc.destroy(&p); });
         // for (auto p = first_free; p != elements; ) {
         //     alloc.destroy(--p);
         // }
@@ -2054,14 +2089,14 @@ void StrVec::reallocate() {
 }
 
 bool operator==(StrVec &lhs, StrVec &rhs) {
-    return lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return lhs.size() == rhs.size() && equal(lhs.begin(), lhs.end(), rhs.begin());
 }
 bool operator!=(StrVec &lhs, StrVec &rhs) {
     return !(lhs == rhs);
 }
 
 bool operator<(StrVec &lhs, StrVec &rhs) {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
 
 bool operator>(StrVec &lhs, StrVec &rhs) {
@@ -2089,8 +2124,10 @@ bool operator>=(StrVec &lhs, StrVec &rhs) {
 #include <memory>
 #include <cstring>
 
+using namespace std;
+
 class String {
-    friend std::ostream& operator<<(std::ostream&, const String&);
+    friend ostream& operator<<(ostream&, const String&);
     friend bool operator==(const String&, const String&);
     friend bool operator!=(const String&, const String&);
     friend bool operator<(const String&, const String&);
@@ -2110,8 +2147,8 @@ public:
     char * begin() const { return elements; }
     char * end() const { return first_free; }
 private:
-    std::allocator<char> alloc;
-    std::pair<char*, char*> alloc_n_copy(const char*, const char*);
+    allocator<char> alloc;
+    pair<char*, char*> alloc_n_copy(const char*, const char*);
     void free();
     char * elements;
     char * first_free;
@@ -2135,7 +2172,7 @@ String::String(String &&s) noexcept {
     elements = std::move(s.elements);
     first_free = std::move(s.first_free);
     s.elements = s.first_free = nullptr;
-    std::cout << "String(String &&s) noexcept" << std::endl;
+    cout << "String(String &&s) noexcept" << endl;
 }
 
 String& String::operator=(const String &s) {
@@ -2154,7 +2191,7 @@ String& String::operator=(String &&s) noexcept {
         first_free = std::move(s.first_free);
         s.elements = s.first_free = nullptr;
     }
-    std::cout << "String& operator=(String &&s) noexcept" << std::endl;
+    cout << "String& operator=(String &&s) noexcept" << endl;
     return *this;
 }
 
@@ -2162,7 +2199,7 @@ String::~String() {
     free();
 }
 
-std::ostream& operator<<(std::ostream &os, const String &s) {
+ostream& operator<<(ostream &os, const String &s) {
     for (auto i = s.elements; i != s.first_free; ++i) {
         os << *i;
     }
@@ -2178,15 +2215,15 @@ void String::free() {
     }
 }
 
-std::pair<char*, char*> String::alloc_n_copy
+pair<char*, char*> String::alloc_n_copy
         (const char *b, const char *e) {
     auto data = alloc.allocate(e-b);
-    return {data, std::uninitialized_copy(b, e, data)};
+    return {data, uninitialized_copy(b, e, data)};
 }
 
 bool operator==(const String &lhs, const String &rhs) {
     return (lhs.first_free-lhs.elements) == (rhs.first_free-rhs.elements) &&
-           std::equal(lhs.begin(), lhs.end(), rhs.begin());
+           equal(lhs.begin(), lhs.end(), rhs.begin());
 }
 
 bool operator!=(const String &lhs, const String &rhs) {
@@ -2194,7 +2231,7 @@ bool operator!=(const String &lhs, const String &rhs) {
 }
 
 bool operator<(const String &lhs, const String &rhs) {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), lhs.end());
+    return lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), lhs.end());
 }
 
 bool operator>(const String &lhs, const String &rhs) {
@@ -2224,6 +2261,8 @@ bool operator>=(const String &lhs, const String &rhs) {
 #include <string>
 #include <stdexcept>
 
+using namespace std;
+
 class ConstStrBlobPtr;
 
 class StrBlob {
@@ -2235,27 +2274,27 @@ class StrBlob {
     friend bool operator<=(const StrBlob&, const StrBlob&);
     friend bool operator>=(const StrBlob&, const StrBlob&);
 public:
-    typedef std::vector<std::string>::size_type size_type;
+    typedef vector<string>::size_type size_type;
     StrBlob();
-    StrBlob(std::initializer_list<std::string> i1);
+    StrBlob(initializer_list<string> i1);
     StrBlob(const StrBlob&);
     StrBlob& operator=(const StrBlob&);
-    std::string& operator[](size_t n) { return (*data)[n]; }
-    const std::string& operator[](size_t n) const { return (*data)[n]; }
+    string& operator[](size_t n) { return (*data)[n]; }
+    const string& operator[](size_t n) const { return (*data)[n]; }
     size_type size() const { return data->size(); }
     bool empty() const { return data->empty(); }
-    void push_back(const std::string &t) { data->push_back(t); }
-	void push_back(std::string &&t) { data->push_back(std::move(t)); }
+    void push_back(const string &t) { data->push_back(t); }
+	void push_back(string &&t) { data->push_back(std::move(t)); }
     void pop_back();
-    std::string& front();
-    std::string& back();
-    const std::string& front() const;
-    const std::string& back() const;
+    string& front();
+    string& back();
+    const string& front() const;
+    const string& back() const;
 	ConstStrBlobPtr begin();
 	ConstStrBlobPtr end();
 private:
-    std::shared_ptr<std::vector<std::string>> data;
-    void check(size_type i, const std::string &msg) const;
+    shared_ptr<vector<string>> data;
+    void check(size_type i, const string &msg) const;
 };
 
 class ConstStrBlobPtr {
@@ -2264,16 +2303,16 @@ public:
     friend bool operator!=(const ConstStrBlobPtr&, const ConstStrBlobPtr&);
     ConstStrBlobPtr() : curr(0) {}
     ConstStrBlobPtr(const StrBlob &a, size_t sz = 0) : wptr(a.data), curr(sz) {}
-    std::string& deref() const;
+    string& deref() const;
     ConstStrBlobPtr& incr();
     ConstStrBlobPtr& operator++();
     ConstStrBlobPtr& operator--();
     ConstStrBlobPtr operator++(int);
     ConstStrBlobPtr operator--(int);
 private:
-    std::shared_ptr<std::vector<std::string>> check(std::size_t, const std::string&) const;
-    std::weak_ptr<std::vector<std::string>> wptr;
-    std::size_t curr;
+    shared_ptr<vector<string>> check(size_t, const string&) const;
+    weak_ptr<vector<string>> wptr;
+    size_t curr;
 };
 
 ConstStrBlobPtr StrBlob::begin() { return ConstStrBlobPtr(*this); }
@@ -2282,32 +2321,32 @@ ConstStrBlobPtr StrBlob::end() {
     return ret;
 }
 
-StrBlob::StrBlob(): data(std::make_shared<std::vector<std::string>>()) {};
-StrBlob::StrBlob(std::initializer_list<std::string> i1): data(std::make_shared<std::vector<std::string>>(i1)) {};
-StrBlob::StrBlob(const StrBlob& sb) { data = std::make_shared<std::vector<std::string>>(*sb.data); }
-StrBlob& StrBlob::operator=(const StrBlob& sb) { data = std::make_shared<std::vector<std::string>>(*sb.data); return *this; }
+StrBlob::StrBlob(): data(make_shared<vector<string>>()) {};
+StrBlob::StrBlob(initializer_list<string> i1): data(make_shared<vector<string>>(i1)) {};
+StrBlob::StrBlob(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); }
+StrBlob& StrBlob::operator=(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); return *this; }
 
-void StrBlob::check(size_type i, const std::string &msg) const {
+void StrBlob::check(size_type i, const string &msg) const {
     if (i >= data->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
 }
 
-std::string& StrBlob::front() {
+string& StrBlob::front() {
     check(0, "front on empty StrBlob");
     return data->front();
 }
 
-std::string& StrBlob::back() {
+string& StrBlob::back() {
     check(0, "back on empty StrBlob");
     return data->back();
 }
 
-const std::string& StrBlob::front() const {
+const string& StrBlob::front() const {
     check(0, "front on empty StrBlob");
     return data->front();
 }
 
-const std::string& StrBlob::back() const {
+const string& StrBlob::back() const {
     check(0, "back on empty StrBlob");
     return data->back();
 }
@@ -2317,16 +2356,16 @@ void StrBlob::pop_back() {
     return data->pop_back();
 }
 
-std::shared_ptr<std::vector<std::string>> ConstStrBlobPtr::check(std::size_t i, const std::string& msg) const {
+shared_ptr<vector<string>> ConstStrBlobPtr::check(size_t i, const string& msg) const {
     auto ret = wptr.lock();
     if (!ret)
-        throw std::runtime_error("unbound StrBlobPtr");
+        throw runtime_error("unbound StrBlobPtr");
     if (i >= ret->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
     return ret;
 }
 
-std::string& ConstStrBlobPtr::deref() const {
+string& ConstStrBlobPtr::deref() const {
     auto p = check(curr, "dereference past end");
     return (*p)[curr];
 }
@@ -2378,7 +2417,7 @@ bool operator!=(const ConstStrBlobPtr &lhs, const ConstStrBlobPtr &rhs) {
 }
 
 bool operator<(const StrBlob &lhs, const StrBlob &rhs) {
-    return std::lexicographical_compare(lhs.data->begin(), lhs.data->end(), rhs.data->begin(), rhs.data->end());
+    return lexicographical_compare(lhs.data->begin(), lhs.data->end(), rhs.data->begin(), rhs.data->end());
 }
 
 bool operator>(const StrBlob &lhs, const StrBlob &rhs) {
@@ -2416,6 +2455,8 @@ bool operator>=(const StrBlob &lhs, const StrBlob &rhs) {
 #include <string>
 #include <stdexcept>
 
+using namespace std;
+
 class ConstStrBlobPtr;
 
 class StrBlob {
@@ -2427,27 +2468,27 @@ class StrBlob {
     friend bool operator<=(const StrBlob&, const StrBlob&);
     friend bool operator>=(const StrBlob&, const StrBlob&);
 public:
-    typedef std::vector<std::string>::size_type size_type;
+    typedef vector<string>::size_type size_type;
     StrBlob();
-    StrBlob(std::initializer_list<std::string> i1);
+    StrBlob(initializer_list<string> i1);
     StrBlob(const StrBlob&);
     StrBlob& operator=(const StrBlob&);
-    std::string& operator[](size_t n) { return (*data)[n]; }
-    const std::string& operator[](size_t n) const { return (*data)[n]; }
+    string& operator[](size_t n) { return (*data)[n]; }
+    const string& operator[](size_t n) const { return (*data)[n]; }
     size_type size() const { return data->size(); }
     bool empty() const { return data->empty(); }
-    void push_back(const std::string &t) { data->push_back(t); }
-	void push_back(std::string &&t) { data->push_back(std::move(t)); }
+    void push_back(const string &t) { data->push_back(t); }
+	void push_back(string &&t) { data->push_back(std::move(t)); }
     void pop_back();
-    std::string& front();
-    std::string& back();
-    const std::string& front() const;
-    const std::string& back() const;
+    string& front();
+    string& back();
+    const string& front() const;
+    const string& back() const;
 	ConstStrBlobPtr begin();
 	ConstStrBlobPtr end();
 private:
-    std::shared_ptr<std::vector<std::string>> data;
-    void check(size_type i, const std::string &msg) const;
+    shared_ptr<vector<string>> data;
+    void check(size_type i, const string &msg) const;
 };
 
 class ConstStrBlobPtr {
@@ -2456,23 +2497,23 @@ public:
     friend bool operator!=(const ConstStrBlobPtr&, const ConstStrBlobPtr&);
     ConstStrBlobPtr() : curr(0) {}
     ConstStrBlobPtr(const StrBlob &a, size_t sz = 0) : wptr(a.data), curr(sz) {}
-    std::string& deref() const;
+    string& deref() const;
     ConstStrBlobPtr& incr();
     ConstStrBlobPtr& operator++();
     ConstStrBlobPtr& operator--();
     ConstStrBlobPtr operator++(int);
     ConstStrBlobPtr operator--(int);
-    const std::string& operator*() const {
+    const string& operator*() const {
         auto p = check(curr, "dereference past end");
         return (*p)[curr];
     }
-    const std::string* operator->() const {
+    const string* operator->() const {
         return & this->operator*();
     }
 private:
-    std::shared_ptr<std::vector<std::string>> check(std::size_t, const std::string&) const;
-    std::weak_ptr<std::vector<std::string>> wptr;
-    std::size_t curr;
+    shared_ptr<vector<string>> check(size_t, const string&) const;
+    weak_ptr<vector<string>> wptr;
+    size_t curr;
 };
 
 ConstStrBlobPtr StrBlob::begin() { return ConstStrBlobPtr(*this); }
@@ -2481,32 +2522,32 @@ ConstStrBlobPtr StrBlob::end() {
     return ret;
 }
 
-StrBlob::StrBlob(): data(std::make_shared<std::vector<std::string>>()) {};
-StrBlob::StrBlob(std::initializer_list<std::string> i1): data(std::make_shared<std::vector<std::string>>(i1)) {};
-StrBlob::StrBlob(const StrBlob& sb) { data = std::make_shared<std::vector<std::string>>(*sb.data); }
-StrBlob& StrBlob::operator=(const StrBlob& sb) { data = std::make_shared<std::vector<std::string>>(*sb.data); return *this; }
+StrBlob::StrBlob(): data(make_shared<vector<string>>()) {};
+StrBlob::StrBlob(initializer_list<string> i1): data(make_shared<vector<string>>(i1)) {};
+StrBlob::StrBlob(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); }
+StrBlob& StrBlob::operator=(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); return *this; }
 
-void StrBlob::check(size_type i, const std::string &msg) const {
+void StrBlob::check(size_type i, const string &msg) const {
     if (i >= data->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
 }
 
-std::string& StrBlob::front() {
+string& StrBlob::front() {
     check(0, "front on empty StrBlob");
     return data->front();
 }
 
-std::string& StrBlob::back() {
+string& StrBlob::back() {
     check(0, "back on empty StrBlob");
     return data->back();
 }
 
-const std::string& StrBlob::front() const {
+const string& StrBlob::front() const {
     check(0, "front on empty StrBlob");
     return data->front();
 }
 
-const std::string& StrBlob::back() const {
+const string& StrBlob::back() const {
     check(0, "back on empty StrBlob");
     return data->back();
 }
@@ -2516,16 +2557,16 @@ void StrBlob::pop_back() {
     return data->pop_back();
 }
 
-std::shared_ptr<std::vector<std::string>> ConstStrBlobPtr::check(std::size_t i, const std::string& msg) const {
+shared_ptr<vector<string>> ConstStrBlobPtr::check(size_t i, const string& msg) const {
     auto ret = wptr.lock();
     if (!ret)
-        throw std::runtime_error("unbound StrBlobPtr");
+        throw runtime_error("unbound StrBlobPtr");
     if (i >= ret->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
     return ret;
 }
 
-std::string& ConstStrBlobPtr::deref() const {
+string& ConstStrBlobPtr::deref() const {
     auto p = check(curr, "dereference past end");
     return (*p)[curr];
 }
@@ -2577,7 +2618,7 @@ bool operator!=(const ConstStrBlobPtr &lhs, const ConstStrBlobPtr &rhs) {
 }
 
 bool operator<(const StrBlob &lhs, const StrBlob &rhs) {
-    return std::lexicographical_compare(lhs.data->begin(), lhs.data->end(), rhs.data->begin(), rhs.data->end());
+    return lexicographical_compare(lhs.data->begin(), lhs.data->end(), rhs.data->begin(), rhs.data->end());
 }
 
 bool operator>(const StrBlob &lhs, const StrBlob &rhs) {
@@ -2611,6 +2652,8 @@ bool operator>=(const StrBlob &lhs, const StrBlob &rhs) {
 #include <string>
 #include <stdexcept>
 
+using namespace std;
+
 class ConstStrBlobPtr;
 
 class StrBlob {
@@ -2622,27 +2665,27 @@ class StrBlob {
     friend bool operator<=(const StrBlob&, const StrBlob&);
     friend bool operator>=(const StrBlob&, const StrBlob&);
 public:
-    typedef std::vector<std::string>::size_type size_type;
+    typedef vector<string>::size_type size_type;
     StrBlob();
-    StrBlob(std::initializer_list<std::string> i1);
+    StrBlob(initializer_list<string> i1);
     StrBlob(const StrBlob&);
     StrBlob& operator=(const StrBlob&);
-    std::string& operator[](size_t n) { return (*data)[n]; }
-    const std::string& operator[](size_t n) const { return (*data)[n]; }
+    string& operator[](size_t n) { return (*data)[n]; }
+    const string& operator[](size_t n) const { return (*data)[n]; }
     size_type size() const { return data->size(); }
     bool empty() const { return data->empty(); }
-    void push_back(const std::string &t) { data->push_back(t); }
-	void push_back(std::string &&t) { data->push_back(std::move(t)); }
+    void push_back(const string &t) { data->push_back(t); }
+	void push_back(string &&t) { data->push_back(std::move(t)); }
     void pop_back();
-    std::string& front();
-    std::string& back();
-    const std::string& front() const;
-    const std::string& back() const;
+    string& front();
+    string& back();
+    const string& front() const;
+    const string& back() const;
 	ConstStrBlobPtr begin();
 	ConstStrBlobPtr end();
 private:
-    std::shared_ptr<std::vector<std::string>> data;
-    void check(size_type i, const std::string &msg) const;
+    shared_ptr<vector<string>> data;
+    void check(size_type i, const string &msg) const;
 };
 
 class ConstStrBlobPtr {
@@ -2651,28 +2694,28 @@ public:
     friend bool operator!=(const ConstStrBlobPtr&, const ConstStrBlobPtr&);
     ConstStrBlobPtr() : curr(0) {}
     ConstStrBlobPtr(const StrBlob &a, size_t sz = 0) : wptr(a.data), curr(sz) {}
-    std::string& deref() const;
+    string& deref() const;
     ConstStrBlobPtr& incr();
     ConstStrBlobPtr& operator++();
     ConstStrBlobPtr& operator--();
     ConstStrBlobPtr operator++(int);
     ConstStrBlobPtr operator--(int);
-    const std::string& operator*() const {
+    const string& operator*() const {
         auto p = check(curr, "dereference past end");
         return (*p)[curr];
     }
-    const std::string* operator->() const {
+    const string* operator->() const {
         return & this->operator*();
     }
 private:
-    std::shared_ptr<std::vector<std::string>> check(std::size_t, const std::string&) const;
-    std::weak_ptr<std::vector<std::string>> wptr;
-    std::size_t curr;
+    shared_ptr<vector<string>> check(size_t, const string&) const;
+    weak_ptr<vector<string>> wptr;
+    size_t curr;
 };
 
 class ConstStrBlobPtrPtr {
 public:
-    const std::string* operator->() const {
+    const string* operator->() const {
         return p->operator->();
     }
 private:
@@ -2685,32 +2728,32 @@ ConstStrBlobPtr StrBlob::end() {
     return ret;
 }
 
-StrBlob::StrBlob(): data(std::make_shared<std::vector<std::string>>()) {};
-StrBlob::StrBlob(std::initializer_list<std::string> i1): data(std::make_shared<std::vector<std::string>>(i1)) {};
-StrBlob::StrBlob(const StrBlob& sb) { data = std::make_shared<std::vector<std::string>>(*sb.data); }
-StrBlob& StrBlob::operator=(const StrBlob& sb) { data = std::make_shared<std::vector<std::string>>(*sb.data); return *this; }
+StrBlob::StrBlob(): data(make_shared<vector<string>>()) {};
+StrBlob::StrBlob(initializer_list<string> i1): data(make_shared<vector<string>>(i1)) {};
+StrBlob::StrBlob(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); }
+StrBlob& StrBlob::operator=(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); return *this; }
 
-void StrBlob::check(size_type i, const std::string &msg) const {
+void StrBlob::check(size_type i, const string &msg) const {
     if (i >= data->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
 }
 
-std::string& StrBlob::front() {
+string& StrBlob::front() {
     check(0, "front on empty StrBlob");
     return data->front();
 }
 
-std::string& StrBlob::back() {
+string& StrBlob::back() {
     check(0, "back on empty StrBlob");
     return data->back();
 }
 
-const std::string& StrBlob::front() const {
+const string& StrBlob::front() const {
     check(0, "front on empty StrBlob");
     return data->front();
 }
 
-const std::string& StrBlob::back() const {
+const string& StrBlob::back() const {
     check(0, "back on empty StrBlob");
     return data->back();
 }
@@ -2720,16 +2763,16 @@ void StrBlob::pop_back() {
     return data->pop_back();
 }
 
-std::shared_ptr<std::vector<std::string>> ConstStrBlobPtr::check(std::size_t i, const std::string& msg) const {
+shared_ptr<vector<string>> ConstStrBlobPtr::check(size_t i, const string& msg) const {
     auto ret = wptr.lock();
     if (!ret)
-        throw std::runtime_error("unbound StrBlobPtr");
+        throw runtime_error("unbound StrBlobPtr");
     if (i >= ret->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
     return ret;
 }
 
-std::string& ConstStrBlobPtr::deref() const {
+string& ConstStrBlobPtr::deref() const {
     auto p = check(curr, "dereference past end");
     return (*p)[curr];
 }
@@ -2781,7 +2824,7 @@ bool operator!=(const ConstStrBlobPtr &lhs, const ConstStrBlobPtr &rhs) {
 }
 
 bool operator<(const StrBlob &lhs, const StrBlob &rhs) {
-    return std::lexicographical_compare(lhs.data->begin(), lhs.data->end(), rhs.data->begin(), rhs.data->end());
+    return lexicographical_compare(lhs.data->begin(), lhs.data->end(), rhs.data->begin(), rhs.data->end());
 }
 
 bool operator>(const StrBlob &lhs, const StrBlob &rhs) {
@@ -2809,16 +2852,18 @@ bool operator>=(const StrBlob &lhs, const StrBlob &rhs) {
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 struct if_then_else {
-    std::string operator() (const bool a, const std::string b, const std::string c) {
+    string operator() (const bool a, const string b, const string c) {
         return a ? b : c;
     }
 };
 
 int main() {
     if_then_else obj;
-    std::cout << obj(true, "a", "b") << std::endl;
-    std::cout << obj(false, "a", "b") << std::endl;
+    cout << obj(true, "a", "b") << endl;
+    cout << obj(false, "a", "b") << endl;
     return 0;
 }
 ```
@@ -2829,21 +2874,23 @@ int main() {
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 struct ReadString {
 public:
-    ReadString(std::istream &i = std::cin) : is(i) {}
-    const std::string& operator() () {
+    ReadString(istream &i = cin) : is(i) {}
+    const string& operator() () {
         is >> str;
         return str;
     }
 private:
-    std::istream &is;
-    std::string str;
+    istream &is;
+    string str;
 };
 
 int main() {
     ReadString obj;
-    std::cout << obj() << std::endl;
+    cout << obj() << endl;
     return 0;
 }
 ```
@@ -2855,28 +2902,30 @@ int main() {
 #include <vector>
 #include <string>
 
+using namespace std;
+
 struct ReadString {
 public:
-    ReadString(std::istream &i = std::cin) : is(i) {}
-    const std::string operator() () {
-        std::string s;
+    ReadString(istream &i = cin) : is(i) {}
+    const string operator() () {
+        string s;
         getline(is, s);
         return s;
     }
 private:
-    std::istream &is;
+    istream &is;
 };
 
 int main() {
     ReadString obj;
-    std::vector<std::string> v;
-    std::string s;
+    vector<string> v;
+    string s;
     do {
         s = obj();
         v.push_back(s);
     } while (!s.empty());
     for (const auto &i : v) {
-        std::cout << i << std::endl;
+        cout << i << endl;
     }
     return 0;
 }
@@ -2889,6 +2938,8 @@ int main() {
 #include <algorithm>
 #include <vector>
 
+using namespace std;
+
 class Equal {
 public:
     Equal(int i) : num(i) {}
@@ -2898,12 +2949,12 @@ private:
 };
 
 int main() {
-    std::vector<int> v = {1,1,2,3,5};
-    std::replace_if(v.begin(), v.end(), Equal(1), 5);
+    vector<int> v = {1,1,2,3,5};
+    replace_if(v.begin(), v.end(), Equal(1), 5);
     for (const auto &i : v) {
-        std::cout << i << " ";
+        cout << i << " ";
     }
-    std::cout << std::endl;
+    cout << endl;
     return 0;
 }
 ```
@@ -2917,10 +2968,12 @@ int main() {
 #include <vector>
 #include <string>
 
+using namespace std;
+
 class CompareString {
 public:
     CompareString(size_t n) : sz(n) {}
-    bool operator() (const std::string &s) const {
+    bool operator() (const string &s) const {
         return s.size() == sz;
     }
 private:
@@ -2928,9 +2981,9 @@ private:
 };
 
 int main() {
-    std::ifstream ifs("./data/14-38");
-    std::vector<std::string> v;
-    std::string s;
+    ifstream ifs("test.txt");
+    vector<string> v;
+    string s;
     while (ifs >> s) {
         v.push_back(s);
     }
@@ -2943,7 +2996,7 @@ int main() {
                 ++iter;
             }
         }
-        std::cout << "length" << i << ":" << n << std::endl;
+        cout << "length" << i << ":" << n << endl;
     }
     return 0;
 }
@@ -2958,10 +3011,12 @@ int main() {
 #include <vector>
 #include <string>
 
+using namespace std;
+
 class CompareString1 {
 public:
     CompareString1(size_t n) : sz(n) {}
-    bool operator() (const std::string &s) const {
+    bool operator() (const string &s) const {
         return s.size() < sz;
     }
 private:
@@ -2971,7 +3026,7 @@ private:
 class CompareString2 {
 public:
     CompareString2(size_t n) : sz(n) {}
-    bool operator() (const std::string &s) const {
+    bool operator() (const string &s) const {
         return s.size() >= sz;
     }
 private:
@@ -2980,9 +3035,9 @@ private:
 
 
 int main() {
-    std::ifstream ifs("./data/14-39");
-    std::vector<std::string> v;
-    std::string s;
+    ifstream ifs("./data/14-39");
+    vector<string> v;
+    string s;
     while (ifs >> s) {
         v.push_back(s);
     }
@@ -2995,7 +3050,7 @@ int main() {
             ++iter;
         }
     }
-    std::cout << "length1~9" << ":" << n << std::endl;
+    cout << "length1~9" << ":" << n << endl;
     
 
     n = 0;
@@ -3006,7 +3061,7 @@ int main() {
             ++iter;
         }
     }
-    std::cout << "length>10" << ":" << n << std::endl;
+    cout << "length>10" << ":" << n << endl;
     return 0;
 }
 ```
@@ -3019,47 +3074,49 @@ int main() {
 #include <vector>
 #include <string>
 
+using namespace std;
+
 class CompareString {
 public:
-    bool operator() (const std::string a, const std::string b) { return a.size() < b.size(); }
+    bool operator() (const string a, const string b) { return a.size() < b.size(); }
 };
 
 class BiggerString {
 public:
-    BiggerString(std::vector<std::string>::size_type n) : sz(n) {}
-    bool operator() (const std::string &s) { return s.size() >= sz; }
+    BiggerString(vector<string>::size_type n) : sz(n) {}
+    bool operator() (const string &s) { return s.size() >= sz; }
 private:
-    std::vector<std::string>::size_type sz;
+    vector<string>::size_type sz;
 };
 
 class PrintString {
 public:
-    PrintString(std::ostream &o = std::cout) : os(o) {}
-    void operator() (const std::string s) { os << s << " "; }
+    PrintString(ostream &o = cout) : os(o) {}
+    void operator() (const string s) { os << s << " "; }
 private:
-    std::ostream &os;
+    ostream &os;
 };
 
-void elimDups(std::vector<std::string> &);
-void biggies(std::vector<std::string> &, std::vector<std::string>::size_type);
+void elimDups(vector<string> &);
+void biggies(vector<string> &, vector<string>::size_type);
 
 int main() {
-    std::vector<std::string> words;
-    std::string s;
-    while (std::cin >> s) {
+    vector<string> words;
+    string s;
+    while (cin >> s) {
         words.push_back(s);
     }
     biggies(words, 4);
     return 0;
 }
 
-void elimDups(std::vector<std::string> &words) {
+void elimDups(vector<string> &words) {
     sort(words.begin(), words.end());
     auto end_unique = unique(words.begin(), words.end());
     words.erase(end_unique, words.end());
 }
 
-void biggies(std::vector<std::string> &words, std::vector<std::string>::size_type sz) {
+void biggies(vector<string> &words, vector<string>::size_type sz) {
     elimDups(words);
     stable_sort(words.begin(), words.end(), CompareString());
     auto wc = find_if(words.begin(), words.end(), BiggerString(sz));
@@ -3080,20 +3137,22 @@ void biggies(std::vector<std::string> &words, std::vector<std::string>::size_typ
 #include <vector>
 #include <string>
 
+using namespace std;
+
 int main() {
-    std::vector<int> v1{1,2,4,8,16,32,64,128,256,512,1024,2048};
-    std::vector<std::string> v2{"pooh", "pooh", "test1", "pooh", "test2"};
-    std::vector<int> v3{1,2,4,8,16};
-    std::vector<int> v4(v3.size());
-    std::cout << std::count_if(v1.begin(), v1.end(),
-                               std::bind(std::greater<int>(), std::placeholders::_1, 1024))
-              << std::endl;
-    std::cout << *(std::find_if(v2.begin(), v2.end(),
-                                std::bind(std::not_equal_to<std::string>(), std::placeholders::_1, "pooh")))
-              << std::endl;
-    std::transform(v3.begin(), v3.end(), v4.begin(), std::bind(std::multiplies<int>(), std::placeholders::_1, 2));
-    std::for_each(v4.begin(), v4.end(), [](const int a) { std::cout << a << " "; });
-    std::cout << std::endl;
+    vector<int> v1{1,2,4,8,16,32,64,128,256,512,1024,2048};
+    vector<string> v2{"pooh", "pooh", "test1", "pooh", "test2"};
+    vector<int> v3{1,2,4,8,16};
+    vector<int> v4(v3.size());
+    cout << count_if(v1.begin(), v1.end(),
+                               bind(greater<int>(), placeholders::_1, 1024))
+              << endl;
+    cout << *(find_if(v2.begin(), v2.end(),
+                                bind(not_equal_to<string>(), placeholders::_1, "pooh")))
+              << endl;
+    transform(v3.begin(), v3.end(), v4.begin(), bind(multiplies<int>(), placeholders::_1, 2));
+    for_each(v4.begin(), v4.end(), [](const int a) { cout << a << " "; });
+    cout << endl;
     return 0;
 }
 ```
@@ -3106,12 +3165,14 @@ int main() {
 #include <functional>
 #include <vector>
 
+using namespace std;
+
 int main() {
-    std::vector<int> v{2,4,8};
+    vector<int> v{2,4,8};
     int input;
-    std::cin >> input;
-    std::modulus<int> mod;
-    std::cout << (std::find_if(v.begin(), v.end(), [&mod, input](const int &i) { return mod(input,i); }) == v.end()) << std::endl;
+    cin >> input;
+    modulus<int> mod;
+    cout << (find_if(v.begin(), v.end(), [&mod, input](const int &i) { return mod(input,i); }) == v.end()) << endl;
     return 0;
 }
 ```
@@ -3124,6 +3185,8 @@ int main() {
 #include <map>
 #include <string>
 
+using namespace std;
+
 int add(int, int);
 
 int main() {
@@ -3133,18 +3196,18 @@ int main() {
             return denominator / divisor;
         }
     };
-    std::map<std::string, std::function<int(int,int)>> binops = {
+    map<string, function<int(int,int)>> binops = {
         {"+", add},
-        {"-", std::minus<int>()},
+        {"-", minus<int>()},
         {"*", [](int i, int j) { return i*j; }},
         {"/", divide()},
         {"%", mod}
     };
-    std::cout << binops["+"](10,5) << std::endl;
-    std::cout << binops["-"](10,5) << std::endl;
-    std::cout << binops["*"](10,5) << std::endl;
-    std::cout << binops["/"](10,5) << std::endl;
-    std::cout << binops["%"](10,5) << std::endl;
+    cout << binops["+"](10,5) << endl;
+    cout << binops["-"](10,5) << endl;
+    cout << binops["*"](10,5) << endl;
+    cout << binops["/"](10,5) << endl;
+    cout << binops["%"](10,5) << endl;
     return 0;
 }
 
@@ -3155,36 +3218,38 @@ int add(int i, int j) {
 
 ### Q45
 
-```c++
 // bookNo
 // revenue/units_sold
 
+```c++
 #ifndef SALES_DATA_H
 #define SALES_DATA_H
 
 #include <string>
 
+using namespace std;
+
 struct Sales_data {
 
-    friend std::istream& operator>>(std::istream&, Sales_data&);
-    friend std::ostream& operator<<(std::ostream&, const Sales_data&);
+    friend istream& operator>>(istream&, Sales_data&);
+    friend ostream& operator<<(ostream&, const Sales_data&);
     friend Sales_data operator+(const Sales_data&, const Sales_data&);
 
 public:
-    Sales_data(std::string s, unsigned n, double p) :
+    Sales_data(string s, unsigned n, double p) :
                 bookNo(s), units_sold(n), revenue(p*n) {};
     Sales_data() : Sales_data("", 0, 0) {}
-    Sales_data(std::string s) : Sales_data(s, 0, 0) {}
-    Sales_data(std::istream &is) : Sales_data() { is >> *this; }
-    std::string isbn() const { return bookNo; }
+    Sales_data(string s) : Sales_data(s, 0, 0) {}
+    Sales_data(istream &is) : Sales_data() { is >> *this; }
+    string isbn() const { return bookNo; }
     Sales_data& operator+=(const Sales_data&);
-    Sales_data& operator=(const std::string&);
-    explicit operator std::string() const { return bookNo; }
+    Sales_data& operator=(const string&);
+    explicit operator string() const { return bookNo; }
     explicit operator double() const { return avg_price(); }
 
 private:
     inline double avg_price() const;
-    std::string bookNo;
+    string bookNo;
     unsigned units_sold = 0;
     double revenue = 0.0;
 
@@ -3199,7 +3264,7 @@ inline double Sales_data::avg_price() const {
     }
 }
 
-std::istream& operator>>(std::istream &is, Sales_data &item) {
+istream& operator>>(istream &is, Sales_data &item) {
 	double price = 0;
 	is >> item.bookNo >> item.units_sold >> price;
     if (is) {
@@ -3211,7 +3276,7 @@ std::istream& operator>>(std::istream &is, Sales_data &item) {
 	return is;
 }
 
-std::ostream& operator<<(std::ostream &os, const Sales_data &item) {
+ostream& operator<<(ostream &os, const Sales_data &item) {
 	os << item.isbn() << " " << item.units_sold << " " << item.revenue << " " << item.avg_price();
 	return os;
 }
@@ -3228,7 +3293,7 @@ Sales_data& Sales_data::operator+=(const Sales_data &rhs) {
     return *this;
 }
 
-Sales_data& Sales_data::operator=(const std::string &s) {
+Sales_data& Sales_data::operator=(const string &s) {
     *this = Sales_data(s);
     return *this;
 }
@@ -3256,10 +3321,12 @@ Sales_data& Sales_data::operator=(const std::string &s) {
 
 #include <string>
 
+using namespace std;
+
 class Book {
 
-    friend std::istream& operator>>(std::istream&, Book&);
-    friend std::ostream& operator<<(std::ostream&, const Book&);
+    friend istream& operator>>(istream&, Book&);
+    friend ostream& operator<<(ostream&, const Book&);
     friend bool operator==(const Book&, const Book&);
     friend bool operator!=(const Book&, const Book&);
     friend bool operator<(const Book&, const Book&);
@@ -3269,21 +3336,21 @@ class Book {
 
 public:
     Book() = default;
-    Book(unsigned int a, std::string b, std::string c) : 
+    Book(unsigned int a, string b, string c) : 
         no(a), name(b), author(c) {}
-    Book(std::istream &is) { is >> *this; }
+    Book(istream &is) { is >> *this; }
     Book& operator=(const Book &);
     Book& operator=(Book&&) noexcept;
     explicit operator bool() const { return no; }
 
 private:
     unsigned int no;
-    std::string name;
-    std::string author;
+    string name;
+    string author;
 
 };
 
-std::istream& operator>>(std::istream &is, Book &book) {
+istream& operator>>(istream &is, Book &book) {
     is >> book.no >> book.name >> book.author;
     if (!is) {
         book = Book();
@@ -3291,7 +3358,7 @@ std::istream& operator>>(std::istream &is, Book &book) {
     return is;
 }
 
-std::ostream& operator<<(std::ostream &os, const Book &book) {
+ostream& operator<<(ostream &os, const Book &book) {
     os << book.no << " " << book.name << " " << book.author;
     return os;
 }
@@ -3329,9 +3396,9 @@ Book& Book::operator=(const Book &book) {
 
 Book& Book::operator=(Book &&book) noexcept {
     if (this != &book) {
-        no = std::move(book.no);
-        name = std::move(book.name);
-        author = std::move(book.author);
+        no = move(book.no);
+        name = move(book.name);
+        author = move(book.author);
     }
     return *this;
 }
@@ -3372,6 +3439,8 @@ float operator+(float, int) LongDouble->float,SmallInt->int
 ```c++
 #include <iostream>
 
+using namespace std;
+
 class SmallInt {
     friend SmallInt operator+(const SmallInt &s1, const SmallInt &s2) {
         SmallInt sum(s1.val+s2.val);
@@ -3381,15 +3450,15 @@ public:
     SmallInt(int i = 0) : val(i) {}
     operator int() const { return val; }
 private:
-    std::size_t val;
+    size_t val;
 };
 
 
 int main() {
     SmallInt s1;
     double d1 = s1 + SmallInt(3.14);
-    // double d2 = s1.operator int() + 3.14;
-    double d2 = static_cast<int>(s1) + 3.14;
+    double d2 = s1.operator int() + 3.14;
+    double d3 = static_cast<int>(s1) + 3.14;
     return 0;
 }
 ```
