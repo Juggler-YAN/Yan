@@ -17,9 +17,12 @@ public:
     typedef vector<string>::size_type size_type;
     StrBlob();
     StrBlob(initializer_list<string> i1);
+    StrBlob(const StrBlob&);
+    StrBlob& operator=(const StrBlob&);
     size_type size() const { return data->size(); }
     bool empty() const { return data->empty(); }
     void push_back(const string &t) { data->push_back(t); }
+	void push_back(string &&t) { data->push_back(std::move(t)); }
     void pop_back();
     string& front();
     string& back();
@@ -52,6 +55,8 @@ ConstStrBlobPtr StrBlob::end() {
 
 StrBlob::StrBlob(): data(make_shared<vector<string>>()) {};
 StrBlob::StrBlob(initializer_list<string> i1): data(make_shared<vector<string>>(i1)) {};
+StrBlob::StrBlob(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); }
+StrBlob& StrBlob::operator=(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); return *this; }
 
 void StrBlob::check(size_type i, const string &msg) const {
     if (i >= data->size())

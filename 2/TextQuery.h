@@ -10,18 +10,16 @@
 #include <string>
 #include <map>
 #include <set>
-#include "StrBlob.h"
-
-using namespace std;
+#include "StrVec.h"
 
 class QueryResult;
 class TextQuery {
 public:
-    using line_no = StrBlob::size_type;
+    using line_no = size_t;
     TextQuery(ifstream&);
     QueryResult query(const string&) const;
 private:
-    StrBlob file;
+    shared_ptr<StrVec> file;
     map<string, shared_ptr<set<line_no>>> wm;
 };
 
@@ -30,22 +28,19 @@ friend ostream& print(ostream&, const QueryResult&);
 public:
     QueryResult(string s,
                 shared_ptr<set<TextQuery::line_no>> p,
-                StrBlob f) :
+                shared_ptr<StrVec> f) :
         sought(s), lines(p), file(f) {}
-    set<StrBlob::size_type>::iterator begin() const { return lines->begin(); }
-    set<StrBlob::size_type>::iterator end() const { return lines->end(); }
-    shared_ptr<StrBlob> get_file() const { return make_shared<StrBlob>(file); }
 private:
     string sought;
     shared_ptr<set<TextQuery::line_no>> lines;
-    StrBlob file;
+    shared_ptr<StrVec> file;
 };
 
-TextQuery::TextQuery(ifstream &is) {
+TextQuery::TextQuery(ifstream &is) : file(new StrVec) {
     string text;
     while (getline(is, text)) {
-        file.push_back(text);
-        int n = file.size() - 1;
+        file->push_back(text);
+        int n = file->size() - 1;
         istringstream line(text);
         string word;
         while (line >> word) {
@@ -73,10 +68,8 @@ string make_plural(size_t ctr, const string &word, const string &ending) {
 ostream &print(ostream & os, const QueryResult &qr) {
     os << qr.sought << " occurs " << qr.lines->size() << " "
         << make_plural(qr.lines->size(), "times", "s") << endl;
-    for (auto num : *qr.lines) {
-        ConstStrBlobPtr p(qr.file, num);
-        os << "\t(line " << num+1 << ") " << p.deref() << endl;
-    }
+    for (auto num : *qr.lines)
+        os << "\t(line " << num+1 << ") " << *(qr.file->begin()+num) << endl;
     return os;
 }
 

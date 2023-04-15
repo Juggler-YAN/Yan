@@ -32,10 +32,10 @@ Point foo_bar(Point arg) //1：函数参数
 ```c++
 class HasPtr {
 public:
-    HasPtr(const std::string &s = std::string()) : ps(new std::string(s)), i(0) { }
-    HasPtr(const HasPtr& hp) : ps(new std::string(*hp.ps)), i(hp.i) { }
+    HasPtr(const string &s = string()) : ps(new string(s)), i(0) { }
+    HasPtr(const HasPtr& hp) : ps(new string(*hp.ps)), i(hp.i) { }
 private:
-    std::string *ps;
+    string *ps;
     int i;
 };
 ```
@@ -56,11 +56,11 @@ private:
 ```c++
 class HasPtr {
 public:
-    HasPtr(const std::string &s = std::string()) : ps(new std::string(s)), i(0) { }
-    HasPtr(const HasPtr& hp) : ps(new std::string(*hp.ps)), i(hp.i) { }
+    HasPtr(const string &s = string()) : ps(new string(s)), i(0) { }
+    HasPtr(const HasPtr& hp) : ps(new string(*hp.ps)), i(hp.i) { }
     HasPtr& operator=(const HasPtr& hp) {
         if (this != &hp) {
-            std::string *temp = new std::string(*hp.ps);
+            string *temp = new string(*hp.ps);
             delete ps;
             ps = temp;
             i = hp.i;
@@ -68,7 +68,7 @@ public:
         return *this;
     }
 private:
-    std::string *ps;
+    string *ps;
     int i;
 };
 ```
@@ -88,11 +88,11 @@ StrBlob对象销毁时，shared_ptr-1，直到为0时，对象将销毁；StrBlo
 ```c++
 class HasPtr {
 public:
-    HasPtr(const std::string &s = std::string()) : ps(new std::string(s)), i(0) {}
-    HasPtr(const HasPtr& hp) : ps(new std::string(*hp.ps)), i(hp.i) {}
+    HasPtr(const string &s = string()) : ps(new string(s)), i(0) {}
+    HasPtr(const HasPtr& hp) : ps(new string(*hp.ps)), i(hp.i) {}
     HasPtr& operator=(const HasPtr& hp) {
         if (this != &hp) {
-            std::string *temp = new std::string(*hp.ps);
+            string *temp = new string(*hp.ps);
             delete ps;
             ps = temp;
             i = hp.i;
@@ -101,7 +101,7 @@ public:
     }
     ~HasPtr() { delete ps; }
 private:
-    std::string *ps;
+    string *ps;
     int i;
 };
 ```
@@ -117,23 +117,25 @@ private:
 #include <string>
 #include <vector>
 
+using namespace std;
+
 struct X {
-	X() { std::cout << "X()" << std::endl; }
-	X(const X&) { std::cout << "X(const X&)" << std::endl; }
+	X() { cout << "X()" << endl; }
+	X(const X&) { cout << "X(const X&)" << endl; }
 	X& operator=(const X &x)
 	{
-		std::cout << "X& operator=(const X &x)" << std::endl;
+		cout << "X& operator=(const X &x)" << endl;
 		return *this;
 	}
-	~X() { std::cout << "~x()" << std::endl; }
+	~X() { cout << "~x()" << endl; }
 };
 
 void fun1(X x) {
-	std::cout << "void fun1(X x)" << std::endl;
+	cout << "void fun1(X x)" << endl;
 }
 
 void fun2(X &x) {
-	std::cout << "void fun2(X &x)" << std::endl;
+	cout << "void fun2(X &x)" << endl;
 }
 
 int main() {
@@ -142,7 +144,7 @@ int main() {
 	fun2(x1);
 	X *x2 = new X();
 	{
-		std::vector<X> v;
+		vector<X> v;
 		v.reserve(2);
 		v.push_back(x1);
 		v.push_back(*x2);
@@ -150,7 +152,6 @@ int main() {
 	delete x2;
 	return 0;
 }
-
 ```
 
 ### Q14
@@ -170,15 +171,17 @@ int main() {
 ```c++
 #include <iostream>
 
+using namespace std;
+
 class numbered {
 friend void f (numbered);
 public:
-    numbered() : mysn(std::rand()) {}
+    numbered() : mysn(rand()) {}
 private:
     unsigned int mysn;
 };
 
-void f (numbered s) { std::cout << s.mysn << std::endl; }
+void f (numbered s) { cout << s.mysn << endl; }
 
 int main() {
     numbered a, b = a, c = b;
@@ -195,13 +198,13 @@ int main() {
 class numbered {
 friend void f (numbered);
 public:
-    numbered() : mysn(std::rand()) {}
-    numbered(const numbered&) : mysn(std::rand()) {}
+    numbered() : mysn(rand()) {}
+    numbered(const numbered&) : mysn(rand()) {}
 private:
     unsigned int mysn;
 };
 
-void f (numbered s) { std::cout << s.mysn << std::endl; }
+void f (numbered s) { cout << s.mysn << endl; }
 
 int main() {
     numbered a, b = a, c = b;
@@ -214,17 +217,19 @@ int main() {
 
 ```c++
 #include <iostream>
+
+using namespace std;
 
 class numbered {
 friend void f (const numbered&);
 public:
-    numbered() : mysn(std::rand()) {}
-    numbered(const numbered&) : mysn(std::rand()) {}
+    numbered() : mysn(rand()) {}
+    numbered(const numbered&) : mysn(rand()) {}
 private:
     unsigned int mysn;
 };
 
-void f (const numbered & s) { std::cout << s.mysn << std::endl; }
+void f (const numbered & s) { cout << s.mysn << endl; }
 
 int main() {
     numbered a, b = a, c = b;
@@ -241,19 +246,21 @@ int main() {
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Employee {
 friend void print(const Employee &e);
 public:
     Employee() { ID = n; n++; }
-    Employee(const std::string &s) { name = s; ID = n; n++; }
+    Employee(const string &s) { name = s; ID = n; n++; }
 private:
-    std::string name;
+    string name;
     int ID;
     static int n;
 };
 
 void print(const Employee &e) {
-    std::cout << e.name << " " << e.ID << std::endl;
+    cout << e.name << " " << e.ID << endl;
 }
 
 int Employee::n = 0;
@@ -275,21 +282,23 @@ int main() {
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Employee {
 friend void print(const Employee &e);
 public:
     Employee() { ID = n; n++; }
-    Employee(const std::string &s) { name = s; ID = n; n++; }
+    Employee(const string &s) { name = s; ID = n; n++; }
     Employee(const Employee&) = delete;
     Employee& operator=(const Employee&) = delete;
 private:
-    std::string name;
+    string name;
     int ID;
     static int n;
 };
 
 void print(const Employee &e) {
-    std::cout << e.name << " " << e.ID << std::endl;
+    cout << e.name << " " << e.ID << endl;
 }
 
 int Employee::n = 0;
@@ -316,10 +325,10 @@ int main() {
 ```c++
 class HasPtr {
 public:
-    HasPtr(const std::string &s = std::string()) : ps(new std::string(s)), i(0) {}
-    HasPtr(const HasPtr& hp) : ps(new std::string(*hp.ps)), i(hp.i) {}
+    HasPtr(const string &s = string()) : ps(new string(s)), i(0) {}
+    HasPtr(const HasPtr& hp) : ps(new string(*hp.ps)), i(hp.i) {}
     HasPtr& operator=(const HasPtr& hp) {
-        auto temp = new std::string(*hp.ps);
+        auto temp = new string(*hp.ps);
         delete ps;
         ps = temp;
         i = hp.i;
@@ -327,7 +336,7 @@ public:
     }
     ~HasPtr() { delete ps; }
 private:
-    std::string *ps;
+    string *ps;
     int i;
 };
 ```
@@ -354,41 +363,43 @@ private:
 #include <string>
 #include <stdexcept>
 
+using namespace std;
+
 class ConstStrBlobPtr;
 
 class StrBlob {
 public:
     friend class ConstStrBlobPtr;
-    typedef std::vector<std::string>::size_type size_type;
+    typedef vector<string>::size_type size_type;
     StrBlob();
-    StrBlob(std::initializer_list<std::string> i1);
+    StrBlob(initializer_list<string> i1);
     StrBlob(const StrBlob&);
     StrBlob& operator=(const StrBlob&);
     size_type size() const { return data->size(); }
     bool empty() const { return data->empty(); }
-    void push_back(const std::string &t) { data->push_back(t); }
+    void push_back(const string &t) { data->push_back(t); }
     void pop_back();
-    std::string& front();
-    std::string& back();
-    const std::string& front() const;
-    const std::string& back() const;
+    string& front();
+    string& back();
+    const string& front() const;
+    const string& back() const;
 	ConstStrBlobPtr begin();
 	ConstStrBlobPtr end();
 private:
-    std::shared_ptr<std::vector<std::string>> data;
-    void check(size_type i, const std::string &msg) const;
+    shared_ptr<vector<string>> data;
+    void check(size_type i, const string &msg) const;
 };
 
 class ConstStrBlobPtr {
 public:
     ConstStrBlobPtr() : curr(0) {}
     ConstStrBlobPtr(const StrBlob &a, size_t sz = 0) : wptr(a.data), curr(sz) {}
-    std::string& deref() const;
+    string& deref() const;
     ConstStrBlobPtr& incr();
 private:
-    std::shared_ptr<std::vector<std::string>> check(std::size_t, const std::string&) const;
-    std::weak_ptr<std::vector<std::string>> wptr;
-    std::size_t curr;
+    shared_ptr<vector<string>> check(size_t, const string&) const;
+    weak_ptr<vector<string>> wptr;
+    size_t curr;
 };
 
 ConstStrBlobPtr StrBlob::begin() { return ConstStrBlobPtr(*this); }
@@ -397,32 +408,32 @@ ConstStrBlobPtr StrBlob::end() {
     return ret;
 }
 
-StrBlob::StrBlob(): data(std::make_shared<std::vector<std::string>>()) {};
-StrBlob::StrBlob(std::initializer_list<std::string> i1): data(std::make_shared<std::vector<std::string>>(i1)) {};
-StrBlob::StrBlob(const StrBlob& sb) { data = std::make_shared<std::vector<std::string>>(*sb.data); }
-StrBlob& StrBlob::operator=(const StrBlob& sb) { data = std::make_shared<std::vector<std::string>>(*sb.data); return *this; }
+StrBlob::StrBlob(): data(make_shared<vector<string>>()) {};
+StrBlob::StrBlob(initializer_list<string> i1): data(make_shared<vector<string>>(i1)) {};
+StrBlob::StrBlob(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); }
+StrBlob& StrBlob::operator=(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); return *this; }
 
-void StrBlob::check(size_type i, const std::string &msg) const {
+void StrBlob::check(size_type i, const string &msg) const {
     if (i >= data->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
 }
 
-std::string& StrBlob::front() {
+string& StrBlob::front() {
     check(0, "front on empty StrBlob");
     return data->front();
 }
 
-std::string& StrBlob::back() {
+string& StrBlob::back() {
     check(0, "back on empty StrBlob");
     return data->back();
 }
 
-const std::string& StrBlob::front() const {
+const string& StrBlob::front() const {
     check(0, "front on empty StrBlob");
     return data->front();
 }
 
-const std::string& StrBlob::back() const {
+const string& StrBlob::back() const {
     check(0, "back on empty StrBlob");
     return data->back();
 }
@@ -432,16 +443,16 @@ void StrBlob::pop_back() {
     return data->pop_back();
 }
 
-std::shared_ptr<std::vector<std::string>> ConstStrBlobPtr::check(std::size_t i, const std::string& msg) const {
+shared_ptr<vector<string>> ConstStrBlobPtr::check(size_t i, const string& msg) const {
     auto ret = wptr.lock();
     if (!ret)
-        throw std::runtime_error("unbound StrBlobPtr");
+        throw runtime_error("unbound StrBlobPtr");
     if (i >= ret->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
     return ret;
 }
 
-std::string& ConstStrBlobPtr::deref() const {
+string& ConstStrBlobPtr::deref() const {
     auto p = check(curr, "dereference past end");
     return (*p)[curr];
 }
@@ -464,14 +475,14 @@ ConstStrBlobPtr& ConstStrBlobPtr::incr() {
 ```c++
 class HasPtr {
 public:
-    HasPtr(const std::string &s = std::string()) : ps(new std::string(s)), i(0), use(new std::size_t(1)) {}
-    HasPtr(const HasPtr& hp) : ps(hp.ps), i(hp.i), use(p.use) { ++*use; }
+    HasPtr(const string &s = string()) : ps(new string(s)), i(0), use(new size_t(1)) {}
+    HasPtr(const HasPtr& hp) : ps(hp.ps), i(hp.i), use(hp.use) { ++*use; }
     HasPtr& operator=(const HasPtr&);
     ~HasPtr();
 private:
-    std::string *ps;
+    string *ps;
     int i;
-    std::size_t *use;
+    size_t *use;
 };
 
 HasPtr& HasPtr::operator=(const HasPtr& hp) {
@@ -497,15 +508,14 @@ HasPtr::~HasPtr() {
 ### Q28
 
 ```c++
-(a)
 class TreeNode {
 public:
-    TreeNode() : value(std::string()), count(new int(1)), left(nullptr), right(nullptr) {}
+    TreeNode() : value(""), count(0), left(nullptr), right(nullptr) {}
     TreeNode(const TreeNode &tn) : value(tn.value), count(tn.count), left(tn.left), right(tn.right) { ++*count; }
     TreeNode& operator=(const TreeNode &);
     ~TreeNode();
 private:
-	std::string value;
+	string value;
 	int *count;
 	TreeNode *left;
 	TreeNode *right;	
@@ -541,7 +551,6 @@ TreeNode::~TreeNode() {
 ```
 
 ```c++
-(b)
 class BinStrTree{
 public:
     BinStrTree() : root(new TreeNode()) {}
@@ -571,17 +580,21 @@ BinStrTree& BinStrTree::operator=(const BinStrTree &bst) {
 #ifndef HASPTR_H
 #define HASPTR_H
 
+#include <string>
+
+using namespace std;
+
 class HasPtr {
 friend void swap(HasPtr&, HasPtr&);
 public:
-    HasPtr(const std::string &s = std::string()) : ps(new std::string(s)), i(0), use(new std::size_t(1)) {}
+    HasPtr(const string &s = string()) : ps(new string(s)), i(0), use(new size_t(1)) {}
     HasPtr(const HasPtr& hp) : ps(hp.ps), i(hp.i), use(hp.use) { ++*use; }
     HasPtr& operator=(const HasPtr&);
     ~HasPtr();
 private:
-    std::string *ps;
+    string *ps;
     int i;
-    std::size_t *use;
+    size_t *use;
 };
 
 HasPtr& HasPtr::operator=(const HasPtr& hp) {
@@ -608,7 +621,7 @@ void swap(HasPtr &lhs, HasPtr &rhs) {
     swap(lhs.ps, rhs.ps);
     swap(lhs.i, rhs.i);
     swap(lhs.use, rhs.use);
-    std::cout << "swap()" << std::endl;
+    cout << "swap()" << endl;
 }
 
 #endif
@@ -632,18 +645,22 @@ int main() {
 #ifndef HASPTR_H
 #define HASPTR_H
 
+#include <string>
+
+using namespace std;
+
 class HasPtr {
 friend void swap(HasPtr&, HasPtr&);
 friend bool operator<(const HasPtr&, const HasPtr&);
 public:
-    HasPtr(const std::string &s = std::string()) : ps(new std::string(s)), i(0), use(new std::size_t(1)) {}
+    HasPtr(const string &s = string()) : ps(new string(s)), i(0), use(new size_t(1)) {}
     HasPtr(const HasPtr& hp) : ps(hp.ps), i(hp.i), use(hp.use) { ++*use; }
     HasPtr& operator=(const HasPtr&);
     ~HasPtr();
 private:
-    std::string *ps;
+    string *ps;
     int i;
-    std::size_t *use;
+    size_t *use;
 };
 
 HasPtr& HasPtr::operator=(const HasPtr& hp) {
@@ -659,7 +676,7 @@ HasPtr& HasPtr::operator=(const HasPtr& hp) {
 }
 
 bool operator<(const HasPtr &lhs, const HasPtr &rhs) {
-    std::cout << "<" << std::endl;
+    cout << "<" << endl;
     return *lhs.ps < *rhs.ps;
 }
 
@@ -675,7 +692,7 @@ void swap(HasPtr &lhs, HasPtr &rhs) {
     swap(lhs.ps, rhs.ps);
     swap(lhs.i, rhs.i);
     swap(lhs.use, rhs.use);
-    std::cout << "swap()" << std::endl;
+    cout << "swap()" << endl;
 }
 
 #endif
@@ -689,8 +706,8 @@ void swap(HasPtr &lhs, HasPtr &rhs) {
 
 int main() {
     HasPtr a("b"), b("a");
-    std::vector<HasPtr> v{a, b};
-    std::sort(v.begin(), v.end());
+    vector<HasPtr> v{a, b};
+    sort(v.begin(), v.end());
     return 0;
 }
 ```
@@ -712,19 +729,21 @@ int main() {
 #include <string>
 #include <set>
 
+using namespace std;
+
 class Message {
     friend class Folder;
     friend void swap(Message &, Message &);
 public:
-    explicit Message(const std::string &str = "") : contents(str) {}
+    explicit Message(const string &str = "") : contents(str) {}
     Message (const Message&);
     Message& operator=(const Message&);
     ~Message();
     void save(Folder&);
     void remove(Folder&);
 private:
-    std::string contents;
-    std::set<Folder*> folders;
+    string contents;
+    set<Folder*> folders;
     void add_to_Folders(const Message&);
     void remove_from_Folders();
 };
@@ -801,21 +820,23 @@ void swap(Message &lhs, Message &rhs) {
 #include <string>
 #include <set>
 
+using namespace std;
+
 class Folder;
 
 class Message {
     friend class Folder;
     friend void swap(Message &, Message &);
 public:
-    explicit Message(const std::string &str = "") : contents(str) {}
+    explicit Message(const string &str = "") : contents(str) {}
     Message (const Message&);
     Message& operator=(const Message&);
     ~Message();
     void save(Folder&);
     void remove(Folder&);
 private:
-    std::string contents;
-    std::set<Folder*> folders;
+    string contents;
+    set<Folder*> folders;
     void add_to_Folders(const Message&);
     void remove_from_Folders();
 	void addFldr(Folder *f) { folders.insert(f); }
@@ -831,7 +852,7 @@ public:
     Folder& operator=(const Folder&);
     ~Folder();
 private:
-    std::set<Message*> messages;
+    set<Message*> messages;
     void add_to_Messages(const Folder&);
     void remove_from_Messages();
     void addMsg(Message *m) { messages.insert(m); };
@@ -942,29 +963,31 @@ void swap(Message &lhs, Message &rhs) {
 #include <memory>
 #include <string>
 
+using namespace std;
+
 class StrVec {
 public:
     StrVec() : elements(nullptr), first_free(nullptr), cap(nullptr) {};
     StrVec(const StrVec&);
     StrVec& operator=(const StrVec&);
     ~StrVec();
-    void push_back(const std::string&);
+    void push_back(const string&);
     size_t size() const { return first_free - elements; }
     size_t capacity() const { return cap - elements; }
-    std::string *begin() const { return elements; }
-    std::string *end() const { return first_free; }
+    string *begin() const { return elements; }
+    string *end() const { return first_free; }
     void reserve(size_t);
     void resize(size_t);
-    void resize(size_t, const std::string&);
+    void resize(size_t, const string&);
 private:
-    std::allocator<std::string> alloc;
+    allocator<string> alloc;
     void chk_n_alloc() { if (size() == capacity()) reallocate(); }
-    std::pair<std::string*, std::string*> alloc_n_copy(const std::string*, const std::string*);
+    pair<string*, string*> alloc_n_copy(const string*, const string*);
     void free();
     void reallocate();
-    std::string *elements;
-    std::string *first_free;
-    std::string *cap;
+    string *elements;
+    string *first_free;
+    string *cap;
 };
 
 StrVec::StrVec(const StrVec &s) {
@@ -985,7 +1008,7 @@ StrVec::~StrVec() {
     free();
 }
 
-void StrVec::push_back(const std::string& s) {
+void StrVec::push_back(const string& s) {
     chk_n_alloc();
     alloc.construct(first_free++, s);
 }
@@ -1005,10 +1028,10 @@ void StrVec::reserve(size_t n) {
 }
 
 void StrVec::resize(size_t n) {
-    resize(n, std::string());
+    resize(n, string());
 }
 
-void StrVec::resize(size_t n, const std::string& s) {
+void StrVec::resize(size_t n, const string& s) {
     if (n < size()) {
         while (n < size()) {
             alloc.destroy(--first_free);
@@ -1021,8 +1044,8 @@ void StrVec::resize(size_t n, const std::string& s) {
     }
 }
 
-std::pair<std::string*, std::string*> StrVec::alloc_n_copy
-        (const std::string *b, const std::string *e) {
+pair<string*, string*> StrVec::alloc_n_copy
+        (const string *b, const string *e) {
     auto data = alloc.allocate(e-b);
     return {data, uninitialized_copy(b, e, data)};
 }
@@ -1064,33 +1087,35 @@ void StrVec::reallocate() {
 #include <string>
 #include <initializer_list>
 
+using namespace std;
+
 class StrVec {
 public:
     StrVec() : elements(nullptr), first_free(nullptr), cap(nullptr) {};
-    StrVec(std::initializer_list<std::string>);
+    StrVec(initializer_list<string>);
     StrVec(const StrVec&);
     StrVec& operator=(const StrVec&);
     ~StrVec();
-    void push_back(const std::string&);
+    void push_back(const string&);
     size_t size() const { return first_free - elements; }
     size_t capacity() const { return cap - elements; }
-    std::string *begin() const { return elements; }
-    std::string *end() const { return first_free; }
+    string *begin() const { return elements; }
+    string *end() const { return first_free; }
     void reserve(size_t);
     void resize(size_t);
-    void resize(size_t, const std::string&);
+    void resize(size_t, const string&);
 private:
-    std::allocator<std::string> alloc;
+    allocator<string> alloc;
     void chk_n_alloc() { if (size() == capacity()) reallocate(); }
-    std::pair<std::string*, std::string*> alloc_n_copy(const std::string*, const std::string*);
+    pair<string*, string*> alloc_n_copy(const string*, const string*);
     void free();
     void reallocate();
-    std::string *elements;
-    std::string *first_free;
-    std::string *cap;
+    string *elements;
+    string *first_free;
+    string *cap;
 };
 
-StrVec::StrVec(std::initializer_list<std::string> l) {
+StrVec::StrVec(initializer_list<string> l) {
     auto newdata = alloc_n_copy(l.begin(), l.end());
     elements = newdata.first;
     first_free = cap = newdata.second;
@@ -1114,7 +1139,7 @@ StrVec::~StrVec() {
     free();
 }
 
-void StrVec::push_back(const std::string& s) {
+void StrVec::push_back(const string& s) {
     chk_n_alloc();
     alloc.construct(first_free++, s);
 }
@@ -1134,10 +1159,10 @@ void StrVec::reserve(size_t n) {
 }
 
 void StrVec::resize(size_t n) {
-    resize(n, std::string());
+    resize(n, string());
 }
 
-void StrVec::resize(size_t n, const std::string& s) {
+void StrVec::resize(size_t n, const string& s) {
     if (n < size()) {
         while (n < size()) {
             alloc.destroy(--first_free);
@@ -1150,8 +1175,8 @@ void StrVec::resize(size_t n, const std::string& s) {
     }
 }
 
-std::pair<std::string*, std::string*> StrVec::alloc_n_copy
-        (const std::string *b, const std::string *e) {
+pair<string*, string*> StrVec::alloc_n_copy
+        (const string *b, const string *e) {
     auto data = alloc.allocate(e-b);
     return {data, uninitialized_copy(b, e, data)};
 }
@@ -1188,6 +1213,19 @@ void StrVec::reallocate() {
 
 ### Q42
 
+```
+Alice Emma has long flowing red hair. 
+Her Daddy says when the wind blows 
+through her hair, it looks almost alive, 
+like a fiery bird in flight. 
+A beautiful fiery bird, he tells her, 
+magical but untamed. 
+"Daddy, shush, there is no such thing," 
+she tells him, at the same time wanting 
+him to tell her more.
+Shyly, she asks, "I mean, Daddy, is there?"
+```
+
 ```c++
 // StrVec.h
 #ifndef STRVEC_H
@@ -1201,30 +1239,30 @@ void StrVec::reallocate() {
 class StrVec {
 public:
     StrVec() : elements(nullptr), first_free(nullptr), cap(nullptr) {};
-    StrVec(std::initializer_list<std::string>);
+    StrVec(initializer_list<string>);
     StrVec(const StrVec&);
     StrVec& operator=(const StrVec&);
     ~StrVec();
-    void push_back(const std::string&);
+    void push_back(const string&);
     size_t size() const { return first_free - elements; }
     size_t capacity() const { return cap - elements; }
-    std::string *begin() const { return elements; }
-    std::string *end() const { return first_free; }
+    string *begin() const { return elements; }
+    string *end() const { return first_free; }
     void reserve(size_t);
     void resize(size_t);
-    void resize(size_t, const std::string&);
+    void resize(size_t, const string&);
 private:
-    std::allocator<std::string> alloc;
+    allocator<string> alloc;
     void chk_n_alloc() { if (size() == capacity()) reallocate(); }
-    std::pair<std::string*, std::string*> alloc_n_copy(const std::string*, const std::string*);
+    pair<string*, string*> alloc_n_copy(const string*, const string*);
     void free();
     void reallocate();
-    std::string *elements;
-    std::string *first_free;
-    std::string *cap;
+    string *elements;
+    string *first_free;
+    string *cap;
 };
 
-StrVec::StrVec(std::initializer_list<std::string> l) {
+StrVec::StrVec(initializer_list<string> l) {
     auto newdata = alloc_n_copy(l.begin(), l.end());
     elements = newdata.first;
     first_free = cap = newdata.second;
@@ -1248,7 +1286,7 @@ StrVec::~StrVec() {
     free();
 }
 
-void StrVec::push_back(const std::string& s) {
+void StrVec::push_back(const string& s) {
     chk_n_alloc();
     alloc.construct(first_free++, s);
 }
@@ -1259,7 +1297,7 @@ void StrVec::reserve(size_t n) {
     auto dest = newdata;
     auto elem = elements;
     for (size_t i = 0; i != size(); ++i) {
-        alloc.construct(dest++, std::move(*elem++));
+        alloc.construct(dest++, move(*elem++));
     }
     free();
     elements = newdata;
@@ -1268,10 +1306,10 @@ void StrVec::reserve(size_t n) {
 }
 
 void StrVec::resize(size_t n) {
-    resize(n, std::string());
+    resize(n, string());
 }
 
-void StrVec::resize(size_t n, const std::string& s) {
+void StrVec::resize(size_t n, const string& s) {
     if (n < size()) {
         while (n < size()) {
             alloc.destroy(--first_free);
@@ -1284,8 +1322,8 @@ void StrVec::resize(size_t n, const std::string& s) {
     }
 }
 
-std::pair<std::string*, std::string*> StrVec::alloc_n_copy
-        (const std::string *b, const std::string *e) {
+pair<string*, string*> StrVec::alloc_n_copy
+        (const string *b, const string *e) {
     auto data = alloc.allocate(e-b);
     return {data, uninitialized_copy(b, e, data)};
 }
@@ -1305,7 +1343,7 @@ void StrVec::reallocate() {
     auto dest = newdata;
     auto elem = elements;
     for (size_t i = 0; i != size(); ++i) {
-        alloc.construct(dest++, std::move(*elem++));
+        alloc.construct(dest++, move(*elem++));
     }
     free();
     elements = newdata;
@@ -1336,44 +1374,44 @@ class QueryResult;
 class TextQuery {
 public:
     using line_no = size_t;
-    TextQuery(std::ifstream&);
-    QueryResult query(const std::string&) const;
+    TextQuery(ifstream&);
+    QueryResult query(const string&) const;
 private:
-    std::shared_ptr<StrVec> file;
-    std::map<std::string, std::shared_ptr<std::set<line_no>>> wm;
+    shared_ptr<StrVec> file;
+    map<string, shared_ptr<set<line_no>>> wm;
 };
 
 class QueryResult {
-friend std::ostream& print(std::ostream&, const QueryResult&);
+friend ostream& print(ostream&, const QueryResult&);
 public:
-    QueryResult(std::string s,
-                std::shared_ptr<std::set<TextQuery::line_no>> p,
-                std::shared_ptr<StrVec> f) :
+    QueryResult(string s,
+                shared_ptr<set<TextQuery::line_no>> p,
+                shared_ptr<StrVec> f) :
         sought(s), lines(p), file(f) {}
 private:
-    std::string sought;
-    std::shared_ptr<std::set<TextQuery::line_no>> lines;
-    std::shared_ptr<StrVec> file;
+    string sought;
+    shared_ptr<set<TextQuery::line_no>> lines;
+    shared_ptr<StrVec> file;
 };
 
-TextQuery::TextQuery(std::ifstream &is) : file(new StrVec) {
-    std::string text;
+TextQuery::TextQuery(ifstream &is) : file(new StrVec) {
+    string text;
     while (getline(is, text)) {
         file->push_back(text);
         int n = file->size() - 1;
-        std::istringstream line(text);
-        std::string word;
+        istringstream line(text);
+        string word;
         while (line >> word) {
             auto &lines = wm[word];
             if (!lines)
-                lines.reset(new std::set<line_no>);
+                lines.reset(new set<line_no>);
             lines->insert(n);
         }
     }
 }
 
-QueryResult TextQuery::query(const std::string &sought) const {
-    static std::shared_ptr<std::set<line_no>> nodata(new std::set<line_no>);
+QueryResult TextQuery::query(const string &sought) const {
+    static shared_ptr<set<line_no>> nodata(new set<line_no>);
     auto loc = wm.find(sought);
     if (loc == wm.end())
         return QueryResult(sought, nodata, file);
@@ -1381,15 +1419,15 @@ QueryResult TextQuery::query(const std::string &sought) const {
         return QueryResult(sought, loc->second, file);
 }
 
-std::string make_plural(size_t ctr, const std::string &word, const std::string &ending) {
+string make_plural(size_t ctr, const string &word, const string &ending) {
     return (ctr > 1) ? word + ending : word;
 }
 
-std::ostream &print(std::ostream & os, const QueryResult &qr) {
+ostream &print(ostream & os, const QueryResult &qr) {
     os << qr.sought << " occurs " << qr.lines->size() << " "
-        << make_plural(qr.lines->size(), "times", "s") << std::endl;
+        << make_plural(qr.lines->size(), "times", "s") << endl;
     for (auto num : *qr.lines)
-        os << "\t(line " << num+1 << ") " << *(qr.file->begin()+num) << std::endl;
+        os << "\t(line " << num+1 << ") " << *(qr.file->begin()+num) << endl;
     return os;
 }
 
@@ -1401,21 +1439,21 @@ std::ostream &print(std::ostream & os, const QueryResult &qr) {
 #include <fstream>
 #include "TextQuery.h"
 
-void runQueries(std::ifstream &);
+void runQueries(ifstream &);
 
 int main() {
-    std::ifstream in("./data/13-42");
+    ifstream in("./test.txt");
     runQueries(in);
     return 0;
 }
 
-void runQueries(std::ifstream &infile) {
+void runQueries(ifstream &infile) {
     TextQuery tq(infile);
     while (true) {
-        std::cout << "enter word to look for, or q to quit: ";
-        std::string s;
-        if (!(std::cin >> s) || s == "q") break;
-        print(std::cout, tq.query(s)) << std::endl;
+        cout << "enter word to look for, or q to quit: ";
+        string s;
+        if (!(cin >> s) || s == "q") break;
+        print(cout, tq.query(s)) << endl;
     }
 }
 ```
@@ -1432,33 +1470,35 @@ void runQueries(std::ifstream &infile) {
 #include <string>
 #include <initializer_list>
 
+using namespace std;
+
 class StrVec {
 public:
     StrVec() : elements(nullptr), first_free(nullptr), cap(nullptr) {};
-    StrVec(std::initializer_list<std::string>);
+    StrVec(initializer_list<string>);
     StrVec(const StrVec&);
     StrVec& operator=(const StrVec&);
     ~StrVec();
-    void push_back(const std::string&);
+    void push_back(const string&);
     size_t size() const { return first_free - elements; }
     size_t capacity() const { return cap - elements; }
-    std::string *begin() const { return elements; }
-    std::string *end() const { return first_free; }
+    string *begin() const { return elements; }
+    string *end() const { return first_free; }
     void reserve(size_t);
     void resize(size_t);
-    void resize(size_t, const std::string&);
+    void resize(size_t, const string&);
 private:
-    std::allocator<std::string> alloc;
+    allocator<string> alloc;
     void chk_n_alloc() { if (size() == capacity()) reallocate(); }
-    std::pair<std::string*, std::string*> alloc_n_copy(const std::string*, const std::string*);
+    pair<string*, string*> alloc_n_copy(const string*, const string*);
     void free();
     void reallocate();
-    std::string *elements;
-    std::string *first_free;
-    std::string *cap;
+    string *elements;
+    string *first_free;
+    string *cap;
 };
 
-StrVec::StrVec(std::initializer_list<std::string> l) {
+StrVec::StrVec(initializer_list<string> l) {
     auto newdata = alloc_n_copy(l.begin(), l.end());
     elements = newdata.first;
     first_free = cap = newdata.second;
@@ -1482,7 +1522,7 @@ StrVec::~StrVec() {
     free();
 }
 
-void StrVec::push_back(const std::string& s) {
+void StrVec::push_back(const string& s) {
     chk_n_alloc();
     alloc.construct(first_free++, s);
 }
@@ -1502,10 +1542,10 @@ void StrVec::reserve(size_t n) {
 }
 
 void StrVec::resize(size_t n) {
-    resize(n, std::string());
+    resize(n, string());
 }
 
-void StrVec::resize(size_t n, const std::string& s) {
+void StrVec::resize(size_t n, const string& s) {
     if (n < size()) {
         while (n < size()) {
             alloc.destroy(--first_free);
@@ -1518,8 +1558,8 @@ void StrVec::resize(size_t n, const std::string& s) {
     }
 }
 
-std::pair<std::string*, std::string*> StrVec::alloc_n_copy
-        (const std::string *b, const std::string *e) {
+pair<string*, string*> StrVec::alloc_n_copy
+        (const string *b, const string *e) {
     auto data = alloc.allocate(e-b);
     return {data, uninitialized_copy(b, e, data)};
 }
@@ -1527,7 +1567,7 @@ std::pair<std::string*, std::string*> StrVec::alloc_n_copy
 void StrVec::free() {
 
     if (elements) {
-        std::for_each(elements, first_free, [this](std::string &p) { alloc.destroy(&p); });
+        for_each(elements, first_free, [this](string &p) { alloc.destroy(&p); });
         // for (auto p = first_free; p != elements; ) {
         //     alloc.destroy(--p);
         // }
@@ -1562,6 +1602,8 @@ void StrVec::reallocate() {
 #include <memory>
 #include <cstring>
 
+using namespace std;
+
 class String {
 public:
     String(): elements(nullptr), first_free(nullptr) {}
@@ -1572,8 +1614,8 @@ public:
     char * begin() const { return elements; }
     char * end() const { return first_free; }
 private:
-    std::allocator<char> alloc;
-    std::pair<char*, char*> alloc_n_copy(const char*, const char*);
+    allocator<char> alloc;
+    pair<char*, char*> alloc_n_copy(const char*, const char*);
     void free();
     char * elements;
     char * first_free;
@@ -1613,10 +1655,10 @@ void String::free() {
     }
 }
 
-std::pair<char*, char*> String::alloc_n_copy
+pair<char*, char*> String::alloc_n_copy
         (const char *b, const char *e) {
     auto data = alloc.allocate(e-b);
-    return {data, std::uninitialized_copy(b, e, data)};
+    return {data, uninitialized_copy(b, e, data)};
 }
 
 #endif
@@ -1647,6 +1689,8 @@ int&& r4 = vi[0] * f();
 #include <memory>
 #include <cstring>
 
+using namespace std;
+
 class String {
 public:
     String(): elements(nullptr), first_free(nullptr) {}
@@ -1657,8 +1701,8 @@ public:
     char * begin() const { return elements; }
     char * end() const { return first_free; }
 private:
-    std::allocator<char> alloc;
-    std::pair<char*, char*> alloc_n_copy(const char*, const char*);
+    allocator<char> alloc;
+    pair<char*, char*> alloc_n_copy(const char*, const char*);
     void free();
     char * elements;
     char * first_free;
@@ -1675,7 +1719,7 @@ String::String(const String &s) {
     auto newdata = alloc_n_copy(s.begin(), s.end());
     elements = newdata.first;
     first_free = newdata.second;
-    std::cout << "String(const String &s)" << std::endl;
+    cout << "String(const String &s)" << endl;
 }
 
 String& String::operator=(const String &s) {
@@ -1683,7 +1727,7 @@ String& String::operator=(const String &s) {
     free();
     elements = newdata.first;
     first_free = newdata.second;
-    std::cout << "=" << std::endl;
+    cout << "=" << endl;
     return *this;
 }
 
@@ -1700,10 +1744,10 @@ void String::free() {
     }
 }
 
-std::pair<char*, char*> String::alloc_n_copy
+pair<char*, char*> String::alloc_n_copy
         (const char *b, const char *e) {
     auto data = alloc.allocate(e-b);
-    return {data, std::uninitialized_copy(b, e, data)};
+    return {data, uninitialized_copy(b, e, data)};
 }
 
 #endif
@@ -1723,6 +1767,8 @@ std::pair<char*, char*> String::alloc_n_copy
 #include <memory>
 #include <cstring>
 
+using namespace std;
+
 class String {
 public:
     String(): elements(nullptr), first_free(nullptr) {}
@@ -1733,8 +1779,8 @@ public:
     char * begin() const { return elements; }
     char * end() const { return first_free; }
 private:
-    std::allocator<char> alloc;
-    std::pair<char*, char*> alloc_n_copy(const char*, const char*);
+    allocator<char> alloc;
+    pair<char*, char*> alloc_n_copy(const char*, const char*);
     void free();
     char * elements;
     char * first_free;
@@ -1751,7 +1797,7 @@ String::String(const String &s) {
     auto newdata = alloc_n_copy(s.begin(), s.end());
     elements = newdata.first;
     first_free = newdata.second;
-    std::cout << "String(const String &s)" << std::endl;
+    cout << "String(const String &s)" << endl;
 }
 
 String& String::operator=(const String &s) {
@@ -1759,7 +1805,7 @@ String& String::operator=(const String &s) {
     free();
     elements = newdata.first;
     first_free = newdata.second;
-    std::cout << "=" << std::endl;
+    cout << "=" << endl;
     return *this;
 }
 
@@ -1776,10 +1822,10 @@ void String::free() {
     }
 }
 
-std::pair<char*, char*> String::alloc_n_copy
+pair<char*, char*> String::alloc_n_copy
         (const char *b, const char *e) {
     auto data = alloc.allocate(e-b);
-    return {data, std::uninitialized_copy(b, e, data)};
+    return {data, uninitialized_copy(b, e, data)};
 }
 
 #endif
@@ -1791,7 +1837,7 @@ std::pair<char*, char*> String::alloc_n_copy
 #include "String.h"
 
 int main() {
-    std::vector<String> v;
+    vector<String> v;
     v.push_back("a");
     v.push_back("b");
     return 0;
@@ -1811,35 +1857,37 @@ int main() {
 #include <string>
 #include <initializer_list>
 
+using namespace std;
+
 class StrVec {
 public:
     StrVec() : elements(nullptr), first_free(nullptr), cap(nullptr) {};
-    StrVec(std::initializer_list<std::string>);
+    StrVec(initializer_list<string>);
     StrVec(const StrVec&);
     StrVec(StrVec&&) noexcept;
     StrVec& operator=(const StrVec&);
     StrVec& operator=(StrVec&&) noexcept;
     ~StrVec();
-    void push_back(const std::string&);
+    void push_back(const string&);
     size_t size() const { return first_free - elements; }
     size_t capacity() const { return cap - elements; }
-    std::string *begin() const { return elements; }
-    std::string *end() const { return first_free; }
+    string *begin() const { return elements; }
+    string *end() const { return first_free; }
     void reserve(size_t);
     void resize(size_t);
-    void resize(size_t, const std::string&);
+    void resize(size_t, const string&);
 private:
-    std::allocator<std::string> alloc;
+    allocator<string> alloc;
     void chk_n_alloc() { if (size() == capacity()) reallocate(); }
-    std::pair<std::string*, std::string*> alloc_n_copy(const std::string*, const std::string*);
+    pair<string*, string*> alloc_n_copy(const string*, const string*);
     void free();
     void reallocate();
-    std::string *elements;
-    std::string *first_free;
-    std::string *cap;
+    string *elements;
+    string *first_free;
+    string *cap;
 };
 
-StrVec::StrVec(std::initializer_list<std::string> l) {
+StrVec::StrVec(initializer_list<string> l) {
     auto newdata = alloc_n_copy(l.begin(), l.end());
     elements = newdata.first;
     first_free = cap = newdata.second;
@@ -1883,7 +1931,7 @@ StrVec::~StrVec() {
     free();
 }
 
-void StrVec::push_back(const std::string& s) {
+void StrVec::push_back(const string& s) {
     chk_n_alloc();
     alloc.construct(first_free++, s);
 }
@@ -1903,10 +1951,10 @@ void StrVec::reserve(size_t n) {
 }
 
 void StrVec::resize(size_t n) {
-    resize(n, std::string());
+    resize(n, string());
 }
 
-void StrVec::resize(size_t n, const std::string& s) {
+void StrVec::resize(size_t n, const string& s) {
     if (n < size()) {
         while (n < size()) {
             alloc.destroy(--first_free);
@@ -1919,8 +1967,8 @@ void StrVec::resize(size_t n, const std::string& s) {
     }
 }
 
-std::pair<std::string*, std::string*> StrVec::alloc_n_copy
-        (const std::string *b, const std::string *e) {
+pair<string*, string*> StrVec::alloc_n_copy
+        (const string *b, const string *e) {
     auto data = alloc.allocate(e-b);
     return {data, uninitialized_copy(b, e, data)};
 }
@@ -1928,7 +1976,7 @@ std::pair<std::string*, std::string*> StrVec::alloc_n_copy
 void StrVec::free() {
 
     if (elements) {
-        std::for_each(elements, first_free, [this](std::string &p) { alloc.destroy(&p); });
+        for_each(elements, first_free, [this](string &p) { alloc.destroy(&p); });
         // for (auto p = first_free; p != elements; ) {
         //     alloc.destroy(--p);
         // }
@@ -1975,8 +2023,8 @@ public:
     char * begin() const { return elements; }
     char * end() const { return first_free; }
 private:
-    std::allocator<char> alloc;
-    std::pair<char*, char*> alloc_n_copy(const char*, const char*);
+    allocator<char> alloc;
+    pair<char*, char*> alloc_n_copy(const char*, const char*);
     void free();
     char * elements;
     char * first_free;
@@ -1996,9 +2044,9 @@ String::String(const String &s) {
 }
 
 String::String(String &&s) noexcept {
-    alloc = std::move(s.alloc);
-    elements = std::move(s.elements);
-    first_free = std::move(s.first_free);
+    alloc = move(s.alloc);
+    elements = move(s.elements);
+    first_free = move(s.first_free);
     s.elements = s.first_free = nullptr;
 }
 
@@ -2013,9 +2061,9 @@ String& String::operator=(const String &s) {
 String& String::operator=(String &&s) noexcept {
     if (this != &s) {
         free();
-        alloc = std::move(s.alloc);
-        elements = std::move(s.elements);
-        first_free = std::move(s.first_free);
+        alloc = move(s.alloc);
+        elements = move(s.elements);
+        first_free = move(s.first_free);
         s.elements = s.first_free = nullptr;
     }
     return *this;
@@ -2034,10 +2082,10 @@ void String::free() {
     }
 }
 
-std::pair<char*, char*> String::alloc_n_copy
+pair<char*, char*> String::alloc_n_copy
         (const char *b, const char *e) {
     auto data = alloc.allocate(e-b);
-    return {data, std::uninitialized_copy(b, e, data)};
+    return {data, uninitialized_copy(b, e, data)};
 }
 
 #endif
@@ -2051,13 +2099,15 @@ std::pair<char*, char*> String::alloc_n_copy
 #include <string>
 #include <set>
 
+using namespace std;
+
 class Folder;
 
 class Message {
     friend class Folder;
     friend void swap(Message &, Message &);
 public:
-    explicit Message(const std::string &str = "") : contents(str) {}
+    explicit Message(const string &str = "") : contents(str) {}
     Message(const Message&);
     Message(Message &&);
     Message& operator=(const Message&);
@@ -2067,8 +2117,8 @@ public:
     void remove(Folder&);
     void move_Folders(Message*);
 private:
-    std::string contents;
-    std::set<Folder*> folders;
+    string contents;
+    set<Folder*> folders;
     void add_to_Folders(const Message&);
     void remove_from_Folders();
 	void addFldr(Folder *f) { folders.insert(f); }
@@ -2084,7 +2134,7 @@ public:
     Folder& operator=(const Folder&);
     ~Folder();
 private:
-    std::set<Message*> messages;
+    set<Message*> messages;
     void add_to_Messages(const Folder&);
     void remove_from_Messages();
     void addMsg(Message *m) { messages.insert(m); };
@@ -2211,6 +2261,8 @@ void swap(Message &lhs, Message &rhs) {
 #include <memory>
 #include <cstring>
 
+using namespace std;
+
 class String {
 public:
     String(): elements(nullptr), first_free(nullptr) {}
@@ -2223,8 +2275,8 @@ public:
     char * begin() const { return elements; }
     char * end() const { return first_free; }
 private:
-    std::allocator<char> alloc;
-    std::pair<char*, char*> alloc_n_copy(const char*, const char*);
+    allocator<char> alloc;
+    pair<char*, char*> alloc_n_copy(const char*, const char*);
     void free();
     char * elements;
     char * first_free;
@@ -2248,7 +2300,7 @@ String::String(String &&s) noexcept {
     elements = std::move(s.elements);
     first_free = std::move(s.first_free);
     s.elements = s.first_free = nullptr;
-    std::cout << "String(String &&s) noexcept" << std::endl;
+    cout << "String(String &&s) noexcept" << endl;
 }
 
 String& String::operator=(const String &s) {
@@ -2267,7 +2319,7 @@ String& String::operator=(String &&s) noexcept {
         first_free = std::move(s.first_free);
         s.elements = s.first_free = nullptr;
     }
-    std::cout << "String& operator=(String &&s) noexcept" << std::endl;
+    cout << "String& operator=(String &&s) noexcept" << endl;
     return *this;
 }
 
@@ -2284,10 +2336,10 @@ void String::free() {
     }
 }
 
-std::pair<char*, char*> String::alloc_n_copy
+pair<char*, char*> String::alloc_n_copy
         (const char *b, const char *e) {
     auto data = alloc.allocate(e-b);
-    return {data, std::uninitialized_copy(b, e, data)};
+    return {data, uninitialized_copy(b, e, data)};
 }
 
 #endif
@@ -2299,9 +2351,10 @@ std::pair<char*, char*> String::alloc_n_copy
 #include "String.h"
 
 int main() {
-    std::vector<String> v;
+    vector<String> v;
     v.push_back("a");
-    v.push_back("b");
+    String a;
+    v.push_back(a);
     return 0;
 }
 ```
@@ -2316,26 +2369,30 @@ int main() {
 
 ### Q53
 
-```c++
-// 交换需要给另一个不需要用到的变量赋值
+交换需要给另一个不需要用到的变量赋值
 
+```c++
 #ifndef HASPTR_H
 #define HASPTR_H
+
+#include <string>
+
+using namespace std;
 
 class HasPtr {
 friend void swap(HasPtr&, HasPtr&);
 friend bool operator<(const HasPtr&, const HasPtr&);
 public:
-    HasPtr(const std::string &s = std::string()) : ps(new std::string(s)), i(0), use(new std::size_t(1)) {}
+    HasPtr(const string &s = string()) : ps(new string(s)), i(0), use(new size_t(1)) {}
     HasPtr(const HasPtr &hp) : ps(hp.ps), i(hp.i), use(hp.use) { ++*use; }
     HasPtr(HasPtr &&hp) noexcept : ps(hp.ps), i(hp.i), use(hp.use) { hp.ps = nullptr; hp.use = nullptr; }
-    HasPtr& operator=(const HasPtr&hp) { swap(*this, hp); return *this; };
+    HasPtr& operator=(HasPtr &hp) { swap(*this, hp); return *this; };
     HasPtr& operator=(HasPtr&&) noexcept;
     ~HasPtr();
 private:
-    std::string *ps;
+    string *ps;
     int i;
-    std::size_t *use;
+    size_t *use;
 };
 
 HasPtr& HasPtr::operator=(HasPtr&& hp) noexcept {
@@ -2372,6 +2429,8 @@ void swap(HasPtr &lhs, HasPtr &rhs) {
 
 ### Q54
 
+二义性调用，函数无法匹配
+
 ```c++
 // HasPtr.h
 #ifndef HASPTR_H
@@ -2379,29 +2438,31 @@ void swap(HasPtr &lhs, HasPtr &rhs) {
 
 #include <string>
 
+using namespace std;
+
 class HasPtr {
 friend void swap(HasPtr&, HasPtr&);
 friend bool operator<(const HasPtr&, const HasPtr&);
 public:
-    HasPtr(const std::string &s = std::string()) : ps(new std::string(s)), i(0), use(new std::size_t(1)) {}
+    HasPtr(const string &s = string()) : ps(new string(s)), i(0), use(new size_t(1)) {}
     HasPtr(const HasPtr &hp) : ps(hp.ps), i(hp.i), use(hp.use) { ++*use; }
     HasPtr(HasPtr &&hp) noexcept : ps(hp.ps), i(hp.i), use(hp.use) { hp.ps = nullptr; hp.use = nullptr; }
-    HasPtr& operator=(HasPtr rhs) { swap(*this, rhs); return *this; };
+    HasPtr& operator=(HasPtr&hp) { swap(*this, hp); return *this; };
     HasPtr& operator=(HasPtr&&) noexcept;
     ~HasPtr();
 private:
-    std::string *ps;
+    string *ps;
     int i;
-    std::size_t *use;
+    size_t *use;
 };
 
 HasPtr& HasPtr::operator=(HasPtr&& hp) noexcept {
     if (this != &hp) {
         delete ps;
         delete use;
-        ps = hp.ps;
-        i = hp.i;
-        use = hp.use;
+        ps = std::move(hp.ps);
+        i = std::move(hp.i);
+        use = std::move(hp.use);
     }
     return *this;
 }
@@ -2427,20 +2488,6 @@ void swap(HasPtr &lhs, HasPtr &rhs) {
 #endif
 ```
 
-```c++
-#include <iostream>
-#include <algorithm>
-#include <vector>
-#include "HasPtr.h"
-
-int main() {
-    HasPtr a("a"), b("b");
-    std::vector<HasPtr> v{a, b};
-    sort(v.begin(), v.end());
-    return 0;
-}
-```
-
 ### Q55
 
 ```c++
@@ -2453,42 +2500,44 @@ int main() {
 #include <string>
 #include <stdexcept>
 
+using namespace std;
+
 class ConstStrBlobPtr;
 
 class StrBlob {
 public:
     friend class ConstStrBlobPtr;
-    typedef std::vector<std::string>::size_type size_type;
+    typedef vector<string>::size_type size_type;
     StrBlob();
-    StrBlob(std::initializer_list<std::string> i1);
+    StrBlob(initializer_list<string> i1);
     StrBlob(const StrBlob&);
     StrBlob& operator=(const StrBlob&);
     size_type size() const { return data->size(); }
     bool empty() const { return data->empty(); }
-    void push_back(const std::string &t) { data->push_back(t); }
-	void push_back(std::string &&t) { data->push_back(std::move(t)); }
+    void push_back(const string &t) { data->push_back(t); }
+	void push_back(string &&t) { data->push_back(std::move(t)); }
     void pop_back();
-    std::string& front();
-    std::string& back();
-    const std::string& front() const;
-    const std::string& back() const;
+    string& front();
+    string& back();
+    const string& front() const;
+    const string& back() const;
 	ConstStrBlobPtr begin();
 	ConstStrBlobPtr end();
 private:
-    std::shared_ptr<std::vector<std::string>> data;
-    void check(size_type i, const std::string &msg) const;
+    shared_ptr<vector<string>> data;
+    void check(size_type i, const string &msg) const;
 };
 
 class ConstStrBlobPtr {
 public:
     ConstStrBlobPtr() : curr(0) {}
     ConstStrBlobPtr(const StrBlob &a, size_t sz = 0) : wptr(a.data), curr(sz) {}
-    std::string& deref() const;
+    string& deref() const;
     ConstStrBlobPtr& incr();
 private:
-    std::shared_ptr<std::vector<std::string>> check(std::size_t, const std::string&) const;
-    std::weak_ptr<std::vector<std::string>> wptr;
-    std::size_t curr;
+    shared_ptr<vector<string>> check(size_t, const string&) const;
+    weak_ptr<vector<string>> wptr;
+    size_t curr;
 };
 
 ConstStrBlobPtr StrBlob::begin() { return ConstStrBlobPtr(*this); }
@@ -2497,32 +2546,32 @@ ConstStrBlobPtr StrBlob::end() {
     return ret;
 }
 
-StrBlob::StrBlob(): data(std::make_shared<std::vector<std::string>>()) {};
-StrBlob::StrBlob(std::initializer_list<std::string> i1): data(std::make_shared<std::vector<std::string>>(i1)) {};
-StrBlob::StrBlob(const StrBlob& sb) { data = std::make_shared<std::vector<std::string>>(*sb.data); }
-StrBlob& StrBlob::operator=(const StrBlob& sb) { data = std::make_shared<std::vector<std::string>>(*sb.data); return *this; }
+StrBlob::StrBlob(): data(make_shared<vector<string>>()) {};
+StrBlob::StrBlob(initializer_list<string> i1): data(make_shared<vector<string>>(i1)) {};
+StrBlob::StrBlob(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); }
+StrBlob& StrBlob::operator=(const StrBlob& sb) { data = make_shared<vector<string>>(*sb.data); return *this; }
 
-void StrBlob::check(size_type i, const std::string &msg) const {
+void StrBlob::check(size_type i, const string &msg) const {
     if (i >= data->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
 }
 
-std::string& StrBlob::front() {
+string& StrBlob::front() {
     check(0, "front on empty StrBlob");
     return data->front();
 }
 
-std::string& StrBlob::back() {
+string& StrBlob::back() {
     check(0, "back on empty StrBlob");
     return data->back();
 }
 
-const std::string& StrBlob::front() const {
+const string& StrBlob::front() const {
     check(0, "front on empty StrBlob");
     return data->front();
 }
 
-const std::string& StrBlob::back() const {
+const string& StrBlob::back() const {
     check(0, "back on empty StrBlob");
     return data->back();
 }
@@ -2532,16 +2581,16 @@ void StrBlob::pop_back() {
     return data->pop_back();
 }
 
-std::shared_ptr<std::vector<std::string>> ConstStrBlobPtr::check(std::size_t i, const std::string& msg) const {
+shared_ptr<vector<string>> ConstStrBlobPtr::check(size_t i, const string& msg) const {
     auto ret = wptr.lock();
     if (!ret)
-        throw std::runtime_error("unbound StrBlobPtr");
+        throw runtime_error("unbound StrBlobPtr");
     if (i >= ret->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
     return ret;
 }
 
-std::string& ConstStrBlobPtr::deref() const {
+string& ConstStrBlobPtr::deref() const {
     auto p = check(curr, "dereference past end");
     return (*p)[curr];
 }
@@ -2574,22 +2623,24 @@ ConstStrBlobPtr& ConstStrBlobPtr::incr() {
 #include <algorithm>
 #include <vector>
 
+using namespace std;
+
 class Foo {
 public:
     Foo sorted() &&;
     Foo sorted() const &;
 private:
-    std::vector<int> data;
+    vector<int> data;
 };
 
 Foo Foo::sorted() && {
-    std::cout << "Foo::sorted() &&" << std::endl;
+    cout << "Foo::sorted() &&" << endl;
     sort(data.begin(), data.end());
     return *this;
 }
 
 Foo Foo::sorted() const & {
-    std::cout << "Foo::sorted() const &" << std::endl;
+    cout << "Foo::sorted() const &" << endl;
     // Foo ret(*this);
     // return ret.sorted();
     return Foo(*this).sorted();
