@@ -15,22 +15,24 @@
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Quote {
 public:
     Quote() = default;
-    Quote(const std::string &book, double sales_price) : bookNo(book), price(sales_price) {}
-    std::string isbn() const { return bookNo; }
-    virtual double net_price(std::size_t n) const { return n * price; }
+    Quote(const string &book, double sales_price) : bookNo(book), price(sales_price) {}
+    string isbn() const { return bookNo; }
+    virtual double net_price(size_t n) const { return n * price; }
     virtual ~Quote() = default;
 private:
-    std::string bookNo;
+    string bookNo;
 protected:
     double price = 0.0;
 };
 
-double print_total(std::ostream &os, const Quote &item, size_t n) {
+double print_total(ostream &os, const Quote &item, size_t n) {
     double ret = item.net_price(n);
-    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << std::endl;
+    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << endl;
     return ret;
 }
 
@@ -53,23 +55,25 @@ double print_total(std::ostream &os, const Quote &item, size_t n) {
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Quote {
-    friend double print_total(std::ostream&, const Quote&, size_t);
+    friend double print_total(ostream&, const Quote&, size_t);
 public:
     Quote() = default;
-    Quote(const std::string &book, double sales_price) : bookNo(book), price(sales_price) {}
-    std::string isbn() const { return bookNo; }
-    virtual double net_price(std::size_t n) const { return n * price; }
+    Quote(const string &book, double sales_price) : bookNo(book), price(sales_price) {}
+    string isbn() const { return bookNo; }
+    virtual double net_price(size_t n) const { return n * price; }
     virtual ~Quote() = default;
 private:
-    std::string bookNo;
+    string bookNo;
 protected:
     double price = 0.0;
 };
 
-double print_total(std::ostream &os, const Quote &item, size_t n) {
+double print_total(ostream &os, const Quote &item, size_t n) {
     double ret = item.net_price(n);
-    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << std::endl;
+    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << endl;
     return ret;
 }
 
@@ -83,18 +87,20 @@ double print_total(std::ostream &os, const Quote &item, size_t n) {
 
 #include "Quote.h"
 
+using namespace std;
+
 class Bulk_quote : public Quote {
 public:
     Bulk_quote() = default;
-    Bulk_quote(const std::string& book, double p, std::size_t qty, double disc) : 
+    Bulk_quote(const string& book, double p, size_t qty, double disc) : 
                Quote(book, p), min_qty(qty), discount(disc) {}
-    double net_price(std::size_t) const override;
+    double net_price(size_t) const override;
 private:
-    std::size_t min_qty = 0;
+    size_t min_qty = 0;
     double discount = 0.0;
 };
 
-double Bulk_quote::net_price(std::size_t cnt) const {
+double Bulk_quote::net_price(size_t cnt) const {
     if (cnt >= min_qty) {
         return cnt * (1 - discount) * price;
     }
@@ -102,7 +108,6 @@ double Bulk_quote::net_price(std::size_t cnt) const {
         return cnt * price;
     }
 }
-
 
 #endif
 ```
@@ -117,22 +122,25 @@ double Bulk_quote::net_price(std::size_t cnt) const {
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Quote {
+    friend double print_total(ostream&, const Quote&, size_t);
 public:
     Quote() = default;
-    Quote(const std::string &book, double sales_price) : bookNo(book), price(sales_price) {}
-    std::string isbn() const { return bookNo; }
-    virtual double net_price(std::size_t n) const { return n * price; }
+    Quote(const string &book, double sales_price) : bookNo(book), price(sales_price) {}
+    string isbn() const { return bookNo; }
+    virtual double net_price(size_t n) const { return n * price; }
     virtual ~Quote() = default;
 private:
-    std::string bookNo;
+    string bookNo;
 protected:
     double price = 0.0;
 };
 
-double print_total(std::ostream &os, const Quote &item, size_t n) {
+double print_total(ostream &os, const Quote &item, size_t n) {
     double ret = item.net_price(n);
-    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << std::endl;
+    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << endl;
     return ret;
 }
 
@@ -146,18 +154,20 @@ double print_total(std::ostream &os, const Quote &item, size_t n) {
 
 #include "Quote.h"
 
+using namespace std;
+
 class Bulk_quote : public Quote {
 public:
     Bulk_quote() = default;
-    Bulk_quote(const std::string& book, double p, std::size_t qty, double disc) : 
+    Bulk_quote(const string& book, double p, size_t qty, double disc) : 
                Quote(book, p), min_qty(qty), discount(disc) {}
-    double net_price(std::size_t) const override;
+    double net_price(size_t) const override;
 private:
-    std::size_t min_qty = 0;
+    size_t min_qty = 0;
     double discount = 0.0;
 };
 
-double Bulk_quote::net_price(std::size_t cnt) const {
+double Bulk_quote::net_price(size_t cnt) const {
     if (cnt >= min_qty) {
         return cnt * (1 - discount) * price;
     }
@@ -165,7 +175,6 @@ double Bulk_quote::net_price(std::size_t cnt) const {
         return cnt * price;
     }
 }
-
 
 #endif
 ```
@@ -178,8 +187,8 @@ double Bulk_quote::net_price(std::size_t cnt) const {
 int main() {
     Quote a("A", 10);
     Bulk_quote b("A", 10, 5, 0.1);
-    print_total(std::cout, a, 10);
-    print_total(std::cout, b, 10);
+    print_total(cout, a, 10);
+    print_total(cout, b, 10);
     return 0;
 }
 ```
@@ -194,23 +203,25 @@ int main() {
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Quote {
-    friend double print_total(std::ostream&, const Quote&, size_t);
+    friend double print_total(ostream&, const Quote&, size_t);
 public:
     Quote() = default;
-    Quote(const std::string &book, double sales_price) : bookNo(book), price(sales_price) {}
-    std::string isbn() const { return bookNo; }
-    virtual double net_price(std::size_t n) const { return n * price; }
+    Quote(const string &book, double sales_price) : bookNo(book), price(sales_price) {}
+    string isbn() const { return bookNo; }
+    virtual double net_price(size_t n) const { return n * price; }
     virtual ~Quote() = default;
 private:
-    std::string bookNo;
+    string bookNo;
 protected:
     double price = 0.0;
 };
 
-double print_total(std::ostream &os, const Quote &item, size_t n) {
+double print_total(ostream &os, const Quote &item, size_t n) {
     double ret = item.net_price(n);
-    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << std::endl;
+    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << endl;
     return ret;
 }
 
@@ -224,18 +235,20 @@ double print_total(std::ostream &os, const Quote &item, size_t n) {
 
 #include "Quote.h"
 
+using namespace std;
+
 class Few_quote : public Quote {
 public:
     Few_quote() = default;
-    Few_quote(const std::string& book, double p, std::size_t qty, double disc) : 
+    Few_quote(const string& book, double p, size_t qty, double disc) : 
                Quote(book, p), max_qty(qty), discount(disc) {}
-    double net_price(std::size_t) const override;
+    double net_price(size_t) const override;
 private:
-    std::size_t max_qty = 0;
+    size_t max_qty = 0;
     double discount = 0.0;
 };
 
-double Few_quote::net_price(std::size_t cnt) const {
+double Few_quote::net_price(size_t cnt) const {
     if (cnt <= max_qty) {
         return cnt * (1 - discount) * price;
     }
@@ -243,7 +256,6 @@ double Few_quote::net_price(std::size_t cnt) const {
         return max_qty * (1 - discount) * price + (cnt - max_qty) * price;
     }
 }
-
 
 #endif
 ```
@@ -253,11 +265,13 @@ double Few_quote::net_price(std::size_t cnt) const {
 #include "Quote.h"
 #include "Few_quote.h"
 
+using namespace std;
+
 int main() {
     Quote a("A", 10);
     Few_quote b("A", 10, 5, 0.1);
-    print_total(std::cout, a, 10);
-    print_total(std::cout, b, 10);
+    print_total(cout, a, 10);
+    print_total(cout, b, 10);
     return 0;
 }
 ```
@@ -278,23 +292,25 @@ int main() {
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Quote {
-    friend double print_total(std::ostream&, const Quote&, size_t);
+    friend double print_total(ostream&, const Quote&, size_t);
 public:
     Quote() = default;
-    Quote(const std::string &book, double sales_price) : bookNo(book), price(sales_price) {}
-    std::string isbn() const { return bookNo; }
-    virtual double net_price(std::size_t n) const { return n * price; }
+    Quote(const string &book, double sales_price) : bookNo(book), price(sales_price) {}
+    string isbn() const { return bookNo; }
+    virtual double net_price(size_t n) const { return n * price; }
     virtual ~Quote() = default;
 private:
-    std::string bookNo;
+    string bookNo;
 protected:
     double price = 0.0;
 };
 
-double print_total(std::ostream &os, const Quote &item, size_t n) {
+double print_total(ostream &os, const Quote &item, size_t n) {
     double ret = item.net_price(n);
-    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << std::endl;
+    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << endl;
     return ret;
 }
 
@@ -308,18 +324,20 @@ double print_total(std::ostream &os, const Quote &item, size_t n) {
 
 #include "Quote.h"
 
+using namespace std;
+
 class Few_quote : public Quote {
 public:
     Few_quote() = default;
-    Few_quote(const std::string& book, double p, std::size_t qty, double disc) : 
+    Few_quote(const string& book, double p, size_t qty, double disc) : 
                Quote(book, p), max_qty(qty), discount(disc) {}
-    double net_price(std::size_t) const override;
+    double net_price(size_t) const override;
 private:
-    std::size_t max_qty = 0;
+    size_t max_qty = 0;
     double discount = 0.0;
 };
 
-double Few_quote::net_price(std::size_t cnt) const {
+double Few_quote::net_price(size_t cnt) const {
     if (cnt <= max_qty) {
         return cnt * (1 - discount) * price;
     }
@@ -328,23 +346,24 @@ double Few_quote::net_price(std::size_t cnt) const {
     }
 }
 
-
 #endif
 ```
 
 ```c++
 #include <iostream>
 #include "Quote.h"
-#include "Bulk_quote.h"
+#include "Few_quote.h"
+
+using namespace std;
 
 int main() {
-    Bulk_quote a("A", 10, 5, 0.1);
+    Few_quote a("A", 10, 5, 0.1);
     // 1
     Quote *p = &a;
-    std::cout << p->net_price(10) << std::endl;
+    cout << p->net_price(10) << endl;
     // 2
     Quote &r = a;
-    std::cout << r.net_price(10) << std::endl;
+    cout << r.net_price(10) << endl;
     return 0;
 }
 ```
@@ -363,29 +382,31 @@ ifstream是istream的派生类，所以可以使用
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Quote {
-    friend double print_total(std::ostream&, const Quote&, size_t);
+    friend double print_total(ostream&, const Quote&, size_t);
 public:
     Quote() = default;
-    Quote(const std::string &book, double sales_price) : bookNo(book), price(sales_price) {}
-    std::string isbn() const { return bookNo; }
-    virtual double net_price(std::size_t n) const { return n * price; }
+    Quote(const string &book, double sales_price) : bookNo(book), price(sales_price) {}
+    string isbn() const { return bookNo; }
+    virtual double net_price(size_t n) const { return n * price; }
     virtual ~Quote() = default;
     virtual void debug() const;
 private:
-    std::string bookNo;
+    string bookNo;
 protected:
     double price = 0.0;
 };
 
-double print_total(std::ostream &os, const Quote &item, size_t n) {
+double print_total(ostream &os, const Quote &item, size_t n) {
     double ret = item.net_price(n);
-    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << std::endl;
+    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << endl;
     return ret;
 }
 
 void Quote::debug() const {
-    std::cout << bookNo << " " << price;
+    cout << bookNo << " " << price;
 }
 
 #endif
@@ -399,19 +420,21 @@ void Quote::debug() const {
 #include <iostream>
 #include "Quote.h"
 
+using namespace std;
+
 class Bulk_quote : public Quote {
 public:
     Bulk_quote() = default;
-    Bulk_quote(const std::string& book, double p, std::size_t qty, double disc) : 
+    Bulk_quote(const string& book, double p, size_t qty, double disc) : 
                Quote(book, p), min_qty(qty), discount(disc) {}
-    double net_price(std::size_t) const override;
+    double net_price(size_t) const override;
     void debug() const override;
 private:
-    std::size_t min_qty = 0;
+    size_t min_qty = 0;
     double discount = 0.0;
 };
 
-double Bulk_quote::net_price(std::size_t cnt) const {
+double Bulk_quote::net_price(size_t cnt) const {
     if (cnt >= min_qty) {
         return cnt * (1 - discount) * price;
     }
@@ -422,9 +445,8 @@ double Bulk_quote::net_price(std::size_t cnt) const {
 
 void Bulk_quote::debug() const {
     Quote::debug();
-    std::cout << " " << min_qty << " " << discount;
+    cout << " " << min_qty << " " << discount;
 }
-
 
 #endif
 ```
@@ -438,9 +460,9 @@ int main() {
     Quote a("A", 10);
     Bulk_quote b("A", 10, 5, 0.1);
     a.debug();
-    std::cout << std::endl;
+    cout << endl;
     b.debug();
-    std::cout << std::endl;
+    cout << endl;
     return 0;
 }
 ```
@@ -491,29 +513,31 @@ derived::print()
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Quote {
-    friend double print_total(std::ostream&, const Quote&, size_t);
+    friend double print_total(ostream&, const Quote&, size_t);
 public:
     Quote() = default;
-    Quote(const std::string &book, double sales_price) : bookNo(book), price(sales_price) {}
-    std::string isbn() const { return bookNo; }
-    virtual double net_price(std::size_t n) const { return n * price; }
+    Quote(const string &book, double sales_price) : bookNo(book), price(sales_price) {}
+    string isbn() const { return bookNo; }
+    virtual double net_price(size_t n) const { return n * price; }
     virtual ~Quote() = default;
     virtual void debug() const;
 private:
-    std::string bookNo;
+    string bookNo;
 protected:
     double price = 0.0;
 };
 
-double print_total(std::ostream &os, const Quote &item, size_t n) {
+double print_total(ostream &os, const Quote &item, size_t n) {
     double ret = item.net_price(n);
-    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << std::endl;
+    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << endl;
     return ret;
 }
 
 void Quote::debug() const {
-    std::cout << bookNo << " " << price;
+    cout << bookNo << " " << price;
 }
 
 #endif
@@ -527,14 +551,16 @@ void Quote::debug() const {
 #include <string>
 #include "Quote.h"
 
+using namespace std;
+
 class Disc_quote : public Quote {
 public:
     Disc_quote() = default;
-    Disc_quote(const std::string &book, double p, std::size_t qty, double disc) : 
+    Disc_quote(const string &book, double p, size_t qty, double disc) : 
                Quote(book, p), quantity(qty), discount(disc) {}
-    double net_price(std::size_t) const = 0;
+    double net_price(size_t) const = 0;
 protected:
-    std::size_t quantity = 0;
+    size_t quantity = 0;
     double discount = 0.0;
 };
 
@@ -550,16 +576,18 @@ protected:
 #include <string>
 #include "Disc_quote.h"
 
+using namespace std;
+
 class Bulk_quote : public Disc_quote {
 public:
     Bulk_quote() = default;
-    Bulk_quote(const std::string &book, double p, std::size_t qty, double disc) : 
+    Bulk_quote(const string &book, double p, size_t qty, double disc) : 
                Disc_quote(book, p, qty, disc) {}
-    double net_price(std::size_t) const override;
+    double net_price(size_t) const override;
     void debug() const override;
 };
 
-double Bulk_quote::net_price(std::size_t cnt) const {
+double Bulk_quote::net_price(size_t cnt) const {
     if (cnt >= quantity) {
         return cnt * (1 - discount) * price;
     }
@@ -570,7 +598,7 @@ double Bulk_quote::net_price(std::size_t cnt) const {
 
 void Bulk_quote::debug() const {
     Quote::debug();
-    std::cout << " " << quantity << " " << discount;
+    cout << " " << quantity << " " << discount;
 }
 
 #endif
@@ -585,12 +613,12 @@ void Bulk_quote::debug() const {
 int main() {
     Quote a("A", 10);
     Bulk_quote b("A", 10, 5, 0.1);
-    print_total(std::cout, a, 10);
-    print_total(std::cout, b, 10);
+    print_total(cout, a, 10);
+    print_total(cout, b, 10);
     a.debug();
-    std::cout << std::endl;
+    cout << endl;
     b.debug();
-    std::cout << std::endl;
+    cout << endl;
     return 0;
 }
 ```
@@ -605,29 +633,31 @@ int main() {
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Quote {
-    friend double print_total(std::ostream&, const Quote&, size_t);
+    friend double print_total(ostream&, const Quote&, size_t);
 public:
     Quote() = default;
-    Quote(const std::string &book, double sales_price) : bookNo(book), price(sales_price) {}
-    std::string isbn() const { return bookNo; }
-    virtual double net_price(std::size_t n) const { return n * price; }
+    Quote(const string &book, double sales_price) : bookNo(book), price(sales_price) {}
+    string isbn() const { return bookNo; }
+    virtual double net_price(size_t n) const { return n * price; }
     virtual ~Quote() = default;
     virtual void debug() const;
 private:
-    std::string bookNo;
+    string bookNo;
 protected:
     double price = 0.0;
 };
 
-double print_total(std::ostream &os, const Quote &item, size_t n) {
+double print_total(ostream &os, const Quote &item, size_t n) {
     double ret = item.net_price(n);
-    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << std::endl;
+    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << endl;
     return ret;
 }
 
 void Quote::debug() const {
-    std::cout << bookNo << " " << price;
+    cout << bookNo << " " << price;
 }
 
 #endif
@@ -641,14 +671,16 @@ void Quote::debug() const {
 #include <string>
 #include "Quote.h"
 
+using namespace std;
+
 class Disc_quote : public Quote {
 public:
     Disc_quote() = default;
-    Disc_quote(const std::string &book, double p, std::size_t qty, double disc) : 
+    Disc_quote(const string &book, double p, size_t qty, double disc) : 
                Quote(book, p), quantity(qty), discount(disc) {}
-    double net_price(std::size_t) const = 0;
+    double net_price(size_t) const = 0;
 protected:
-    std::size_t quantity = 0;
+    size_t quantity = 0;
     double discount = 0.0;
 };
 
@@ -663,15 +695,17 @@ protected:
 #include <string>
 #include "Disc_quote.h"
 
+using namespace std;
+
 class Few_quote : public Disc_quote {
 public:
     Few_quote() = default;
-    Few_quote(const std::string& book, double p, std::size_t qty, double disc) : 
+    Few_quote(const string& book, double p, size_t qty, double disc) : 
                Disc_quote(book, p, qty, disc) {}
-    double net_price(std::size_t) const override;
+    double net_price(size_t) const override;
 };
 
-double Few_quote::net_price(std::size_t cnt) const {
+double Few_quote::net_price(size_t cnt) const {
     if (cnt <= quantity) {
         return cnt * (1 - discount) * price;
     }
@@ -684,7 +718,6 @@ double Few_quote::net_price(std::size_t cnt) const {
 ```
 
 ```c++
-// 15-16.cpp
 #include <iostream>
 #include "Quote.h"
 #include "Few_quote.h"
@@ -692,8 +725,8 @@ double Few_quote::net_price(std::size_t cnt) const {
 int main() {
     Quote a("A", 10);
     Few_quote b("A", 10, 5, 0.1);
-    print_total(std::cout, a, 10);
-    print_total(std::cout, b, 10);
+    print_total(cout, a, 10);
+    print_total(cout, b, 10);
     return 0;
 }
 ```
@@ -708,29 +741,31 @@ int main() {
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Quote {
-    friend double print_total(std::ostream&, const Quote&, size_t);
+    friend double print_total(ostream&, const Quote&, size_t);
 public:
     Quote() = default;
-    Quote(const std::string &book, double sales_price) : bookNo(book), price(sales_price) {}
-    std::string isbn() const { return bookNo; }
-    virtual double net_price(std::size_t n) const { return n * price; }
+    Quote(const string &book, double sales_price) : bookNo(book), price(sales_price) {}
+    string isbn() const { return bookNo; }
+    virtual double net_price(size_t n) const { return n * price; }
     virtual ~Quote() = default;
     virtual void debug() const;
 private:
-    std::string bookNo;
+    string bookNo;
 protected:
     double price = 0.0;
 };
 
-double print_total(std::ostream &os, const Quote &item, size_t n) {
+double print_total(ostream &os, const Quote &item, size_t n) {
     double ret = item.net_price(n);
-    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << std::endl;
+    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << endl;
     return ret;
 }
 
 void Quote::debug() const {
-    std::cout << bookNo << " " << price;
+    cout << bookNo << " " << price;
 }
 
 #endif
@@ -744,14 +779,16 @@ void Quote::debug() const {
 #include <string>
 #include "Quote.h"
 
+using namespace std;
+
 class Disc_quote : public Quote {
 public:
     Disc_quote() = default;
-    Disc_quote(const std::string &book, double p, std::size_t qty, double disc) : 
+    Disc_quote(const string &book, double p, size_t qty, double disc) : 
                Quote(book, p), quantity(qty), discount(disc) {}
-    double net_price(std::size_t) const = 0;
+    double net_price(size_t) const = 0;
 protected:
-    std::size_t quantity = 0;
+    size_t quantity = 0;
     double discount = 0.0;
 };
 
@@ -772,12 +809,12 @@ int main() {
 
 ### Q18
 
-合法
-非法
-非法
-合法
-非法
-非法
+1. 合法
+2. 非法
+3. 非法
+4. 合法
+5. 非法
+6. 非法
 
 只有当派生类公有地继承基类时，用户代码才能使用派生类向基类的转换。如果派生类继承基类的方式是受保护的或者私有的，则用户代码不能使用该转换。
 
@@ -863,11 +900,13 @@ int main() {
 
 #include <string>
 
+using namespace std;
+
 static const double PI = 3.1415926;
 
 class Shape {
 public:
-    virtual std::string name() const = 0;
+    virtual string name() const = 0;
     virtual ~Shape() {}
 };
 
@@ -888,7 +927,7 @@ class Box : public Shape_2D {
 public:
     Box() = default;
     Box(double x, double y) : len_x(x), len_y(y) {}
-    std::string name() const override { return std::string("Box"); }
+    string name() const override { return string("Box"); }
     double perimeter() const override { return (len_x + len_y) * 2; }
     double area() const override { return len_x * len_y; }
     ~Box() override {}
@@ -901,7 +940,7 @@ class Circle : public Shape_2D {
 public:
     Circle() = default;
     Circle(double r) : radius(r) {}
-    std::string name() const override { return std::string("Circle"); }
+    string name() const override { return string("Circle"); }
     double perimeter() const override { return 2 * PI * radius; }
     double area() const override { return PI * radius * radius; }
     ~Circle() override {}
@@ -913,7 +952,7 @@ class Sphere : public Shape_3D {
 public:
     Sphere() = default;
     Sphere(double r) : radius(r) {}
-    std::string name() const override { return std::string("Sphere"); }
+    string name() const override { return string("Sphere"); }
     double volume() const override { return 4.0 / 3 * PI * radius * radius * radius; }
     ~Sphere() override {}
 private:
@@ -924,7 +963,7 @@ class Cone : public Shape_3D {
 public:
     Cone() = default;
     Cone(double r, double h) : bottomradius(r), height(h) {}
-    std::string name() const override { return std::string("Cone"); }
+    string name() const override { return string("Cone"); }
     double volume() const override { return 1.0 / 3 * PI * bottomradius * bottomradius * height; }
     ~Cone() override {}
 private:
@@ -941,19 +980,19 @@ private:
 
 int main() {
     Box box(2,3);
-    std::cout << box.name() << std::endl;
-    std::cout << box.perimeter() << std::endl;
-    std::cout << box.area() << std::endl;
+    cout << box.name() << endl;
+    cout << box.perimeter() << endl;
+    cout << box.area() << endl;
     Circle circle(2);
-    std::cout << circle.name() << std::endl;
-    std::cout << circle.perimeter() << std::endl;
-    std::cout << circle.area() << std::endl;
+    cout << circle.name() << endl;
+    cout << circle.perimeter() << endl;
+    cout << circle.area() << endl;
     Sphere sphere(2);
-    std::cout << sphere.name() << std::endl;
-    std::cout << sphere.volume() << std::endl;
+    cout << sphere.name() << endl;
+    cout << sphere.volume() << endl;
     Cone cone(2,2);
-    std::cout << cone.name() << std::endl;
-    std::cout << cone.volume() << std::endl;
+    cout << cone.name() << endl;
+    cout << cone.volume() << endl;
     return 0;
 }
 ```
@@ -968,44 +1007,46 @@ int main() {
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Base {
 public:
     virtual int fcn() {
-        std::cout << "Base::fcn()" << std::endl;
+        cout << "Base::fcn()" << endl;
         return 0;
     }
 };
 
 class D1 : public Base {
 public:
-    // int fcn(int) {
-    //     std::cout << "D1::fcn(int)" << std::endl;
-    //     return 0;
-    // }
+    int fcn(int) {
+        cout << "D1::fcn(int)" << endl;
+        return 0;
+    }
     int fcn() {
-        std::cout << "D1::fcn()\n";
+        cout << "D1::fcn()\n";
         return 0;
     }
 
     virtual void f2() {
-        std::cout << "D1::f2()" << std::endl;
+        cout << "D1::f2()" << endl;
     }
 };
 
 class D2 : public D1 {
 public:
     int fcn(int) {
-        std::cout << "D2::fcn(int)" << std::endl;
+        cout << "D2::fcn(int)" << endl;
         return 0;
     }
 
     int fcn() override {
-        std::cout << "D2::fcn()" << std::endl;
+        cout << "D2::fcn()" << endl;
         return 0;
     }
 
     void f2() override {
-        std::cout << "D2::f2()" << std::endl;
+        cout << "D2::f2()" << endl;
     }
 };
 
@@ -1024,7 +1065,7 @@ int main() {
 
     Base *p = &d2obj; D1 * p2 = &d2obj; D2 * p3 = &d2obj;
     // p1->fcn(42);
-    // p2->fcn(42);
+    p2->fcn(42);
     p3->fcn(42);
 
     return 0;
@@ -1049,30 +1090,32 @@ Disc_quote中定义了一个构造函数，所以默认构造函数是被删除�
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Quote {
-    friend double print_total(std::ostream&, const Quote&, size_t);
+    friend double print_total(ostream&, const Quote&, size_t);
 public:
     // Quote() = default;
     Quote() {
-        std::cout << "Quote()" << std::endl;
+        cout << "Quote()" << endl;
     };
-    Quote(const std::string &book, double sales_price) : bookNo(book), price(sales_price) {
-        std::cout << "Quote(const std::string&, double)" << std::endl;
+    Quote(const string &book, double sales_price) : bookNo(book), price(sales_price) {
+        cout << "Quote(const string&, double)" << endl;
     }
     Quote(const Quote &rhs) : bookNo(rhs.bookNo), price(rhs.price) {
-        std::cout << "Quote(const Quote&)" << std::endl;
+        cout << "Quote(const Quote&)" << endl;
     }
     Quote(Quote &&rhs) noexcept : bookNo(std::move(rhs.bookNo)), price(std::move(rhs.price)) {
-        std::cout << "Quote(Quote&&)" << std::endl;
+        cout << "Quote(Quote&&)" << endl;
     }
     Quote& operator=(const Quote &rhs) {
-        std::cout << "Quote& operator=(const Quote &)" << std::endl;
+        cout << "Quote& operator=(const Quote &)" << endl;
         bookNo = rhs.bookNo;
         price = rhs.price;
         return *this;
     }
     Quote& operator=(Quote &&rhs) noexcept {
-        std::cout << "Quote& operator=(Quote &&)" << std::endl;
+        cout << "Quote& operator=(Quote &&)" << endl;
         if (this != &rhs) {
             bookNo = std::move(rhs.bookNo);
             price = std::move(rhs.price);
@@ -1081,19 +1124,19 @@ public:
     }
     // virtual ~Quote() = default;
     virtual ~Quote() {
-        std::cout << "~Quote()" << std::endl;
+        cout << "~Quote()" << endl;
     };
-    std::string isbn() const { return bookNo; }
-    virtual double net_price(std::size_t n) const { return n * price; }
+    string isbn() const { return bookNo; }
+    virtual double net_price(size_t n) const { return n * price; }
 private:
-    std::string bookNo;
+    string bookNo;
 protected:
     double price = 0.0;
 };
 
-double print_total(std::ostream &os, const Quote &item, size_t n) {
+double print_total(ostream &os, const Quote &item, size_t n) {
     double ret = item.net_price(n);
-    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << std::endl;
+    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << endl;
     return ret;
 }
 
@@ -1108,33 +1151,35 @@ double print_total(std::ostream &os, const Quote &item, size_t n) {
 #include <iostream>
 #include "Quote.h"
 
+using namespace std;
+
 class Bulk_quote : public Quote {
 public:
     // Bulk_quote() = default;
     Bulk_quote() {
-        std::cout << "Bulk_quote()" << std::endl;
+        cout << "Bulk_quote()" << endl;
     }
-    Bulk_quote(const std::string& book, double p, std::size_t qty, double disc) : 
+    Bulk_quote(const string& book, double p, size_t qty, double disc) : 
                Quote(book, p), min_qty(qty), discount(disc) {
-        std::cout << "Bulk_quote(const std::string&, double, std::size_t, double)" << std::endl;
+        cout << "Bulk_quote(const string&, double, size_t, double)" << endl;
     }
     Bulk_quote(const Bulk_quote &rhs) : Quote(rhs), min_qty(rhs.min_qty), discount(rhs.discount) {
-        std::cout << "Bulk_quote(const Bulk_quote&)" << std::endl;
+        cout << "Bulk_quote(const Bulk_quote&)" << endl;
     }
     Bulk_quote(Bulk_quote &&rhs) noexcept : Quote(std::move(rhs)), min_qty(std::move(rhs.min_qty)), 
         discount(std::move(rhs.discount)) {
-        std::cout << "Bulk_quote(Bulk_quote&&)" << std::endl;
+        cout << "Bulk_quote(Bulk_quote&&)" << endl;
     }
     Bulk_quote& operator=(const Bulk_quote &rhs) {
-        std::cout << "Bulk_quote& operator=(const Bulk_quote&)" << std::endl;
         Quote::operator=(rhs);
+        cout << "Bulk_quote& operator=(const Bulk_quote&)" << endl;
         min_qty = rhs.min_qty;
         discount = rhs.discount;
         return *this;
     }
     Bulk_quote& operator=(Bulk_quote &&rhs) noexcept {
-        std::cout << "Bulk_quote& operator=(Bulk_quote &&)" << std::endl;
         Quote::operator=(std::move(rhs));
+        cout << "Bulk_quote& operator=(Bulk_quote &&)" << endl;
         if (this != &rhs) {
             min_qty = rhs.min_qty;
             discount = rhs.discount;
@@ -1142,15 +1187,15 @@ public:
         return *this;
     }
     virtual ~Bulk_quote() {
-        std::cout << "~Bulk_quote()" << std::endl;
+        cout << "~Bulk_quote()" << endl;
     }
-    double net_price(std::size_t) const override;
+    double net_price(size_t) const override;
 private:
-    std::size_t min_qty = 0;
+    size_t min_qty = 0;
     double discount = 0.0;
 };
 
-double Bulk_quote::net_price(std::size_t cnt) const {
+double Bulk_quote::net_price(size_t cnt) const {
     if (cnt >= min_qty) {
         return cnt * (1 - discount) * price;
     }
@@ -1168,29 +1213,29 @@ double Bulk_quote::net_price(std::size_t cnt) const {
 #include "Bulk_quote.h"
 
 int main() {
-    std::cout << "********************" << std::endl;
+    cout << "********************" << endl;
     Bulk_quote a("a", 10, 5, 0.1);
-    std::cout << "********************" << std::endl;
+    cout << "********************" << endl;
     Bulk_quote b1(a);
-    std::cout << "********************" << std::endl;
+    cout << "********************" << endl;
     Bulk_quote c1(std::move(a));
-    std::cout << "********************" << std::endl;
+    cout << "********************" << endl;
     Bulk_quote d1;
     d1 = a;
-    std::cout << "********************" << std::endl;
+    cout << "********************" << endl;
     Bulk_quote e1;
     e1 = std::move(a);
-    std::cout << "********************" << std::endl;
+    cout << "********************" << endl;
     Quote b2(a);
-    std::cout << "********************" << std::endl;
+    cout << "********************" << endl;
     Quote c2(std::move(a));
-    std::cout << "********************" << std::endl;
+    cout << "********************" << endl;
     Quote d2;
     d2 = a;
-    std::cout << "********************" << std::endl;
+    cout << "********************" << endl;
     Quote e2;
     e2 = std::move(a);
-    std::cout << "********************" << std::endl;
+    cout << "********************" << endl;
     
     return 0;
 }
@@ -1206,29 +1251,31 @@ int main() {
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Quote {
-    friend double print_total(std::ostream&, const Quote&, size_t);
+    friend double print_total(ostream&, const Quote&, size_t);
 public:
     Quote() = default;
-    Quote(const std::string &book, double sales_price) : bookNo(book), price(sales_price) {}
-    std::string isbn() const { return bookNo; }
-    virtual double net_price(std::size_t n) const { return n * price; }
+    Quote(const string &book, double sales_price) : bookNo(book), price(sales_price) {}
+    string isbn() const { return bookNo; }
+    virtual double net_price(size_t n) const { return n * price; }
     virtual ~Quote() = default;
     virtual void debug() const;
 private:
-    std::string bookNo;
+    string bookNo;
 protected:
     double price = 0.0;
 };
 
-double print_total(std::ostream &os, const Quote &item, size_t n) {
+double print_total(ostream &os, const Quote &item, size_t n) {
     double ret = item.net_price(n);
-    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << std::endl;
+    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << endl;
     return ret;
 }
 
 void Quote::debug() const {
-    std::cout << bookNo << " " << price;
+    cout << bookNo << " " << price;
 }
 
 #endif
@@ -1242,14 +1289,16 @@ void Quote::debug() const {
 #include <string>
 #include "Quote.h"
 
+using namespace std;
+
 class Disc_quote : public Quote {
 public:
     Disc_quote() = default;
-    Disc_quote(const std::string &book, double p, std::size_t qty, double disc) : 
+    Disc_quote(const string &book, double p, size_t qty, double disc) : 
                Quote(book, p), quantity(qty), discount(disc) {}
-    double net_price(std::size_t) const = 0;
+    double net_price(size_t) const = 0;
 protected:
-    std::size_t quantity = 0;
+    size_t quantity = 0;
     double discount = 0.0;
 };
 
@@ -1267,14 +1316,14 @@ protected:
 class Bulk_quote : public Disc_quote {
 public:
     // Bulk_quote() = default;
-    // Bulk_quote(const std::string& book, double p, std::size_t qty, double disc) : 
+    // Bulk_quote(const string& book, double p, size_t qty, double disc) : 
     //            Quote(book, p), min_qty(qty), discount(disc) {}
     using Disc_quote::Disc_quote;
-    double net_price(std::size_t) const override;
+    double net_price(size_t) const override;
     void debug() const override;
 };
 
-double Bulk_quote::net_price(std::size_t cnt) const {
+double Bulk_quote::net_price(size_t cnt) const {
     if (cnt >= quantity) {
         return cnt * (1 - discount) * price;
     }
@@ -1285,9 +1334,8 @@ double Bulk_quote::net_price(std::size_t cnt) const {
 
 void Bulk_quote::debug() const {
     Quote::debug();
-    std::cout << " " << quantity << " " << discount;
+    cout << " " << quantity << " " << discount;
 }
-
 
 #endif
 ```
@@ -1301,12 +1349,12 @@ void Bulk_quote::debug() const {
 int main() {
     Quote a("A", 10);
     Bulk_quote b("A", 10, 5, 0.1);
-    print_total(std::cout, a, 10);
-    print_total(std::cout, b, 10);
+    print_total(cout, a, 10);
+    print_total(cout, b, 10);
     a.debug();
-    std::cout << std::endl;
+    cout << endl;
     b.debug();
-    std::cout << std::endl;
+    cout << endl;
     return 0;
 }
 ```
@@ -1321,29 +1369,31 @@ int main() {
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Quote {
-    friend double print_total(std::ostream&, const Quote&, size_t);
+    friend double print_total(ostream&, const Quote&, size_t);
 public:
     Quote() = default;
-    Quote(const std::string &book, double sales_price) : bookNo(book), price(sales_price) {}
-    std::string isbn() const { return bookNo; }
-    virtual double net_price(std::size_t n) const { return n * price; }
+    Quote(const string &book, double sales_price) : bookNo(book), price(sales_price) {}
+    string isbn() const { return bookNo; }
+    virtual double net_price(size_t n) const { return n * price; }
     virtual ~Quote() = default;
     virtual void debug() const;
 private:
-    std::string bookNo;
+    string bookNo;
 protected:
     double price = 0.0;
 };
 
-double print_total(std::ostream &os, const Quote &item, size_t n) {
+double print_total(ostream &os, const Quote &item, size_t n) {
     double ret = item.net_price(n);
-    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << std::endl;
+    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << endl;
     return ret;
 }
 
 void Quote::debug() const {
-    std::cout << bookNo << " " << price;
+    cout << bookNo << " " << price;
 }
 
 #endif
@@ -1357,14 +1407,16 @@ void Quote::debug() const {
 #include <string>
 #include "Quote.h"
 
+using namespace std;
+
 class Disc_quote : public Quote {
 public:
     Disc_quote() = default;
-    Disc_quote(const std::string &book, double p, std::size_t qty, double disc) : 
+    Disc_quote(const string &book, double p, size_t qty, double disc) : 
                Quote(book, p), quantity(qty), discount(disc) {}
-    double net_price(std::size_t) const = 0;
+    double net_price(size_t) const = 0;
 protected:
-    std::size_t quantity = 0;
+    size_t quantity = 0;
     double discount = 0.0;
 };
 
@@ -1379,17 +1431,19 @@ protected:
 #include <iostream>
 #include "Quote.h"
 
+using namespace std;
+
 class Bulk_quote : public Disc_quote {
 public:
     // Bulk_quote() = default;
-    // Bulk_quote(const std::string& book, double p, std::size_t qty, double disc) : 
+    // Bulk_quote(const string& book, double p, size_t qty, double disc) : 
     //            Quote(book, p), min_qty(qty), discount(disc) {}
     using Disc_quote::Disc_quote;
-    double net_price(std::size_t) const override;
+    double net_price(size_t) const override;
     void debug() const override;
 };
 
-double Bulk_quote::net_price(std::size_t cnt) const {
+double Bulk_quote::net_price(size_t cnt) const {
     if (cnt >= quantity) {
         return cnt * (1 - discount) * price;
     }
@@ -1400,9 +1454,8 @@ double Bulk_quote::net_price(std::size_t cnt) const {
 
 void Bulk_quote::debug() const {
     Quote::debug();
-    std::cout << " " << quantity << " " << discount;
+    cout << " " << quantity << " " << discount;
 }
-
 
 #endif
 ```
@@ -1416,14 +1469,14 @@ void Bulk_quote::debug() const {
 #include "Bulk_quote.h"
 
 int main() {
-    std::vector<Quote> basket;
+    vector<Quote> basket;
     basket.push_back(Quote("a", 10));
     basket.push_back(Bulk_quote("a", 10, 5, 0.1));
     double res(0.0);
-    std::for_each(basket.begin(), basket.end(), [&res](Quote &p) {
+    for_each(basket.begin(), basket.end(), [&res](Quote &p) {
         res += p.net_price(10);
     });
-    std::cout << res << std::endl;
+    cout << res << endl;
     return 0;
 }
 ```
@@ -1441,29 +1494,31 @@ int main() {
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Quote {
-    friend double print_total(std::ostream&, const Quote&, size_t);
+    friend double print_total(ostream&, const Quote&, size_t);
 public:
     Quote() = default;
-    Quote(const std::string &book, double sales_price) : bookNo(book), price(sales_price) {}
-    std::string isbn() const { return bookNo; }
-    virtual double net_price(std::size_t n) const { return n * price; }
+    Quote(const string &book, double sales_price) : bookNo(book), price(sales_price) {}
+    string isbn() const { return bookNo; }
+    virtual double net_price(size_t n) const { return n * price; }
     virtual ~Quote() = default;
     virtual void debug() const;
 private:
-    std::string bookNo;
+    string bookNo;
 protected:
     double price = 0.0;
 };
 
-double print_total(std::ostream &os, const Quote &item, size_t n) {
+double print_total(ostream &os, const Quote &item, size_t n) {
     double ret = item.net_price(n);
-    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << std::endl;
+    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << endl;
     return ret;
 }
 
 void Quote::debug() const {
-    std::cout << bookNo << " " << price;
+    cout << bookNo << " " << price;
 }
 
 #endif
@@ -1477,14 +1532,16 @@ void Quote::debug() const {
 #include <string>
 #include "Quote.h"
 
+using namespace std;
+
 class Disc_quote : public Quote {
 public:
     Disc_quote() = default;
-    Disc_quote(const std::string &book, double p, std::size_t qty, double disc) : 
+    Disc_quote(const string &book, double p, size_t qty, double disc) : 
                Quote(book, p), quantity(qty), discount(disc) {}
-    double net_price(std::size_t) const = 0;
+    double net_price(size_t) const = 0;
 protected:
-    std::size_t quantity = 0;
+    size_t quantity = 0;
     double discount = 0.0;
 };
 
@@ -1499,17 +1556,19 @@ protected:
 #include <iostream>
 #include "Quote.h"
 
+using namespace std;
+
 class Bulk_quote : public Disc_quote {
 public:
     // Bulk_quote() = default;
-    // Bulk_quote(const std::string& book, double p, std::size_t qty, double disc) : 
+    // Bulk_quote(const string& book, double p, size_t qty, double disc) : 
     //            Quote(book, p), min_qty(qty), discount(disc) {}
     using Disc_quote::Disc_quote;
-    double net_price(std::size_t) const override;
+    double net_price(size_t) const override;
     void debug() const override;
 };
 
-double Bulk_quote::net_price(std::size_t cnt) const {
+double Bulk_quote::net_price(size_t cnt) const {
     if (cnt >= quantity) {
         return cnt * (1 - discount) * price;
     }
@@ -1520,9 +1579,8 @@ double Bulk_quote::net_price(std::size_t cnt) const {
 
 void Bulk_quote::debug() const {
     Quote::debug();
-    std::cout << " " << quantity << " " << discount;
+    cout << " " << quantity << " " << discount;
 }
-
 
 #endif
 ```
@@ -1537,14 +1595,14 @@ void Bulk_quote::debug() const {
 #include "Bulk_quote.h"
 
 int main() {
-    std::vector<std::shared_ptr<Quote>> basket;
-    basket.push_back(std::make_shared<Quote>("a", 10));
-    basket.push_back(std::make_shared<Bulk_quote>("a", 10, 5, 0.1));
+    vector<shared_ptr<Quote>> basket;
+    basket.push_back(make_shared<Quote>("a", 10));
+    basket.push_back(make_shared<Bulk_quote>("a", 10, 5, 0.1));
     double res(0.0);
-    std::for_each(basket.begin(), basket.end(), [&res](std::shared_ptr<Quote> p) {
+    for_each(basket.begin(), basket.end(), [&res](shared_ptr<Quote> p) {
         res += p->net_price(10);
     });
-    std::cout << res << std::endl;
+    cout << res << endl;
     return 0;
 }
 ```
@@ -1559,31 +1617,33 @@ int main() {
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Quote {
-    friend double print_total(std::ostream&, const Quote&, size_t);
+    friend double print_total(ostream&, const Quote&, size_t);
 public:
     virtual Quote* clone() const & { return new Quote(*this); }
     virtual Quote* clone() && { return new Quote(std::move(*this)); }
     Quote() = default;
-    Quote(const std::string &book, double sales_price) : bookNo(book), price(sales_price) {}
-    std::string isbn() const { return bookNo; }
-    virtual double net_price(std::size_t n) const { return n * price; }
+    Quote(const string &book, double sales_price) : bookNo(book), price(sales_price) {}
+    string isbn() const { return bookNo; }
+    virtual double net_price(size_t n) const { return n * price; }
     virtual ~Quote() = default;
     virtual void debug() const;
 private:
-    std::string bookNo;
+    string bookNo;
 protected:
     double price = 0.0;
 };
 
-double print_total(std::ostream &os, const Quote &item, size_t n) {
+double print_total(ostream &os, const Quote &item, size_t n) {
     double ret = item.net_price(n);
-    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << std::endl;
+    os << "ISBN: " << item.isbn() << " # sold: " << n << " total due: " << ret << endl;
     return ret;
 }
 
 void Quote::debug() const {
-    std::cout << bookNo << " " << price;
+    cout << bookNo << " " << price;
 }
 
 #endif
@@ -1597,21 +1657,23 @@ void Quote::debug() const {
 #include <iostream>
 #include "Quote.h"
 
+using namespace std;
+
 class Bulk_quote : public Quote {
 public:
     Bulk_quote* clone() const & { return new Bulk_quote(*this); }
     Bulk_quote* clone() && { return new Bulk_quote(std::move(*this)); }
     Bulk_quote() = default;
-    Bulk_quote(const std::string& book, double p, std::size_t qty, double disc) : 
+    Bulk_quote(const string& book, double p, size_t qty, double disc) : 
                Quote(book, p), min_qty(qty), discount(disc) {}
-    double net_price(std::size_t) const override;
+    double net_price(size_t) const override;
     void debug() const override;
 private:
-    std::size_t min_qty = 0;
+    size_t min_qty = 0;
     double discount = 0.0;
 };
 
-double Bulk_quote::net_price(std::size_t cnt) const {
+double Bulk_quote::net_price(size_t cnt) const {
     if (cnt >= min_qty) {
         return cnt * (1 - discount) * price;
     }
@@ -1622,9 +1684,8 @@ double Bulk_quote::net_price(std::size_t cnt) const {
 
 void Bulk_quote::debug() const {
     Quote::debug();
-    std::cout << " " << min_qty << " " << discount;
+    cout << " " << min_qty << " " << discount;
 }
-
 
 #endif
 ```
@@ -1639,19 +1700,21 @@ void Bulk_quote::debug() const {
 #include <set>
 #include "Quote.h"
 
+using namespace std;
+
 class Basket {
 public:
-    void add_item(const Quote &sale) { items.insert(std::shared_ptr<Quote>(sale.clone())); }
-    void add_item(Quote &&sale) { items.insert(std::shared_ptr<Quote>(std::move(sale).clone())); }
-    double total_receipt(std::ostream&) const;
+    void add_item(const Quote &sale) { items.insert(shared_ptr<Quote>(sale.clone())); }
+    void add_item(Quote &&sale) { items.insert(shared_ptr<Quote>(std::move(sale).clone())); }
+    double total_receipt(ostream&) const;
 private:
-    static bool compare(const std::shared_ptr<Quote> &lhs, const std::shared_ptr<Quote> &rhs) {
+    static bool compare(const shared_ptr<Quote> &lhs, const shared_ptr<Quote> &rhs) {
         return lhs->isbn() < rhs->isbn();
     }
-    std::multiset<std::shared_ptr<Quote>, decltype(compare)*> items{compare};
+    multiset<shared_ptr<Quote>, decltype(compare)*> items{compare};
 };
 
-double Basket::total_receipt(std::ostream &os) const {
+double Basket::total_receipt(ostream &os) const {
     double sum = 0.0;
     for (auto iter = items.cbegin(); iter != items.cend(); iter = items.upper_bound(*iter)) {
         sum += print_total(os, **iter, items.count(*iter));
@@ -1674,7 +1737,7 @@ int main() {
     basket.add_item(Bulk_quote{"a", 10, 5, 0.1});
     basket.add_item(Quote{"b", 10});
     basket.add_item(Bulk_quote{"b", 10, 5, 0.1});
-    basket.total_receipt(std::cout);
+    basket.total_receipt(cout);
     return 0;
 }
 ```
@@ -1697,18 +1760,18 @@ Query_base是一个抽象类，所以这种类型的对象本质上是派生类�
 
 ```c++
 (a)
-WordQuery(const std::string &) wind
-Query(const std::string &) wind
-WordQuery(const std::string &) bird
-Query(const std::string &) bird
-WordQuery(const std::string &) fiery
-Query(const std::string &) fiery
-BinaryQuery(const Query &, const Query &, std::string) (fiery, bird, &)
-AndQuery(const Query &, const Query &, std::string) (fiery, bird)
-Query(std::shared_ptr<Query_base>)
-BinaryQuery(const Query &, const Query &, std::string) ((fiery, bird, &), wind, |)
-OrQuery(const Query &, const Query &, std::string) ((fiery, bird, &), wind)
-Query(std::shared_ptr<Query_base>)
+WordQuery(const string &) wind
+Query(const string &) wind
+WordQuery(const string &) bird
+Query(const string &) bird
+WordQuery(const string &) fiery
+Query(const string &) fiery
+BinaryQuery(const Query &, const Query &, string) (fiery, bird, &)
+AndQuery(const Query &, const Query &, string) (fiery, bird)
+Query(shared_ptr<Query_base>)
+BinaryQuery(const Query &, const Query &, string) ((fiery, bird, &), wind, |)
+OrQuery(const Query &, const Query &, string) ((fiery, bird, &), wind)
+Query(shared_ptr<Query_base>)
 (b)
 Query::rep()
 BinaryQuery::rep()
@@ -1745,6 +1808,8 @@ WordQuery::eval()
 #include <string>
 #include "TextQuery.h"
 
+using namespace std;
+
 class Query_base {
     friend class Query;
 protected:
@@ -1752,7 +1817,7 @@ protected:
     virtual ~Query_base() = default;
 private:
     virtual QueryResult eval(const TextQuery&) const = 0;
-    virtual std::string rep() const = 0;
+    virtual string rep() const = 0;
 };
 
 class Query {
@@ -1760,39 +1825,39 @@ class Query {
     friend Query operator|(const Query&, const Query&);
     friend Query operator&(const Query&, const Query&);
 public:
-    Query(const std::string&);
+    Query(const string&);
     QueryResult eval(const TextQuery &t) const { return q->eval(t); }
-    std::string rep() const { return q->rep(); }
+    string rep() const { return q->rep(); }
 private:
-    Query(std::shared_ptr<Query_base> query): q(query) {}
-    std::shared_ptr<Query_base> q;
+    Query(shared_ptr<Query_base> query): q(query) {}
+    shared_ptr<Query_base> q;
 };
-inline std::ostream& operator<<(std::ostream &os, const Query &query) {
+inline ostream& operator<<(ostream &os, const Query &query) {
     return os << query.rep();
 }
 
 class WordQuery : public Query_base {
     friend class Query;
-    WordQuery(const std::string &s) : query_word(s) {}
+    WordQuery(const string &s) : query_word(s) {}
     QueryResult eval(const TextQuery &t) const { return t.query(query_word); }
-    std::string rep() const { return query_word; }
-    std::string query_word;
+    string rep() const { return query_word; }
+    string query_word;
 };
-inline Query::Query(const std::string &s) : q(new WordQuery(s)) {}
+inline Query::Query(const string &s) : q(new WordQuery(s)) {}
 
 class NotQuery : public Query_base {
     friend Query operator~(const Query&);
     NotQuery(const Query &q) : query(q) {}
-    std::string rep() const { return "~(" + query.rep() + ")"; }
+    string rep() const { return "~(" + query.rep() + ")"; }
     QueryResult eval(const TextQuery&) const;
     Query query;
 };
 inline Query operator~(const Query &operand) {
-    return std::shared_ptr<Query_base>(new NotQuery(operand));
+    return shared_ptr<Query_base>(new NotQuery(operand));
 }
 QueryResult NotQuery::eval(const TextQuery &text) const {
     auto result = query.eval(text);
-    auto ret_lines = std::make_shared<std::set<line_no>>();
+    auto ret_lines = make_shared<set<line_no>>();
     auto beg = result.begin(), end = result.end();
     auto sz = result.get_file()->size();
     for (size_t n = 0; n != sz; ++n) {
@@ -1808,10 +1873,10 @@ QueryResult NotQuery::eval(const TextQuery &text) const {
 
 class BinaryQuery : public Query_base {
 protected:
-    BinaryQuery(const Query &l, const Query &r, std::string s) : lhs(l), rhs(r), opSym(s) {}
-    std::string rep() const { return "(" + lhs.rep() + " " + opSym + " " + rhs.rep() + ")"; }
+    BinaryQuery(const Query &l, const Query &r, string s) : lhs(l), rhs(r), opSym(s) {}
+    string rep() const { return "(" + lhs.rep() + " " + opSym + " " + rhs.rep() + ")"; }
     Query lhs, rhs;
-    std::string opSym;
+    string opSym;
 };
 
 class AndQuery : public BinaryQuery {
@@ -1820,11 +1885,11 @@ class AndQuery : public BinaryQuery {
     QueryResult eval(const TextQuery&) const;
 };
 inline Query operator&(const Query &lhs, const Query &rhs) {
-    return std::shared_ptr<Query_base>(new AndQuery(lhs, rhs));
+    return shared_ptr<Query_base>(new AndQuery(lhs, rhs));
 }
 QueryResult AndQuery::eval(const TextQuery &text) const {
     auto right = rhs.eval(text), left = lhs.eval(text);
-    auto ret_lines = std::make_shared<std::set<line_no>>();
+    auto ret_lines = make_shared<set<line_no>>();
     set_intersection(left.begin(), left.end(), right.begin(), right.end(), inserter(*ret_lines, ret_lines->begin()));
     return QueryResult(rep(), ret_lines, left.get_file());
 }
@@ -1835,11 +1900,11 @@ class OrQuery : public BinaryQuery {
     QueryResult eval(const TextQuery&) const;
 };
 inline Query operator|(const Query &lhs, const Query &rhs) {
-    return std::shared_ptr<Query_base>(new OrQuery(lhs, rhs));
+    return shared_ptr<Query_base>(new OrQuery(lhs, rhs));
 }
 QueryResult OrQuery::eval(const TextQuery &text) const {
     auto right = rhs.eval(text), left = lhs.eval(text);
-    auto ret_lines = std::make_shared<std::set<line_no>>(left.begin(), left.end());
+    auto ret_lines = make_shared<set<line_no>>(left.begin(), left.end());
     ret_lines->insert(right.begin(), right.end());
     return QueryResult(rep(), ret_lines, left.get_file());
 }
@@ -1864,53 +1929,55 @@ QueryResult OrQuery::eval(const TextQuery &text) const {
 #include <map>
 #include <set>
 
+using namespace std;
+
 class QueryResult;
 class TextQuery {
 public:
-    using line_no = std::vector<std::string>::size_type;
-    TextQuery(std::ifstream&);
-    QueryResult query(const std::string&) const;
+    using line_no = vector<string>::size_type;
+    TextQuery(ifstream&);
+    QueryResult query(const string&) const;
 private:
-    static std::string cleanup_str(const std::string&);
-    std::shared_ptr<std::vector<std::string>> file;
-    std::map<std::string, std::shared_ptr<std::set<line_no>>> wm;
+    static string cleanup_str(const string&);
+    shared_ptr<vector<string>> file;
+    map<string, shared_ptr<set<line_no>>> wm;
 };
 
 class QueryResult {
-friend std::ostream& print(std::ostream&, const QueryResult&);
+friend ostream& print(ostream&, const QueryResult&);
 public:
-    QueryResult(std::string s,
-                std::shared_ptr<std::set<TextQuery::line_no>> p,
-                std::shared_ptr<std::vector<std::string>> f) :
+    QueryResult(string s,
+                shared_ptr<set<TextQuery::line_no>> p,
+                shared_ptr<vector<string>> f) :
         sought(s), lines(p), file(f) {}
     auto begin() const { return lines->cbegin(); }
     auto end() const { return lines->cend(); }
     auto get_file() const { return file; }
 private:
-    std::string sought;
-    std::shared_ptr<std::set<TextQuery::line_no>> lines;
-    std::shared_ptr<std::vector<std::string>> file;
+    string sought;
+    shared_ptr<set<TextQuery::line_no>> lines;
+    shared_ptr<vector<string>> file;
 };
 
-TextQuery::TextQuery(std::ifstream &is) : file(new std::vector<std::string>) {
-    std::string text;
+TextQuery::TextQuery(ifstream &is) : file(new vector<string>) {
+    string text;
     while (getline(is, text)) {
         file->push_back(text);
         int n = file->size() - 1;
-        std::istringstream line(text);
-        std::string word;
+        istringstream line(text);
+        string word;
         while (line >> word) {
             word = cleanup_str(word);
             auto &lines = wm[word];
             if (!lines)
-                lines.reset(new std::set<line_no>);
+                lines.reset(new set<line_no>);
             lines->insert(n);
         }
     }
 }
 
-QueryResult TextQuery::query(const std::string &sought) const {
-    static std::shared_ptr<std::set<line_no>> nodata(new std::set<line_no>);
+QueryResult TextQuery::query(const string &sought) const {
+    static shared_ptr<set<line_no>> nodata(new set<line_no>);
     auto loc = wm.find(sought);
     if (loc == wm.end())
         return QueryResult(sought, nodata, file);
@@ -1918,21 +1985,21 @@ QueryResult TextQuery::query(const std::string &sought) const {
         return QueryResult(sought, loc->second, file);
 }
 
-std::string make_plural(size_t ctr, const std::string &word, const std::string &ending) {
+string make_plural(size_t ctr, const string &word, const string &ending) {
     return (ctr > 1) ? word + ending : word;
 }
 
-std::ostream& print(std::ostream &os, const QueryResult &qr) {
+ostream& print(ostream &os, const QueryResult &qr) {
     os << qr.sought << " occurs " << qr.lines->size() << " "
-        << make_plural(qr.lines->size(), "times", "s") << std::endl;
+        << make_plural(qr.lines->size(), "times", "s") << endl;
     for (auto num : *qr.lines)
-        os << "\t(line " << num+1 << ") " << *(qr.file->begin()+num) << std::endl;
+        os << "\t(line " << num+1 << ") " << *(qr.file->begin()+num) << endl;
     return os;
 }
 
-std::string TextQuery::cleanup_str(const std::string &word) {
-    std::string ret;
-    for (std::string::const_iterator it = word.begin(); it != word.end(); ++it) {
+string TextQuery::cleanup_str(const string &word) {
+    string ret;
+    for (string::const_iterator it = word.begin(); it != word.end(); ++it) {
         if (!ispunct(*it))
             ret += tolower(*it);
     }
@@ -1953,6 +2020,8 @@ std::string TextQuery::cleanup_str(const std::string &word) {
 #include <string>
 #include "TextQuery.h"
 
+using namespace std;
+
 class Query_base {
     friend class Query;
 protected:
@@ -1960,7 +2029,7 @@ protected:
     virtual ~Query_base() = default;
 private:
     virtual QueryResult eval(const TextQuery&) const = 0;
-    virtual std::string rep() const = 0;
+    virtual string rep() const = 0;
 };
 
 class Query {
@@ -1968,63 +2037,60 @@ class Query {
     friend Query operator|(const Query&, const Query&);
     friend Query operator&(const Query&, const Query&);
 public:
-    Query(const std::string&);
+    Query(const string&);
     QueryResult eval(const TextQuery &t) const {
-        std::cout << "Query::eval()" << std::endl;
         return q->eval(t);
     }
-    std::string rep() const { 
-        std::cout << "Query::rep()" << std::endl;
+    string rep() const { 
+        cout << "Query::rep()" << endl;
         return q->rep();
     }
 private:
-    Query(std::shared_ptr<Query_base> query): q(query) {
-        std::cout << "Query(std::shared_ptr<Query_base>)" << std::endl;
+    Query(shared_ptr<Query_base> query): q(query) {
+        cout << "Query(shared_ptr<Query_base>)" << endl;
     }
-    std::shared_ptr<Query_base> q;
+    shared_ptr<Query_base> q;
 };
-inline std::ostream& operator<<(std::ostream &os, const Query &query) {
+inline ostream& operator<<(ostream &os, const Query &query) {
     return os << query.rep();
 }
 
 class WordQuery : public Query_base {
     friend class Query;
-    WordQuery(const std::string &s) : query_word(s) {
-        std::cout << "WordQuery(const std::string &)" << std::endl;
+    WordQuery(const string &s) : query_word(s) {
+        cout << "WordQuery(const string &)" << endl;
     }
     QueryResult eval(const TextQuery &t) const {
-        std::cout << "WordQuery::eval()" << std::endl;
         return t.query(query_word);
     }
-    std::string rep() const {
-        std::cout << "WordQuery::rep()" << std::endl;
+    string rep() const {
+        cout << "WordQuery::rep()" << endl;
         return query_word;
     }
-    std::string query_word;
+    string query_word;
 };
-inline Query::Query(const std::string &s) : q(new WordQuery(s)) {
-    std::cout << "Query(const std::string &)" << std::endl;
+inline Query::Query(const string &s) : q(new WordQuery(s)) {
+    cout << "Query(const string &)" << endl;
 }
 
 class NotQuery : public Query_base {
     friend Query operator~(const Query&);
     NotQuery(const Query &q) : query(q) {
-        std::cout << "NotQuery(const Query &)" << std::endl;
+        cout << "NotQuery(const Query &)" << endl;
     }
-    std::string rep() const {
-        std::cout << "NotQuery::rep()" << std::endl;
+    string rep() const {
+        cout << "NotQuery::rep()" << endl;
         return "~(" + query.rep() + ")";
     }
     QueryResult eval(const TextQuery&) const;
     Query query;
 };
 inline Query operator~(const Query &operand) {
-    return std::shared_ptr<Query_base>(new NotQuery(operand));
+    return shared_ptr<Query_base>(new NotQuery(operand));
 }
 QueryResult NotQuery::eval(const TextQuery &text) const {
-    std::cout << "NotQuery::eval()" << std::endl;
     auto result = query.eval(text);
-    auto ret_lines = std::make_shared<std::set<line_no>>();
+    auto ret_lines = make_shared<set<line_no>>();
     auto beg = result.begin(), end = result.end();
     auto sz = result.get_file()->size();
     for (size_t n = 0; n != sz; ++n) {
@@ -2040,31 +2106,30 @@ QueryResult NotQuery::eval(const TextQuery &text) const {
 
 class BinaryQuery : public Query_base {
 protected:
-    BinaryQuery(const Query &l, const Query &r, std::string s) : lhs(l), rhs(r), opSym(s) {
-        std::cout << "BinaryQuery(const Query &, const Query &, std::string)" << std::endl;
+    BinaryQuery(const Query &l, const Query &r, string s) : lhs(l), rhs(r), opSym(s) {
+        cout << "BinaryQuery(const Query &, const Query &, string)" << endl;
     }
-    std::string rep() const {
-        std::cout << "BinaryQuery::rep()" << std::endl;
+    string rep() const {
+        cout << "BinaryQuery::rep()" << endl;
         return "(" + lhs.rep() + " " + opSym + " " + rhs.rep() + ")";
     }
     Query lhs, rhs;
-    std::string opSym;
+    string opSym;
 };
 
 class AndQuery : public BinaryQuery {
     friend Query operator&(const Query&, const Query&);
     AndQuery(const Query &left, const Query &right) : BinaryQuery(left, right, "&") {
-        std::cout << "AndQuery(const Query &, const Query &, std::string)" << std::endl;
+        cout << "AndQuery(const Query &, const Query &, string)" << endl;
     }
     QueryResult eval(const TextQuery&) const;
 };
 inline Query operator&(const Query &lhs, const Query &rhs) {
-    return std::shared_ptr<Query_base>(new AndQuery(lhs, rhs));
+    return shared_ptr<Query_base>(new AndQuery(lhs, rhs));
 }
 QueryResult AndQuery::eval(const TextQuery &text) const {
-    std::cout << "AndQuery::eval()" << std::endl;
     auto right = rhs.eval(text), left = lhs.eval(text);
-    auto ret_lines = std::make_shared<std::set<line_no>>();
+    auto ret_lines = make_shared<set<line_no>>();
     set_intersection(left.begin(), left.end(), right.begin(), right.end(), inserter(*ret_lines, ret_lines->begin()));
     return QueryResult(rep(), ret_lines, left.get_file());
 }
@@ -2072,17 +2137,16 @@ QueryResult AndQuery::eval(const TextQuery &text) const {
 class OrQuery : public BinaryQuery {
     friend Query operator|(const Query&, const Query&);
     OrQuery(const Query &left, const Query &right) : BinaryQuery(left, right, "|") {
-        std::cout << "OrQuery(const Query &, const Query &, std::string)" << std::endl;
+        cout << "OrQuery(const Query &, const Query &, string)" << endl;
     }
     QueryResult eval(const TextQuery&) const;
 };
 inline Query operator|(const Query &lhs, const Query &rhs) {
-    return std::shared_ptr<Query_base>(new OrQuery(lhs, rhs));
+    return shared_ptr<Query_base>(new OrQuery(lhs, rhs));
 }
 QueryResult OrQuery::eval(const TextQuery &text) const {
-    std::cout << "OrQuery::eval()" << std::endl;
     auto right = rhs.eval(text), left = lhs.eval(text);
-    auto ret_lines = std::make_shared<std::set<line_no>>(left.begin(), left.end());
+    auto ret_lines = make_shared<set<line_no>>(left.begin(), left.end());
     ret_lines->insert(right.begin(), right.end());
     return QueryResult(rep(), ret_lines, left.get_file());
 }
@@ -2098,9 +2162,7 @@ QueryResult OrQuery::eval(const TextQuery &text) const {
 
 int main() {
     Query q = Query("fiery") & Query("bird") | Query("wind");
-    std::cout << q << std::endl;
-    std::ifstream in("./data/15-36");
-    q.eval(TextQuery(in));
+    cout << q << endl;
     return 0;
 }
 ```
@@ -2113,7 +2175,7 @@ int main() {
 
 非法。BinaryQuery是抽象类，不能定义对象。
 非法。返回的为Query类型，不能转换为AndQuery。
-非法。返回的为Query类型，不能转换为AndQuery。
+非法。返回的为Query类型，不能转换为OrQuery。
 
 ### Q39
 
@@ -2132,53 +2194,55 @@ int main() {
 #include <map>
 #include <set>
 
+using namespace std;
+
 class QueryResult;
 class TextQuery {
 public:
-    using line_no = std::vector<std::string>::size_type;
-    TextQuery(std::ifstream&);
-    QueryResult query(const std::string&) const;
+    using line_no = vector<string>::size_type;
+    TextQuery(ifstream&);
+    QueryResult query(const string&) const;
 private:
-    static std::string cleanup_str(const std::string&);
-    std::shared_ptr<std::vector<std::string>> file;
-    std::map<std::string, std::shared_ptr<std::set<line_no>>> wm;
+    static string cleanup_str(const string&);
+    shared_ptr<vector<string>> file;
+    map<string, shared_ptr<set<line_no>>> wm;
 };
 
 class QueryResult {
-friend std::ostream& print(std::ostream&, const QueryResult&);
+friend ostream& print(ostream&, const QueryResult&);
 public:
-    QueryResult(std::string s,
-                std::shared_ptr<std::set<TextQuery::line_no>> p,
-                std::shared_ptr<std::vector<std::string>> f) :
+    QueryResult(string s,
+                shared_ptr<set<TextQuery::line_no>> p,
+                shared_ptr<vector<string>> f) :
         sought(s), lines(p), file(f) {}
     auto begin() const { return lines->cbegin(); }
     auto end() const { return lines->cend(); }
     auto get_file() const { return file; }
 private:
-    std::string sought;
-    std::shared_ptr<std::set<TextQuery::line_no>> lines;
-    std::shared_ptr<std::vector<std::string>> file;
+    string sought;
+    shared_ptr<set<TextQuery::line_no>> lines;
+    shared_ptr<vector<string>> file;
 };
 
-TextQuery::TextQuery(std::ifstream &is) : file(new std::vector<std::string>) {
-    std::string text;
+TextQuery::TextQuery(ifstream &is) : file(new vector<string>) {
+    string text;
     while (getline(is, text)) {
         file->push_back(text);
         int n = file->size() - 1;
-        std::istringstream line(text);
-        std::string word;
+        istringstream line(text);
+        string word;
         while (line >> word) {
             word = cleanup_str(word);
             auto &lines = wm[word];
             if (!lines)
-                lines.reset(new std::set<line_no>);
+                lines.reset(new set<line_no>);
             lines->insert(n);
         }
     }
 }
 
-QueryResult TextQuery::query(const std::string &sought) const {
-    static std::shared_ptr<std::set<line_no>> nodata(new std::set<line_no>);
+QueryResult TextQuery::query(const string &sought) const {
+    static shared_ptr<set<line_no>> nodata(new set<line_no>);
     auto loc = wm.find(sought);
     if (loc == wm.end())
         return QueryResult(sought, nodata, file);
@@ -2186,21 +2250,21 @@ QueryResult TextQuery::query(const std::string &sought) const {
         return QueryResult(sought, loc->second, file);
 }
 
-std::string make_plural(size_t ctr, const std::string &word, const std::string &ending) {
+string make_plural(size_t ctr, const string &word, const string &ending) {
     return (ctr > 1) ? word + ending : word;
 }
 
-std::ostream& print(std::ostream &os, const QueryResult &qr) {
+ostream& print(ostream &os, const QueryResult &qr) {
     os << qr.sought << " occurs " << qr.lines->size() << " "
-        << make_plural(qr.lines->size(), "times", "s") << std::endl;
+        << make_plural(qr.lines->size(), "times", "s") << endl;
     for (auto num : *qr.lines)
-        os << "\t(line " << num+1 << ") " << *(qr.file->begin()+num) << std::endl;
+        os << "\t(line " << num+1 << ") " << *(qr.file->begin()+num) << endl;
     return os;
 }
 
-std::string TextQuery::cleanup_str(const std::string &word) {
-    std::string ret;
-    for (std::string::const_iterator it = word.begin(); it != word.end(); ++it) {
+string TextQuery::cleanup_str(const string &word) {
+    string ret;
+    for (string::const_iterator it = word.begin(); it != word.end(); ++it) {
         if (!ispunct(*it))
             ret += tolower(*it);
     }
@@ -2221,6 +2285,8 @@ std::string TextQuery::cleanup_str(const std::string &word) {
 #include <string>
 #include "TextQuery.h"
 
+using namespace std;
+
 class Query_base {
     friend class Query;
 protected:
@@ -2228,7 +2294,7 @@ protected:
     virtual ~Query_base() = default;
 private:
     virtual QueryResult eval(const TextQuery&) const = 0;
-    virtual std::string rep() const = 0;
+    virtual string rep() const = 0;
 };
 
 class Query {
@@ -2236,39 +2302,56 @@ class Query {
     friend Query operator|(const Query&, const Query&);
     friend Query operator&(const Query&, const Query&);
 public:
-    Query(const std::string&);
-    QueryResult eval(const TextQuery &t) const { return q->eval(t); }
-    std::string rep() const { return q->rep(); }
+    Query(const string&);
+    QueryResult eval(const TextQuery &t) const {
+        cout << "Query::eval()" << endl;
+        return q->eval(t);
+    }
+    string rep() const { 
+        return q->rep();
+    }
 private:
-    Query(std::shared_ptr<Query_base> query): q(query) {}
-    std::shared_ptr<Query_base> q;
+    Query(shared_ptr<Query_base> query): q(query) {
+    }
+    shared_ptr<Query_base> q;
 };
-inline std::ostream& operator<<(std::ostream &os, const Query &query) {
+inline ostream& operator<<(ostream &os, const Query &query) {
     return os << query.rep();
 }
 
 class WordQuery : public Query_base {
     friend class Query;
-    WordQuery(const std::string &s) : query_word(s) {}
-    QueryResult eval(const TextQuery &t) const { return t.query(query_word); }
-    std::string rep() const { return query_word; }
-    std::string query_word;
+    WordQuery(const string &s) : query_word(s) {
+    }
+    QueryResult eval(const TextQuery &t) const {
+        cout << "WordQuery::eval()" << endl;
+        return t.query(query_word);
+    }
+    string rep() const {
+        return query_word;
+    }
+    string query_word;
 };
-inline Query::Query(const std::string &s) : q(new WordQuery(s)) {}
+inline Query::Query(const string &s) : q(new WordQuery(s)) {
+}
 
 class NotQuery : public Query_base {
     friend Query operator~(const Query&);
-    NotQuery(const Query &q) : query(q) {}
-    std::string rep() const { return "~(" + query.rep() + ")"; }
+    NotQuery(const Query &q) : query(q) {
+    }
+    string rep() const {
+        return "~(" + query.rep() + ")";
+    }
     QueryResult eval(const TextQuery&) const;
     Query query;
 };
 inline Query operator~(const Query &operand) {
-    return std::shared_ptr<Query_base>(new NotQuery(operand));
+    return shared_ptr<Query_base>(new NotQuery(operand));
 }
 QueryResult NotQuery::eval(const TextQuery &text) const {
+    cout << "NotQuery::eval()" << endl;
     auto result = query.eval(text);
-    auto ret_lines = std::make_shared<std::set<line_no>>();
+    auto ret_lines = make_shared<set<line_no>>();
     auto beg = result.begin(), end = result.end();
     auto sz = result.get_file()->size();
     for (size_t n = 0; n != sz; ++n) {
@@ -2284,38 +2367,45 @@ QueryResult NotQuery::eval(const TextQuery &text) const {
 
 class BinaryQuery : public Query_base {
 protected:
-    BinaryQuery(const Query &l, const Query &r, std::string s) : lhs(l), rhs(r), opSym(s) {}
-    std::string rep() const { return "(" + lhs.rep() + " " + opSym + " " + rhs.rep() + ")"; }
+    BinaryQuery(const Query &l, const Query &r, string s) : lhs(l), rhs(r), opSym(s) {
+    }
+    string rep() const {
+        return "(" + lhs.rep() + " " + opSym + " " + rhs.rep() + ")";
+    }
     Query lhs, rhs;
-    std::string opSym;
+    string opSym;
 };
 
 class AndQuery : public BinaryQuery {
     friend Query operator&(const Query&, const Query&);
-    AndQuery(const Query &left, const Query &right) : BinaryQuery(left, right, "&") {}
+    AndQuery(const Query &left, const Query &right) : BinaryQuery(left, right, "&") {
+    }
     QueryResult eval(const TextQuery&) const;
 };
 inline Query operator&(const Query &lhs, const Query &rhs) {
-    return std::shared_ptr<Query_base>(new AndQuery(lhs, rhs));
+    return shared_ptr<Query_base>(new AndQuery(lhs, rhs));
 }
 QueryResult AndQuery::eval(const TextQuery &text) const {
+    cout << "AndQuery::eval()" << endl;
     auto right = rhs.eval(text), left = lhs.eval(text);
-    auto ret_lines = std::make_shared<std::set<line_no>>();
+    auto ret_lines = make_shared<set<line_no>>();
     set_intersection(left.begin(), left.end(), right.begin(), right.end(), inserter(*ret_lines, ret_lines->begin()));
     return QueryResult(rep(), ret_lines, left.get_file());
 }
 
 class OrQuery : public BinaryQuery {
     friend Query operator|(const Query&, const Query&);
-    OrQuery(const Query &left, const Query &right) : BinaryQuery(left, right, "|") {}
+    OrQuery(const Query &left, const Query &right) : BinaryQuery(left, right, "|") {
+    }
     QueryResult eval(const TextQuery&) const;
 };
 inline Query operator|(const Query &lhs, const Query &rhs) {
-    return std::shared_ptr<Query_base>(new OrQuery(lhs, rhs));
+    return shared_ptr<Query_base>(new OrQuery(lhs, rhs));
 }
 QueryResult OrQuery::eval(const TextQuery &text) const {
+    cout << "OrQuery::eval()" << endl;
     auto right = rhs.eval(text), left = lhs.eval(text);
-    auto ret_lines = std::make_shared<std::set<line_no>>(left.begin(), left.end());
+    auto ret_lines = make_shared<set<line_no>>(left.begin(), left.end());
     ret_lines->insert(right.begin(), right.end());
     return QueryResult(rep(), ret_lines, left.get_file());
 }
@@ -2331,17 +2421,30 @@ QueryResult OrQuery::eval(const TextQuery &text) const {
 
 int main() {
     Query q = Query("fiery") & Query("bird") | Query("wind");
-    std::ifstream in("./data/15-39");
-    print(std::cout, q.eval(TextQuery(in)));
+    ifstream in("test.txt");
+    q.eval(TextQuery(in));
     return 0;
 }
 ```
 
 ### Q40
 
-空集不会影响什么。
+空集无影响。
 
 ### Q41
+
+```
+Alice Emma has long flowing red hair. 
+Her Daddy says when the wind blows 
+through her hair, it looks almost alive, 
+like a fiery bird in flight. 
+A beautiful fiery bird, he tells her, 
+magical but untamed. 
+"Daddy, shush, there is no such thing," 
+she tells him, at the same time wanting 
+him to tell her more.
+Shyly, she asks, "I mean, Daddy, is there?"
+```
 
 ```c++
 // TextQuery.h
@@ -2358,53 +2461,55 @@ int main() {
 #include <map>
 #include <set>
 
+using namespace std;
+
 class QueryResult;
 class TextQuery {
 public:
-    using line_no = std::vector<std::string>::size_type;
-    TextQuery(std::ifstream&);
-    QueryResult query(const std::string&) const;
+    using line_no = vector<string>::size_type;
+    TextQuery(ifstream&);
+    QueryResult query(const string&) const;
 private:
-    static std::string cleanup_str(const std::string&);
-    std::shared_ptr<std::vector<std::string>> file;
-    std::map<std::string, std::shared_ptr<std::set<line_no>>> wm;
+    static string cleanup_str(const string&);
+    shared_ptr<vector<string>> file;
+    map<string, shared_ptr<set<line_no>>> wm;
 };
 
 class QueryResult {
-friend std::ostream& print(std::ostream&, const QueryResult&);
+friend ostream& print(ostream&, const QueryResult&);
 public:
-    QueryResult(std::string s,
-                std::shared_ptr<std::set<TextQuery::line_no>> p,
-                std::shared_ptr<std::vector<std::string>> f) :
+    QueryResult(string s,
+                shared_ptr<set<TextQuery::line_no>> p,
+                shared_ptr<vector<string>> f) :
         sought(s), lines(p), file(f) {}
     auto begin() const { return lines->cbegin(); }
     auto end() const { return lines->cend(); }
     auto get_file() const { return file; }
 private:
-    std::string sought;
-    std::shared_ptr<std::set<TextQuery::line_no>> lines;
-    std::shared_ptr<std::vector<std::string>> file;
+    string sought;
+    shared_ptr<set<TextQuery::line_no>> lines;
+    shared_ptr<vector<string>> file;
 };
 
-TextQuery::TextQuery(std::ifstream &is) : file(new std::vector<std::string>) {
-    std::string text;
+TextQuery::TextQuery(ifstream &is) : file(new vector<string>) {
+    string text;
     while (getline(is, text)) {
         file->push_back(text);
         int n = file->size() - 1;
-        std::istringstream line(text);
-        std::string word;
+        istringstream line(text);
+        string word;
         while (line >> word) {
             word = cleanup_str(word);
             auto &lines = wm[word];
             if (!lines)
-                lines.reset(new std::set<line_no>);
+                lines.reset(new set<line_no>);
             lines->insert(n);
         }
     }
 }
 
-QueryResult TextQuery::query(const std::string &sought) const {
-    static std::shared_ptr<std::set<line_no>> nodata(new std::set<line_no>);
+QueryResult TextQuery::query(const string &sought) const {
+    static shared_ptr<set<line_no>> nodata(new set<line_no>);
     auto loc = wm.find(sought);
     if (loc == wm.end())
         return QueryResult(sought, nodata, file);
@@ -2412,21 +2517,21 @@ QueryResult TextQuery::query(const std::string &sought) const {
         return QueryResult(sought, loc->second, file);
 }
 
-std::string make_plural(size_t ctr, const std::string &word, const std::string &ending) {
+string make_plural(size_t ctr, const string &word, const string &ending) {
     return (ctr > 1) ? word + ending : word;
 }
 
-std::ostream& print(std::ostream &os, const QueryResult &qr) {
+ostream& print(ostream &os, const QueryResult &qr) {
     os << qr.sought << " occurs " << qr.lines->size() << " "
-        << make_plural(qr.lines->size(), "times", "s") << std::endl;
+        << make_plural(qr.lines->size(), "times", "s") << endl;
     for (auto num : *qr.lines)
-        os << "\t(line " << num+1 << ") " << *(qr.file->begin()+num) << std::endl;
+        os << "\t(line " << num+1 << ") " << *(qr.file->begin()+num) << endl;
     return os;
 }
 
-std::string TextQuery::cleanup_str(const std::string &word) {
-    std::string ret;
-    for (std::string::const_iterator it = word.begin(); it != word.end(); ++it) {
+string TextQuery::cleanup_str(const string &word) {
+    string ret;
+    for (string::const_iterator it = word.begin(); it != word.end(); ++it) {
         if (!ispunct(*it))
             ret += tolower(*it);
     }
@@ -2447,6 +2552,8 @@ std::string TextQuery::cleanup_str(const std::string &word) {
 #include <string>
 #include "TextQuery.h"
 
+using namespace std;
+
 class Query_base {
     friend class Query;
 protected:
@@ -2454,7 +2561,7 @@ protected:
     virtual ~Query_base() = default;
 private:
     virtual QueryResult eval(const TextQuery&) const = 0;
-    virtual std::string rep() const = 0;
+    virtual string rep() const = 0;
 };
 
 class Query {
@@ -2462,18 +2569,18 @@ class Query {
     friend Query operator|(const Query&, const Query&);
     friend Query operator&(const Query&, const Query&);
 public:
-    Query(const std::string&);
+    Query(const string&);
     Query(const Query &query) : q(query.q), use(query.use) { ++*use; }
     Query& operator=(const Query&);
     ~Query();
     QueryResult eval(const TextQuery &t) const { return q->eval(t); }
-    std::string rep() const { return q->rep(); }
+    string rep() const { return q->rep(); }
 private:
-    Query(Query_base *query): q(query), use(new std::size_t(1)) {}
+    Query(Query_base *query): q(query), use(new size_t(1)) {}
     Query_base *q;
-    std::size_t *use;
+    size_t *use;
 };
-inline std::ostream& operator<<(std::ostream &os, const Query &query) {
+inline ostream& operator<<(ostream &os, const Query &query) {
     return os << query.rep();
 }
 inline Query& Query::operator=(const Query &query) {
@@ -2495,17 +2602,17 @@ inline Query::~Query() {
 
 class WordQuery : public Query_base {
     friend class Query;
-    WordQuery(const std::string &s) : query_word(s) {}
+    WordQuery(const string &s) : query_word(s) {}
     QueryResult eval(const TextQuery &t) const { return t.query(query_word); }
-    std::string rep() const { return query_word; }
-    std::string query_word;
+    string rep() const { return query_word; }
+    string query_word;
 };
-inline Query::Query(const std::string &s) : q(new WordQuery(s)), use(new std::size_t(1)) {}
+inline Query::Query(const string &s) : q(new WordQuery(s)), use(new size_t(1)) {}
 
 class NotQuery : public Query_base {
     friend Query operator~(const Query&);
     NotQuery(const Query &q) : query(q) {}
-    std::string rep() const { return "~(" + query.rep() + ")"; }
+    string rep() const { return "~(" + query.rep() + ")"; }
     QueryResult eval(const TextQuery&) const;
     Query query;
 };
@@ -2514,7 +2621,7 @@ inline Query operator~(const Query &operand) {
 }
 QueryResult NotQuery::eval(const TextQuery &text) const {
     auto result = query.eval(text);
-    auto ret_lines = std::make_shared<std::set<line_no>>();
+    auto ret_lines = make_shared<set<line_no>>();
     auto beg = result.begin(), end = result.end();
     auto sz = result.get_file()->size();
     for (size_t n = 0; n != sz; ++n) {
@@ -2530,10 +2637,10 @@ QueryResult NotQuery::eval(const TextQuery &text) const {
 
 class BinaryQuery : public Query_base {
 protected:
-    BinaryQuery(const Query &l, const Query &r, std::string s) : lhs(l), rhs(r), opSym(s) {}
-    std::string rep() const { return "(" + lhs.rep() + " " + opSym + " " + rhs.rep() + ")"; }
+    BinaryQuery(const Query &l, const Query &r, string s) : lhs(l), rhs(r), opSym(s) {}
+    string rep() const { return "(" + lhs.rep() + " " + opSym + " " + rhs.rep() + ")"; }
     Query lhs, rhs;
-    std::string opSym;
+    string opSym;
 };
 
 class AndQuery : public BinaryQuery {
@@ -2546,7 +2653,7 @@ inline Query operator&(const Query &lhs, const Query &rhs) {
 }
 QueryResult AndQuery::eval(const TextQuery &text) const {
     auto right = rhs.eval(text), left = lhs.eval(text);
-    auto ret_lines = std::make_shared<std::set<line_no>>();
+    auto ret_lines = make_shared<set<line_no>>();
     set_intersection(left.begin(), left.end(), right.begin(), right.end(), inserter(*ret_lines, ret_lines->begin()));
     return QueryResult(rep(), ret_lines, left.get_file());
 }
@@ -2561,7 +2668,7 @@ inline Query operator|(const Query &lhs, const Query &rhs) {
 }
 QueryResult OrQuery::eval(const TextQuery &text) const {
     auto right = rhs.eval(text), left = lhs.eval(text);
-    auto ret_lines = std::make_shared<std::set<line_no>>(left.begin(), left.end());
+    auto ret_lines = make_shared<set<line_no>>(left.begin(), left.end());
     ret_lines->insert(right.begin(), right.end());
     return QueryResult(rep(), ret_lines, left.get_file());
 }
@@ -2577,13 +2684,26 @@ QueryResult OrQuery::eval(const TextQuery &text) const {
 
 int main() {
     Query q = Query("fiery") & Query("bird") | Query("wind");
-    std::ifstream in("./data/15-41");
-    print(std::cout, q.eval(TextQuery(in)));
+    ifstream in("test.txt");
+    print(cout, q.eval(TextQuery(in)));
     return 0;
 }
 ```
 
 ### Q42
+
+```
+Alice Emma has long flowing red hair. 
+Her Daddy says when the wind blows 
+through her hair, it looks almost alive, 
+like a fiery bird in flight. 
+A beautiful fiery bird, he tells her, 
+magical but untamed. 
+"Daddy, shush, there is no such thing," 
+she tells him, at the same time wanting 
+him to tell her more.
+Shyly, she asks, "I mean, Daddy, is there?"
+```
 
 ```c++
 // TextQuery.h
@@ -2601,49 +2721,51 @@ int main() {
 #include <set>
 #include <cctype>
 
+using namespace std;
+
 class QueryResult;
 class TextQuery {
 public:
-    using line_no = std::vector<std::string>::size_type;
-    TextQuery(std::ifstream&);
-    QueryResult query(const std::string&) const;
+    using line_no = vector<string>::size_type;
+    TextQuery(ifstream&);
+    QueryResult query(const string&) const;
 private:
-    static std::string cleanup_str(const std::string&);
-    std::shared_ptr<std::vector<std::string>> file;
-    std::map<std::string, std::shared_ptr<std::set<line_no>>> wm;
+    static string cleanup_str(const string&);
+    shared_ptr<vector<string>> file;
+    map<string, shared_ptr<set<line_no>>> wm;
 };
 
 class QueryResult {
-friend std::ostream& print(std::ostream&, const QueryResult&);
+friend ostream& print(ostream&, const QueryResult&);
 public:
-    QueryResult(std::string s,
-                std::shared_ptr<std::set<TextQuery::line_no>> p,
-                std::shared_ptr<std::vector<std::string>> f) :
+    QueryResult(string s,
+                shared_ptr<set<TextQuery::line_no>> p,
+                shared_ptr<vector<string>> f) :
         sought(s), lines(p), file(f) {}
     auto begin() const { return lines->cbegin(); }
     auto end() const { return lines->cend(); }
     auto get_file() const { return file; }
 private:
-    std::string sought;
-    std::shared_ptr<std::set<TextQuery::line_no>> lines;
-    std::shared_ptr<std::vector<std::string>> file;
+    string sought;
+    shared_ptr<set<TextQuery::line_no>> lines;
+    shared_ptr<vector<string>> file;
 };
 
-TextQuery::TextQuery(std::ifstream &is) : file(new std::vector<std::string>) {
-    std::string sentence;
+TextQuery::TextQuery(ifstream &is) : file(new vector<string>) {
+    string sentence;
     char ch, prech;
     while (is.get(ch)) {
         sentence += ch;
         if (ch == '.' ||  (ch == '\"' && prech == '?')) {
             file->push_back(sentence);
             int n = file->size() - 1;
-            std::istringstream line(sentence);
-            std::string word;
+            istringstream line(sentence);
+            string word;
             while (line >> word) {
                 word = cleanup_str(word);
                 auto &lines = wm[word];
                 if (!lines)
-                    lines.reset(new std::set<line_no>);
+                    lines.reset(new set<line_no>);
                 lines->insert(n);
             }
             prech = ch;
@@ -2653,8 +2775,8 @@ TextQuery::TextQuery(std::ifstream &is) : file(new std::vector<std::string>) {
     file->push_back(sentence);
 }
 
-QueryResult TextQuery::query(const std::string &sought) const {
-    static std::shared_ptr<std::set<line_no>> nodata(new std::set<line_no>);
+QueryResult TextQuery::query(const string &sought) const {
+    static shared_ptr<set<line_no>> nodata(new set<line_no>);
     auto loc = wm.find(sought);
     if (loc == wm.end())
         return QueryResult(sought, nodata, file);
@@ -2662,21 +2784,21 @@ QueryResult TextQuery::query(const std::string &sought) const {
         return QueryResult(sought, loc->second, file);
 }
 
-std::string make_plural(size_t ctr, const std::string &word, const std::string &ending) {
+string make_plural(size_t ctr, const string &word, const string &ending) {
     return (ctr > 1) ? word + ending : word;
 }
 
-std::ostream& print(std::ostream &os, const QueryResult &qr) {
+ostream& print(ostream &os, const QueryResult &qr) {
     os << qr.sought << " occurs " << qr.lines->size() << " "
-        << make_plural(qr.lines->size(), "times", "s") << std::endl;
+        << make_plural(qr.lines->size(), "times", "s") << endl;
     for (auto num : *qr.lines)
-        os << "\t(sentence " << num+1 << ") " << *(qr.file->begin()+num) << std::endl;
+        os << "\t(sentence " << num+1 << ") " << *(qr.file->begin()+num) << endl;
     return os;
 }
 
-std::string TextQuery::cleanup_str(const std::string &word) {
-    std::string ret;
-    for (std::string::const_iterator it = word.begin(); it != word.end(); ++it) {
+string TextQuery::cleanup_str(const string &word) {
+    string ret;
+    for (string::const_iterator it = word.begin(); it != word.end(); ++it) {
         if (!ispunct(*it))
             ret += tolower(*it);
     }
@@ -2697,6 +2819,8 @@ std::string TextQuery::cleanup_str(const std::string &word) {
 #include <string>
 #include "TextQuery.h"
 
+using namespace std;
+
 class Query_base {
     friend class Query;
 protected:
@@ -2704,7 +2828,7 @@ protected:
     virtual ~Query_base() = default;
 private:
     virtual QueryResult eval(const TextQuery&) const = 0;
-    virtual std::string rep() const = 0;
+    virtual string rep() const = 0;
 };
 
 class Query {
@@ -2712,18 +2836,18 @@ class Query {
     friend Query operator|(const Query&, const Query&);
     friend Query operator&(const Query&, const Query&);
 public:
-    Query(const std::string&);
+    Query(const string&);
     Query(const Query &query) : q(query.q), use(query.use) { ++*use; }
     Query& operator=(const Query&);
     ~Query();
     QueryResult eval(const TextQuery &t) const { return q->eval(t); }
-    std::string rep() const { return q->rep(); }
+    string rep() const { return q->rep(); }
 private:
-    Query(Query_base *query): q(query), use(new std::size_t(1)) {}
+    Query(Query_base *query): q(query), use(new size_t(1)) {}
     Query_base *q;
-    std::size_t *use;
+    size_t *use;
 };
-inline std::ostream& operator<<(std::ostream &os, const Query &query) {
+inline ostream& operator<<(ostream &os, const Query &query) {
     return os << query.rep();
 }
 inline Query& Query::operator=(const Query &query) {
@@ -2745,17 +2869,17 @@ inline Query::~Query() {
 
 class WordQuery : public Query_base {
     friend class Query;
-    WordQuery(const std::string &s) : query_word(s) {}
+    WordQuery(const string &s) : query_word(s) {}
     QueryResult eval(const TextQuery &t) const { return t.query(query_word); }
-    std::string rep() const { return query_word; }
-    std::string query_word;
+    string rep() const { return query_word; }
+    string query_word;
 };
-inline Query::Query(const std::string &s) : q(new WordQuery(s)), use(new std::size_t(1)) {}
+inline Query::Query(const string &s) : q(new WordQuery(s)), use(new size_t(1)) {}
 
 class NotQuery : public Query_base {
     friend Query operator~(const Query&);
     NotQuery(const Query &q) : query(q) {}
-    std::string rep() const { return "~(" + query.rep() + ")"; }
+    string rep() const { return "~(" + query.rep() + ")"; }
     QueryResult eval(const TextQuery&) const;
     Query query;
 };
@@ -2764,7 +2888,7 @@ inline Query operator~(const Query &operand) {
 }
 QueryResult NotQuery::eval(const TextQuery &text) const {
     auto result = query.eval(text);
-    auto ret_lines = std::make_shared<std::set<line_no>>();
+    auto ret_lines = make_shared<set<line_no>>();
     auto beg = result.begin(), end = result.end();
     auto sz = result.get_file()->size();
     for (size_t n = 0; n != sz; ++n) {
@@ -2780,10 +2904,10 @@ QueryResult NotQuery::eval(const TextQuery &text) const {
 
 class BinaryQuery : public Query_base {
 protected:
-    BinaryQuery(const Query &l, const Query &r, std::string s) : lhs(l), rhs(r), opSym(s) {}
-    std::string rep() const { return "(" + lhs.rep() + " " + opSym + " " + rhs.rep() + ")"; }
+    BinaryQuery(const Query &l, const Query &r, string s) : lhs(l), rhs(r), opSym(s) {}
+    string rep() const { return "(" + lhs.rep() + " " + opSym + " " + rhs.rep() + ")"; }
     Query lhs, rhs;
-    std::string opSym;
+    string opSym;
 };
 
 class AndQuery : public BinaryQuery {
@@ -2796,7 +2920,7 @@ inline Query operator&(const Query &lhs, const Query &rhs) {
 }
 QueryResult AndQuery::eval(const TextQuery &text) const {
     auto right = rhs.eval(text), left = lhs.eval(text);
-    auto ret_lines = std::make_shared<std::set<line_no>>();
+    auto ret_lines = make_shared<set<line_no>>();
     set_intersection(left.begin(), left.end(), right.begin(), right.end(), inserter(*ret_lines, ret_lines->begin()));
     return QueryResult(rep(), ret_lines, left.get_file());
 }
@@ -2811,7 +2935,7 @@ inline Query operator|(const Query &lhs, const Query &rhs) {
 }
 QueryResult OrQuery::eval(const TextQuery &text) const {
     auto right = rhs.eval(text), left = lhs.eval(text);
-    auto ret_lines = std::make_shared<std::set<line_no>>(left.begin(), left.end());
+    auto ret_lines = make_shared<set<line_no>>(left.begin(), left.end());
     ret_lines->insert(right.begin(), right.end());
     return QueryResult(rep(), ret_lines, left.get_file());
 }
@@ -2827,8 +2951,8 @@ QueryResult OrQuery::eval(const TextQuery &text) const {
 
 int main() {
     Query q = Query("fiery") & Query("bird") | Query("wind");
-    std::ifstream in("./data/15-42");
-    print(std::cout, q.eval(TextQuery(in)));
+    ifstream in("test.txt");
+    print(cout, q.eval(TextQuery(in)));
     return 0;
 }
 ```
