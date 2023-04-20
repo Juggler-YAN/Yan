@@ -1,72 +1,53 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
+#include <iostream>
+#include <algorithm>
 #include <string>
-#include <vector>
 
 using namespace std;
 
-class Screen;
+using pos = string::size_type;
 
-class Window_mgr {
-public:
-    using ScreenIndex = vector<Screen>::size_type;
-    void clear(ScreenIndex);
-private:
-    vector<Screen> screens;
-};
+template <pos, pos> class Screen;
+template <pos H, pos W>
+istream& operator>>(istream&, Screen<H, W>&);
+template <pos H, pos W>
+ostream& operator<<(ostream&, const Screen<H, W>&);
 
+template <pos H, pos W>
 class Screen {
-
-friend void Window_mgr::clear(ScreenIndex);
-
+    friend istream& operator>> <H, W>(istream&, Screen<H, W>&);
+    friend ostream& operator<< <H, W>(ostream&, const Screen<H, W>&);
 public:
-    using pos = string::size_type;
-
     Screen() = default;
-    Screen(pos ht, pos wd) : height(ht), width(wd) {}
-    Screen(pos ht, pos wd, char c) : height(ht), width(wd), contents(ht*wd, c) {}
-
+    Screen(char c) : contents(H*W, c) {}
     char get() const { return contents[cursor]; }
-    inline char get(pos ht, pos wt) const;
-    Screen &move(pos r, pos c);
-    Screen &set(char);
-    Screen &set(pos, pos, char);
-    Screen &display(ostream &os) { do_display(os); return *this; }
-    const Screen &display(ostream &os) const { do_display(os); return *this; }
-
+    char get(pos r, pos c) const { return contents[r*W+c]; };
+    Screen &move(pos r, pos c) ;
 private:
     pos cursor = 0;
-    pos height = 0, width = 0;
     string contents;
-    void do_display(ostream &os) const {os << contents;}
 };
 
+template <pos H, pos W>
+istream& operator>>(istream &is, Screen<H, W> &s) {
+    char c;
+    is >> c;
+    s.contents = string(H*W, c);
+    return is;
+}
 
-inline Screen &Screen::move(pos r, pos c) {
-	pos row = r * width;
-	cursor = row + c;
+template <pos H, pos W>
+ostream& operator<<(ostream &os, const Screen<H, W> &s) {
+    os << s.contents;
+    return os;
+}
+
+template <pos H, pos W>
+inline Screen<H, W> &Screen<H, W>::move(pos r, pos c) {
+	cursor = r * W + c;
 	return *this;
-}
-
-inline char Screen::get(pos r, pos c) const {
-    pos row = r * width;
-    return contents[row + c];
-}
-
-inline Screen &Screen::set(char c) {
-    contents[cursor] = c;
-    return *this;
-}
-
-inline Screen &Screen::set(pos r, pos col, char ch) {
-    contents[r*width + col] = ch;
-    return *this;
-}
-
-void Window_mgr::clear(ScreenIndex i) {
-    Screen &s = screens[i];
-    s.contents = string(s.height * s.width, ' ');
 }
 
 #endif

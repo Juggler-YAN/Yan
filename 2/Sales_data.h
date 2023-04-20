@@ -10,6 +10,8 @@ struct Sales_data {
     friend istream& operator>>(istream&, Sales_data&);
     friend ostream& operator<<(ostream&, const Sales_data&);
     friend Sales_data operator+(const Sales_data&, const Sales_data&);
+    friend bool operator==(const Sales_data&, const Sales_data&);
+	friend class hash<Sales_data>;
 
 public:
     Sales_data(string s, unsigned n, double p) :
@@ -19,9 +21,6 @@ public:
     Sales_data(istream &is) : Sales_data() { is >> *this; }
     string isbn() const { return bookNo; }
     Sales_data& operator+=(const Sales_data&);
-    Sales_data& operator=(const string&);
-    explicit operator string() const { return bookNo; }
-    explicit operator double() const { return avg_price(); }
 
 private:
     inline double avg_price() const;
@@ -38,6 +37,12 @@ inline double Sales_data::avg_price() const {
 	else {
 		return 0;
     }
+}
+
+Sales_data& Sales_data::operator+=(const Sales_data &rhs) {
+    units_sold += rhs.units_sold;
+    revenue += rhs.revenue;
+    return *this;
 }
 
 istream& operator>>(istream &is, Sales_data &item) {
@@ -63,15 +68,10 @@ Sales_data operator+(const Sales_data &lhs, const Sales_data &rhs) {
 	return sum;
 }
 
-Sales_data& Sales_data::operator+=(const Sales_data &rhs) {
-    units_sold += rhs.units_sold;
-    revenue += rhs.revenue;
-    return *this;
-}
-
-Sales_data& Sales_data::operator=(const string &s) {
-    *this = Sales_data(s);
-    return *this;
+bool operator==(const Sales_data &lhs, const Sales_data &rhs) {
+	 return lhs.isbn() == rhs.isbn() && 
+        lhs.units_sold == rhs.units_sold && 
+        lhs.revenue == rhs.revenue;
 }
 
 #endif

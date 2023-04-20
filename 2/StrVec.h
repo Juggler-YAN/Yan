@@ -23,9 +23,11 @@ public:
     StrVec(StrVec&&) noexcept;
     StrVec& operator=(const StrVec&);
     StrVec& operator=(StrVec&&) noexcept;
-    StrVec& operator=(const initializer_list<string>);
+    string& operator[](size_t n) { return elements[n]; }
+    const string& operator[](size_t n) const { return elements[n]; }
     ~StrVec();
     void push_back(const string&);
+    template <typename... Args> inline void emplace_back(Args&&...);
     size_t size() const { return first_free - elements; }
     size_t capacity() const { return cap - elements; }
     string *begin() const { return elements; }
@@ -44,12 +46,6 @@ private:
     string *cap;
 };
 
-StrVec::StrVec(initializer_list<string> l) {
-    auto newdata = alloc_n_copy(l.begin(), l.end());
-    elements = newdata.first;
-    first_free = cap = newdata.second;
-}
-
 StrVec::StrVec(const StrVec &s) {
     auto newdata = alloc_n_copy(s.begin(), s.end());
     elements = newdata.first;
@@ -62,6 +58,12 @@ StrVec::StrVec(StrVec&& s) noexcept {
     first_free = std::move(s.first_free);
     cap = std::move(s.cap);
     s.elements = s.first_free = s.cap = nullptr;
+}
+
+template <typename... Args>
+inline void StrVec::emplace_back(Args&&... args) {
+    chk_n_alloc();
+    alloc.construct(first_free++, forward<Args>(args)...);
 }
 
 StrVec& StrVec::operator=(const StrVec &s) {
@@ -84,12 +86,10 @@ StrVec& StrVec::operator=(StrVec&& s) noexcept {
     return *this;
 }
 
-StrVec& StrVec::operator=(const initializer_list<string> l) {
+StrVec::StrVec(initializer_list<string> l) {
     auto newdata = alloc_n_copy(l.begin(), l.end());
-    free();
     elements = newdata.first;
     first_free = cap = newdata.second;
-    return *this;
 }
 
 StrVec::~StrVec() {
