@@ -55,6 +55,8 @@ int main() {
 #include <set>
 #include <tuple>
 
+using namespace std;
+
 class QueryResult;
 class TextQuery {
 public:
@@ -130,7 +132,7 @@ ostream &print(ostream & os, tuple<string, shared_ptr<set<TextQuery::line_no>>, 
 void runQueries(ifstream &);
 
 int main() {
-    ifstream in("./data/17-3");
+    ifstream in("test.txt");
     runQueries(in);
     return 0;
 }
@@ -158,6 +160,8 @@ void runQueries(ifstream &infile) {
 #include <vector>
 #include <string>
 #include <tuple>
+
+using namespace std;
 
 struct Sales_data {
 
@@ -295,6 +299,8 @@ int main() {
 #include <vector>
 #include <string>
 
+using namespace std;
+
 struct Sales_data {
 
     friend istream& operator>>(istream&, Sales_data&);
@@ -428,6 +434,8 @@ int main() {
 #include <numeric>
 #include <vector>
 #include <string>
+
+using namespace std;
 
 struct Sales_data {
 
@@ -577,6 +585,8 @@ int main() {
 #include <vector>
 #include <bitset>
 
+using namespace std;
+
 int main() {
     vector<int> v{1,2,3,5,8,13,21};
     bitset<32> b1;
@@ -633,6 +643,8 @@ int main() {
 #include <string>
 #include <bitset>
 
+using namespace std;
+
 template <unsigned> class quiz;
 template <unsigned N>
     ostream& operator<<(ostream&, const quiz<N>&);
@@ -658,7 +670,7 @@ ostream& operator<<(ostream& os, const quiz<N> &q) {
 }
 
 int main() {
-    quiz<10> q(string("01010101010101"));
+    quiz<10> q(string("0101010101"));
     cout << q << endl;
     q.update(1,true);
     cout << q << endl;
@@ -672,6 +684,8 @@ int main() {
 #include <iostream>
 #include <string>
 #include <bitset>
+
+using namespace std;
 
 template <unsigned> class quiz;
 template <unsigned N>
@@ -719,6 +733,8 @@ int main() {
 #include <iostream>
 #include <regex>
 
+using namespace std;
+
 int main() {
     try {
         regex r("[[:alnum:]+\\.(cpp|cxx|cc)$", regex::icase);
@@ -742,6 +758,8 @@ int main() {
 #include <iostream>
 #include <string>
 #include <regex>
+
+using namespace std;
 
 int main() {
     string pattern("[^c]ei");
@@ -771,6 +789,8 @@ int main() {
 #include <string>
 #include <regex>
 
+using namespace std;
+
 int main() {
     string pattern("[^c]ei");
     regex r(pattern);
@@ -796,6 +816,8 @@ int main() {
 #include <string>
 #include <regex>
 
+using namespace std;
+
 int main() {
     string pattern("[^c]ei");
     pattern = "[[:alpha:]]*" + pattern + "[[:alpha:]]*";
@@ -815,6 +837,8 @@ int main() {
 #include <vector>
 #include <string>
 #include <regex>
+
+using namespace std;
 
 int main() {
     string pattern("[^c]ei");
@@ -842,6 +866,8 @@ int main() {
 #include <iostream>
 #include <string>
 #include <regex>
+
+using namespace std;
 
 bool valid(const smatch&);
 
@@ -875,6 +901,12 @@ bool valid(const smatch &m) {
 
 ### Q21
 
+```
+morgan 2015552368 9625550123
+drew 9735550130
+lee 6095550132 2015550175 8005550000
+```
+
 ```c++
 #include <iostream>
 #include <fstream>
@@ -882,6 +914,8 @@ bool valid(const smatch &m) {
 #include <vector>
 #include <string>
 #include <regex>
+
+using namespace std;
 
 bool valid(const smatch&);
 
@@ -894,7 +928,7 @@ int main() {
 	string line, word;
 	vector<PersonInfo> people;
 	istringstream record;
-    ifstream in("./data/17-21");
+    ifstream in("test.txt");
 
 	while(getline(in, line)) {
 		record.str(line);
@@ -945,6 +979,8 @@ bool valid(const smatch &m) {
 #include <string>
 #include <regex>
 
+using namespace std;
+
 bool valid(const smatch&);
 
 int main() {
@@ -982,6 +1018,8 @@ bool valid(const smatch &m) {
 #include <string>
 #include <regex>
 
+using namespace std;
+
 bool valid(const smatch&);
 
 int main() {
@@ -1012,10 +1050,18 @@ bool valid(const smatch &m) {
 
 ### Q24
 
+```
+morgan (201) 555-2368 862-555-0123
+drew (973) 555.0130
+lee (609) 555-0132 2015550175 800.555-0000
+```
+
 ```c++
 #include <iostream>
 #include <string>
 #include <regex>
+
+using namespace std;
 
 int main() {
     string phone = "(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})";
@@ -1031,6 +1077,12 @@ int main() {
 ```
 
 ### Q25
+
+```
+morgan (201) 555-2368 862-555-0123
+drew (973) 555.0130
+lee (609) 555-0132 2015550175 800.555-0000
+```
 
 ```c++
 #include <iostream>
@@ -1058,6 +1110,12 @@ int main() {
 
 ### Q26
 
+```
+morgan (201) 555-2368 862-555-0123
+drew (973) 555.0130
+lee (609) 555-0132 2015550175 800.555-0000
+```
+
 ```c++
 #include <iostream>
 #include <fstream>
@@ -1065,20 +1123,18 @@ int main() {
 #include <string>
 #include <regex>
 
-bool valid(const smatch&);
+using namespace std;
 
 int main() {
     string phone = "(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})";
     regex r(phone);
     smatch m;
-    ifstream in("./data/17-26");
+    ifstream in("test.txt");
     string line;
 	while(getline(in, line)) {
         vector<string> v;
         for (sregex_iterator it(line.begin(), line.end(), r), end_it; it != end_it; ++it) {
-            if (valid(*it)) {
-                v.push_back(it->str());
-            }
+            v.push_back(it->str());
         }
         if (v.size() == 0) {
             continue;
@@ -1096,23 +1152,22 @@ int main() {
 	in.close();
 	return 0;
 }
-
-bool valid(const smatch &m) {
-    if (m[1].matched) {
-        return m[3].matched && (m[4].matched == 0 || m[4].str() == " ");
-    }
-    else {
-        return !m[3].matched && m[4].str() == m[6].str();
-    }
-}
 ```
 
 ### Q27
+
+```
+morgan (201) 555-2368 862-555-0123
+drew (973) 555.0130
+lee (609) 555-0132 2015550175 800.555-0000
+```
 
 ```c++
 #include <iostream>
 #include <string>
 #include <regex>
+
+using namespace std;
 
 bool valid(const smatch&);
 
@@ -1146,6 +1201,8 @@ bool valid(const smatch &m) {
 #include <iostream>
 #include <random>
 
+using namespace std;
+
 unsigned int myrand();
 
 int main() {
@@ -1166,6 +1223,8 @@ unsigned int myrand() {
 ```c++
 #include <iostream>
 #include <random>
+
+using namespace std;
 
 unsigned int myrand();
 unsigned int myrand(unsigned int);
@@ -1196,6 +1255,8 @@ unsigned int myrand(unsigned int i) {
 ```c++
 #include <iostream>
 #include <random>
+
+using namespace std;
 
 unsigned int myrand();
 unsigned int myrand(unsigned int);
@@ -1240,10 +1301,31 @@ unsigned int myrand(unsigned int i, unsigned int minval, unsigned int maxval) {
 
 ### Q33
 
+```
+map.txt
+brb be right back
+k okay?
+y why
+r are
+u you
+pic picture
+pic pictures
+thk thanks!
+thk thanks!!!
+18r later
+```
+
+```
+test.txt
+where r u
+y dont u send me a pic
+k thk 18r
+```
+
 ```c++
-#include <map>
 #include <iostream>
 #include <string>
+#include <map>
 #include <fstream>
 #include <sstream>
 #include <ctime>
@@ -1252,8 +1334,7 @@ unsigned int myrand(unsigned int i, unsigned int minval, unsigned int maxval) {
 
 using namespace std;
 
-map<string, vector<string>> buildMap(ifstream &map_file)
-{
+map<string, vector<string>> buildMap(ifstream &map_file) {
 	map<string, vector<string>> trans_map;
 	string key;
 	string value;
@@ -1265,8 +1346,7 @@ map<string, vector<string>> buildMap(ifstream &map_file)
 	return trans_map;
 }
 
-const string &transform(const string &s, const map<string, vector<string>> &m)
-{
+const string &transform(const string &s, const map<string, vector<string>> &m) {
 	auto map_it = m.find(s);
 	if(map_it != m.cend())
         if ((map_it->second).size() == 1) {
@@ -1281,19 +1361,16 @@ const string &transform(const string &s, const map<string, vector<string>> &m)
 		return s;
 }
 
-void word_tranform(ifstream &map_file, ifstream &input)
-{
+void word_tranform(ifstream &map_file, ifstream &input) {
 	auto trans_map = buildMap(map_file);
 	// for(const auto p : trans_map)
 	// 	cout << p.first << "->" << p.second << endl;
 	string text;
-	while(getline(input, text))
-	{
+	while(getline(input, text)) {
 		istringstream stream(text);
 		string word;
 		bool firstword = true;
-		while(stream >> word)
-		{
+		while(stream >> word) {
 			if(firstword)
 				firstword = false;
 			else
@@ -1304,11 +1381,9 @@ void word_tranform(ifstream &map_file, ifstream &input)
 	}
 }
 
-int main()
-{
-	ifstream map_file("data/17-33-1"), input("data/17-33-2");
+int main() {
+	ifstream map_file("map.txt"), input("test.txt");
 	word_tranform(map_file, input);
-
 	return 0;
 }
 ```
@@ -1319,6 +1394,8 @@ int main()
 #include <iostream>
 #include <iomanip>
 #include <cmath>
+
+using namespace std;
 
 int main() {
     cout << true << " " << boolalpha << true << " " << noboolalpha << endl;
@@ -1377,6 +1454,8 @@ int main() {
 #include <iostream>
 #include <cmath>
 
+using namespace std;
+
 int main() {
     cout << uppercase << hexfloat
               << sqrt(2)
@@ -1392,6 +1471,8 @@ int main() {
 #include <iostream>
 #include <iomanip>
 #include <cmath>
+
+using namespace std;
 
 int main() {
     cout << left << setw(20) << 100 * sqrt(2.0) << '\n'
@@ -1411,8 +1492,10 @@ int main() {
 #include <fstream>
 #include <string>
 
+using namespace std;
+
 int main() {
-    fstream is("./data/17-37");
+    fstream is("test.txt");
     char temp[20];
     is.getline(temp, 4, '\n');
     cout << temp << endl;
@@ -1433,18 +1516,26 @@ int main() {
 
 ### Q38
 
-```c++
-见17-37.cpp
-```
+见Q37
 
 ### Q39
+
+```
+abcd
+efg
+hi
+j
+
+```
 
 ```c++
 #include <iostream>
 #include <fstream>
 
+using namespace std;
+
 int main() {
-    fstream inOut("./data/17-39", fstream::ate | fstream::in | fstream::out);
+    fstream inOut("test.txt", fstream::ate | fstream::in | fstream::out);
     if (!inOut) {
         cerr << "Unable to open file!" << endl;
         return EXIT_FAILURE;
