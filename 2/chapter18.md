@@ -49,53 +49,50 @@ try {
 #include <cstdlib>
 #include <typeinfo>
 
-// using namespace std;
+using namespace std;
 
-int main()
-{
+int main() {
 	try {
 		//使用C++标准库
-	} catch(std::bad_cast &r) {
-		std::cout << r.what();
+	} catch(bad_cast &r) {
+		cout << r.what();
 		abort();
-	} catch(std::range_error &r) {
-		std::cout << r.what();
+	} catch(range_error &r) {
+		cout << r.what();
 		abort();
-	} catch(std::underflow_error &r) {
-		std::cout << r.what();
+	} catch(underflow_error &r) {
+		cout << r.what();
 		abort();
-	} catch(std::overflow_error &r) {
-		std::cout << r.what();
+	} catch(overflow_error &r) {
+		cout << r.what();
 		abort();
-	} catch(std::runtime_error &r) {
-		std::cout << r.what();
+	} catch(runtime_error &r) {
+		cout << r.what();
 		abort();
-	} catch(std::length_error &r) {
-		std::cout << r.what();
+	} catch(length_error &r) {
+		cout << r.what();
 		abort();
-	} catch(std::out_of_range &r) {
-		std::cout << r.what();
+	} catch(out_of_range &r) {
+		cout << r.what();
 		abort();
-	} catch(std::invalid_argument &r) {
-		std::cout << r.what();
+	} catch(invalid_argument &r) {
+		cout << r.what();
 		abort();
-	} catch(std::domain_error &r) {
-		std::cout << r.what();
+	} catch(domain_error &r) {
+		cout << r.what();
 		abort();
-	} catch(std::logic_error &r) {
-		std::cout << r.what();
+	} catch(logic_error &r) {
+		cout << r.what();
 		abort();
-	} catch(std::bad_alloc &r) {
-		std::cout << r.what();
+	} catch(bad_alloc &r) {
+		cout << r.what();
 		abort();
-	} catch(std::exception &r) {
-		std::cout << r.what();
+	} catch(exception &r) {
+		cout << r.what();
 		abort();
-	}
-
+    }
 	return 0;
 }
-
 ```
 
 ### Q6
@@ -124,40 +121,42 @@ throw a;
 #include <stdexcept>
 #include <exception>
 
+using namespace std;
+
 template <typename T>
 class Blob {
 public:
-    typedef typename std::vector<T>::size_type size_type;
+    typedef typename vector<T>::size_type size_type;
     Blob();
-    Blob(std::initializer_list<T> i1);
+    Blob(initializer_list<T> i1);
     template <typename It>
     size_type size() const { return data->size(); }
     template <typename It>
-    Blob(It b, It e) try : data(std::make_shared<std::vector<T>>(b,e)) {}
-    catch (const std::bad_alloc &err) { 
-        std::cout << err.what() << std::endl;
+    Blob(It b, It e) try : data(make_shared<vector<T>>(b,e)) {}
+    catch (const bad_alloc &err) { 
+        cout << err.what() << endl;
     }
     bool empty() const { return data->empty(); }
     void push_back(const T &t) { data->push_back(t); }
-    void push_back(T &&t) { data->push_back(std::move(t)); }
+    void push_back(T &&t) { data->push_back(move(t)); }
     void pop_back();
     T& back();
     T& operator[](size_type i);
 private:
-    std::shared_ptr<std::vector<T>> data;
-    void check(size_type i, const std::string &msg) const;
+    shared_ptr<vector<T>> data;
+    void check(size_type i, const string &msg) const;
 };
 
 template <typename T>
 class BlobPtr {
 public:
     BlobPtr() try : curr(0) {}
-    catch (const std::bad_alloc &e) { 
-        std::cout << e.what() << std::endl;
+    catch (const bad_alloc &e) { 
+        cout << e.what() << endl;
     }
     BlobPtr(Blob<T> &a, size_t sz = 0) try : wptr(a.data), curr(sz) {}
-    catch (const std::bad_alloc &e) { 
-        std::cout << e.what() << std::endl;
+    catch (const bad_alloc &e) { 
+        cout << e.what() << endl;
     }
     T& operator*() const {
         auto p = check(curr, "dereference past end");
@@ -166,21 +165,21 @@ public:
     BlobPtr& operator++();
     BlobPtr& operator--(); 
 private:
-    std::shared_ptr<std::vector<T>> check(std::size_t, const std::string&) const;
-    std::weak_ptr<std::vector<T>> wptr;
-    std::size_t curr;
+    shared_ptr<vector<T>> check(size_t, const string&) const;
+    weak_ptr<vector<T>> wptr;
+    size_t curr;
 };
 
 
 template <typename T>
-Blob<T>::Blob() try : data(std::make_shared<std::vector<T>>()) {}
-catch (const std::bad_alloc &e) { 
-    std::cout << e.what() << std::endl;
+Blob<T>::Blob() try : data(make_shared<vector<T>>()) {}
+catch (const bad_alloc &e) { 
+    cout << e.what() << endl;
 }
 template <typename T>
-Blob<T>::Blob(std::initializer_list<T> i1) try : data(std::make_shared<std::vector<T>>(i1)) {}
-catch (const std::bad_alloc &e) {
-    std::cout << e.what() << std::endl;
+Blob<T>::Blob(initializer_list<T> i1) try : data(make_shared<vector<T>>(i1)) {}
+catch (const bad_alloc &e) {
+    cout << e.what() << endl;
 }
 template <typename T>
 T& Blob<T>::back() {
@@ -198,9 +197,9 @@ void Blob<T>::pop_back() {
     data->pop_back();
 }
 template <typename T>
-void Blob<T>::check(size_type i, const std::string &msg) const {
+void Blob<T>::check(size_type i, const string &msg) const {
     if (i >= data->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
 }
 
 template <typename T>
@@ -216,9 +215,9 @@ BlobPtr<T>& BlobPtr<T>::operator--() {
     return ret;
 }
 template <typename T>
-std::shared_ptr<std::vector<T>> BlobPtr<T>::check(std::size_t i, const std::string &msg) const {
+shared_ptr<vector<T>> BlobPtr<T>::check(size_t i, const string &msg) const {
     if (i >= wptr.lock()->size())
-        throw std::out_of_range(msg);
+        throw out_of_range(msg);
 }
 
 #endif
@@ -239,37 +238,39 @@ std::shared_ptr<std::vector<T>> BlobPtr<T>::check(std::size_t i, const std::stri
 #include <stdexcept>
 #include <exception>
 
+using namespace std;
+
 struct Sales_data {
 
-    friend std::istream& operator>>(std::istream&, Sales_data&);
-    friend std::ostream& operator<<(std::ostream&, const Sales_data&);
+    friend istream& operator>>(istream&, Sales_data&);
+    friend ostream& operator<<(ostream&, const Sales_data&);
     friend Sales_data operator+(const Sales_data&, const Sales_data&);
     friend bool operator==(const Sales_data&, const Sales_data&);
-	friend class std::hash<Sales_data>;
+	friend class hash<Sales_data>;
 
 public:
-    Sales_data(std::string s, unsigned n, double p) :
+    Sales_data(string s, unsigned n, double p) :
                 bookNo(s), units_sold(n), revenue(p*n) {};
     Sales_data() : Sales_data("", 0, 0) {}
-    Sales_data(std::string s) : Sales_data(s, 0, 0) {}
-    Sales_data(std::istream &is) : Sales_data() { is >> *this; }
-    std::string isbn() const { return bookNo; }
+    Sales_data(string s) : Sales_data(s, 0, 0) {}
+    Sales_data(istream &is) : Sales_data() { is >> *this; }
+    string isbn() const { return bookNo; }
     Sales_data& operator+=(const Sales_data&);
 
 private:
     inline double avg_price() const;
-    std::string bookNo;
+    string bookNo;
     unsigned units_sold = 0;
     double revenue = 0.0;
 
 };
 
-class isbn_mismatch: public std::logic_error {
+class isbn_mismatch: public logic_error {
 public:
-    explicit isbn_mismatch(const std::string &s) : std::logic_error(s) {}
-    isbn_mismatch(const std::string &s, const std::string &lhs, const std::string &rhs) : 
-        std::logic_error(s), left(lhs), right(rhs) {}
-    const std::string left, right;
+    explicit isbn_mismatch(const string &s) : logic_error(s) {}
+    isbn_mismatch(const string &s, const string &lhs, const string &rhs) : 
+        logic_error(s), left(lhs), right(rhs) {}
+    const string left, right;
 };
 
 inline double Sales_data::avg_price() const {
@@ -289,7 +290,7 @@ Sales_data& Sales_data::operator+=(const Sales_data &rhs) {
     return *this;
 }
 
-std::istream& operator>>(std::istream &is, Sales_data &item) {
+istream& operator>>(istream &is, Sales_data &item) {
 	double price = 0;
 	is >> item.bookNo >> item.units_sold >> price;
     if (is) {
@@ -301,7 +302,7 @@ std::istream& operator>>(std::istream &is, Sales_data &item) {
 	return is;
 }
 
-std::ostream& operator<<(std::ostream &os, const Sales_data &item) {
+ostream& operator<<(ostream &os, const Sales_data &item) {
 	os << item.isbn() << " " << item.units_sold << " " << item.revenue << " " << item.avg_price();
 	return os;
 }
@@ -327,15 +328,15 @@ bool operator==(const Sales_data &lhs, const Sales_data &rhs) {
 
 int main() {
     Sales_data item1, item2, sum;
-    while (std::cin >> item1 >> item2) {
-        // try {
+    while (cin >> item1 >> item2) {
+        try {
             sum = item1 + item2;
-            std::cout << sum << std::endl;
-        // }
-        // catch (const isbn_mismatch &e) {
-        //     std::cerr << e.what() << ": left isbn(" << e.left
-        //         << ") right isbn(" << e.right << ")" << std::endl;
-        // }
+            cout << sum << endl;
+        }
+        catch (const isbn_mismatch &e) {
+            cerr << e.what() << ": left isbn(" << e.left
+                << ") right isbn(" << e.right << ")" << endl;
+        }
     }
     return 0;
 }
@@ -362,6 +363,8 @@ int main() {
 #include <string>
 #include "TextQuery.h"
 
+using namespace std;
+
 namespace chapter15 {
     class Query_base {
         friend class Query;
@@ -370,7 +373,7 @@ namespace chapter15 {
         virtual ~Query_base() = default;
     private:
         virtual chapter10::QueryResult eval(const chapter10::TextQuery&) const = 0;
-        virtual std::string rep() const = 0;
+        virtual string rep() const = 0;
     };
 
     class Query {
@@ -378,63 +381,63 @@ namespace chapter15 {
         friend Query operator|(const Query&, const Query&);
         friend Query operator&(const Query&, const Query&);
     public:
-        Query(const std::string&);
+        Query(const string&);
         chapter10::QueryResult eval(const chapter10::TextQuery &t) const {
-            std::cout << "Query::eval()" << std::endl;
+            cout << "Query::eval()" << endl;
             return q->eval(t);
         }
-        std::string rep() const { 
-            std::cout << "Query::rep()" << std::endl;
+        string rep() const { 
+            cout << "Query::rep()" << endl;
             return q->rep();
         }
     private:
-        Query(std::shared_ptr<Query_base> query): q(query) {
-            std::cout << "Query(std::shared_ptr<Query_base>)" << std::endl;
+        Query(shared_ptr<Query_base> query): q(query) {
+            cout << "Query(shared_ptr<Query_base>)" << endl;
         }
-        std::shared_ptr<Query_base> q;
+        shared_ptr<Query_base> q;
     };
-    inline std::ostream& operator<<(std::ostream &os, const Query &query) {
+    inline ostream& operator<<(ostream &os, const Query &query) {
         return os << query.rep();
     }
 
     class WordQuery : public Query_base {
         friend class Query;
-        WordQuery(const std::string &s) : query_word(s) {
-            std::cout << "WordQuery(const std::string &)" << std::endl;
+        WordQuery(const string &s) : query_word(s) {
+            cout << "WordQuery(const string &)" << endl;
         }
         chapter10::QueryResult eval(const chapter10::TextQuery &t) const {
-            std::cout << "WordQuery::eval()" << std::endl;
+            cout << "WordQuery::eval()" << endl;
             return t.query(query_word);
         }
-        std::string rep() const {
-            std::cout << "WordQuery::rep()" << std::endl;
+        string rep() const {
+            cout << "WordQuery::rep()" << endl;
             return query_word;
         }
-        std::string query_word;
+        string query_word;
     };
-    inline Query::Query(const std::string &s) : q(new WordQuery(s)) {
-        std::cout << "Query(const std::string &)" << std::endl;
+    inline Query::Query(const string &s) : q(new WordQuery(s)) {
+        cout << "Query(const string &)" << endl;
     }
 
     class NotQuery : public Query_base {
         friend Query operator~(const Query&);
         NotQuery(const Query &q) : query(q) {
-            std::cout << "NotQuery(const Query &)" << std::endl;
+            cout << "NotQuery(const Query &)" << endl;
         }
-        std::string rep() const {
-            std::cout << "NotQuery::rep()" << std::endl;
+        string rep() const {
+            cout << "NotQuery::rep()" << endl;
             return "~(" + query.rep() + ")";
         }
         chapter10::QueryResult eval(const chapter10::TextQuery&) const;
         Query query;
     };
     inline Query operator~(const Query &operand) {
-        return std::shared_ptr<Query_base>(new NotQuery(operand));
+        return shared_ptr<Query_base>(new NotQuery(operand));
     }
     chapter10::QueryResult NotQuery::eval(const chapter10::TextQuery &text) const {
-        std::cout << "NotQuery::eval()" << std::endl;
+        cout << "NotQuery::eval()" << endl;
         auto result = query.eval(text);
-        auto ret_lines = std::make_shared<std::set<line_no>>();
+        auto ret_lines = make_shared<set<line_no>>();
         auto beg = result.begin(), end = result.end();
         auto sz = result.get_file()->size();
         for (size_t n = 0; n != sz; ++n) {
@@ -450,31 +453,31 @@ namespace chapter15 {
 
     class BinaryQuery : public Query_base {
     protected:
-        BinaryQuery(const Query &l, const Query &r, std::string s) : lhs(l), rhs(r), opSym(s) {
-            std::cout << "BinaryQuery(const Query &, const Query &, std::string)" << std::endl;
+        BinaryQuery(const Query &l, const Query &r, string s) : lhs(l), rhs(r), opSym(s) {
+            cout << "BinaryQuery(const Query &, const Query &, string)" << endl;
         }
-        std::string rep() const {
-            std::cout << "BinaryQuery::rep()" << std::endl;
+        string rep() const {
+            cout << "BinaryQuery::rep()" << endl;
             return "(" + lhs.rep() + " " + opSym + " " + rhs.rep() + ")";
         }
         Query lhs, rhs;
-        std::string opSym;
+        string opSym;
     };
 
     class AndQuery : public BinaryQuery {
         friend Query operator&(const Query&, const Query&);
         AndQuery(const Query &left, const Query &right) : BinaryQuery(left, right, "&") {
-            std::cout << "AndQuery(const Query &, const Query &, std::string)" << std::endl;
+            cout << "AndQuery(const Query &, const Query &, string)" << endl;
         }
         chapter10::QueryResult eval(const chapter10::TextQuery&) const;
     };
     inline Query operator&(const Query &lhs, const Query &rhs) {
-        return std::shared_ptr<Query_base>(new AndQuery(lhs, rhs));
+        return shared_ptr<Query_base>(new AndQuery(lhs, rhs));
     }
     chapter10::QueryResult AndQuery::eval(const chapter10::TextQuery &text) const {
-        std::cout << "AndQuery::eval()" << std::endl;
+        cout << "AndQuery::eval()" << endl;
         auto right = rhs.eval(text), left = lhs.eval(text);
-        auto ret_lines = std::make_shared<std::set<line_no>>();
+        auto ret_lines = make_shared<set<line_no>>();
         set_intersection(left.begin(), left.end(), right.begin(), right.end(), inserter(*ret_lines, ret_lines->begin()));
         return chapter10::QueryResult(rep(), ret_lines, left.get_file());
     }
@@ -482,17 +485,17 @@ namespace chapter15 {
     class OrQuery : public BinaryQuery {
         friend Query operator|(const Query&, const Query&);
         OrQuery(const Query &left, const Query &right) : BinaryQuery(left, right, "|") {
-            std::cout << "OrQuery(const Query &, const Query &, std::string)" << std::endl;
+            cout << "OrQuery(const Query &, const Query &, string)" << endl;
         }
         chapter10::QueryResult eval(const chapter10::TextQuery&) const;
     };
     inline Query operator|(const Query &lhs, const Query &rhs) {
-        return std::shared_ptr<Query_base>(new OrQuery(lhs, rhs));
+        return shared_ptr<Query_base>(new OrQuery(lhs, rhs));
     }
     chapter10::QueryResult OrQuery::eval(const chapter10::TextQuery &text) const {
-        std::cout << "OrQuery::eval()" << std::endl;
+        cout << "OrQuery::eval()" << endl;
         auto right = rhs.eval(text), left = lhs.eval(text);
-        auto ret_lines = std::make_shared<std::set<line_no>>(left.begin(), left.end());
+        auto ret_lines = make_shared<set<line_no>>(left.begin(), left.end());
         ret_lines->insert(right.begin(), right.end());
         return chapter10::QueryResult(rep(), ret_lines, left.get_file());
     }
@@ -516,54 +519,56 @@ namespace chapter15 {
 #include <map>
 #include <set>
 
+using namespace std;
+
 namespace chapter10 {
     class QueryResult;
     class TextQuery {
     public:
-        using line_no = std::vector<std::string>::size_type;
-        TextQuery(std::ifstream&);
-        QueryResult query(const std::string&) const;
+        using line_no = vector<string>::size_type;
+        TextQuery(ifstream&);
+        QueryResult query(const string&) const;
     private:
-        static std::string cleanup_str(const std::string&);
-        std::shared_ptr<std::vector<std::string>> file;
-        std::map<std::string, std::shared_ptr<std::set<line_no>>> wm;
+        static string cleanup_str(const string&);
+        shared_ptr<vector<string>> file;
+        map<string, shared_ptr<set<line_no>>> wm;
     };
 
     class QueryResult {
-    friend std::ostream& print(std::ostream&, const QueryResult&);
+    friend ostream& print(ostream&, const QueryResult&);
     public:
-        QueryResult(std::string s,
-                    std::shared_ptr<std::set<TextQuery::line_no>> p,
-                    std::shared_ptr<std::vector<std::string>> f) :
+        QueryResult(string s,
+                    shared_ptr<set<TextQuery::line_no>> p,
+                    shared_ptr<vector<string>> f) :
             sought(s), lines(p), file(f) {}
         auto begin() const { return lines->cbegin(); }
         auto end() const { return lines->cend(); }
         auto get_file() const { return file; }
     private:
-        std::string sought;
-        std::shared_ptr<std::set<TextQuery::line_no>> lines;
-        std::shared_ptr<std::vector<std::string>> file;
+        string sought;
+        shared_ptr<set<TextQuery::line_no>> lines;
+        shared_ptr<vector<string>> file;
     };
 
-    TextQuery::TextQuery(std::ifstream &is) : file(new std::vector<std::string>) {
-        std::string text;
+    TextQuery::TextQuery(ifstream &is) : file(new vector<string>) {
+        string text;
         while (getline(is, text)) {
             file->push_back(text);
             int n = file->size() - 1;
-            std::istringstream line(text);
-            std::string word;
+            istringstream line(text);
+            string word;
             while (line >> word) {
                 word = cleanup_str(word);
                 auto &lines = wm[word];
                 if (!lines)
-                    lines.reset(new std::set<line_no>);
+                    lines.reset(new set<line_no>);
                 lines->insert(n);
             }
         }
     }
 
-    QueryResult TextQuery::query(const std::string &sought) const {
-        static std::shared_ptr<std::set<line_no>> nodata(new std::set<line_no>);
+    QueryResult TextQuery::query(const string &sought) const {
+        static shared_ptr<set<line_no>> nodata(new set<line_no>);
         auto loc = wm.find(sought);
         if (loc == wm.end())
             return QueryResult(sought, nodata, file);
@@ -571,21 +576,21 @@ namespace chapter10 {
             return QueryResult(sought, loc->second, file);
     }
 
-    std::string make_plural(size_t ctr, const std::string &word, const std::string &ending) {
+    string make_plural(size_t ctr, const string &word, const string &ending) {
         return (ctr > 1) ? word + ending : word;
     }
 
-    std::ostream& print(std::ostream &os, const QueryResult &qr) {
+    ostream& print(ostream &os, const QueryResult &qr) {
         os << qr.sought << " occurs " << qr.lines->size() << " "
-            << make_plural(qr.lines->size(), "times", "s") << std::endl;
+            << make_plural(qr.lines->size(), "times", "s") << endl;
         for (auto num : *qr.lines)
-            os << "\t(line " << num+1 << ") " << *(qr.file->begin()+num) << std::endl;
+            os << "\t(line " << num+1 << ") " << *(qr.file->begin()+num) << endl;
         return os;
     }
 
-    std::string TextQuery::cleanup_str(const std::string &word) {
-        std::string ret;
-        for (std::string::const_iterator it = word.begin(); it != word.end(); ++it) {
+    string TextQuery::cleanup_str(const string &word) {
+        string ret;
+        for (string::const_iterator it = word.begin(); it != word.end(); ++it) {
             if (!ispunct(*it))
                 ret += tolower(*it);
         }
@@ -622,10 +627,10 @@ mathLib::MatrixLib::matrix mathLib::MatrixLib::operator*(const matrix&, const ma
 
 ### Q16
 
-ivar重复定义
-dvar重复定义
-ivar二义性冲突
-ivar二义性冲突
+1. ivar重复定义
+2. dvar重复定义
+3. ivar二义性冲突
+4. ivar二义性冲突
 
 ### Q17
 
@@ -733,6 +738,8 @@ MI::~MI()
 #include <iostream>
 #include <vector>
 
+using namespace std;
+
 struct Base1 {
 	void print(int) const;
 protected:
@@ -750,21 +757,21 @@ private:
 	double dval;
 };
 struct Derived : public Base1 {
-	void print(std::string) const;
+	void print(string) const;
 protected:
-	std::string sval;
+	string sval;
 	double dval;
 };
 struct MI : public Derived, public Base2 {
-	void print(std::vector<double>);
+	void print(vector<double>);
     void print(int);
 protected:
 	int *ival;
-	std::vector<double> dvec;
+	vector<double> dvec;
 };
 
 void MI::print(int i) {
-    std::cout << i << std::endl;
+    cout << i << endl;
 }
 
 int main() {
@@ -783,7 +790,7 @@ Base2：fval、print
 Derived：sval、dval、print
 MI：ival、dvec、print、foo
 （b）
-存在，dval、print
+存在，ival、dval、print
 （c）
 dval = Base1::dval + Derived::dval;
 （d）
@@ -819,14 +826,16 @@ cval（Derived1和Derived2均存在该成员）
 ```c++
 #include <iostream>
 
+using namespace std;
+
 class Class {
 };
 
 class Base : public Class {
 public:
-    Base() { std::cout << "Base()" << std::endl; }
-    Base(int i) : val(i) { std::cout << "Base(int)" << std::endl; }
-    Base(const Base &b) : val(b.val) { std::cout << "Base(const Base&)" << std::endl; }
+    Base() { cout << "Base()" << endl; }
+    Base(int i) : val(i) { cout << "Base(int)" << endl; }
+    Base(const Base &b) : val(b.val) { cout << "Base(const Base&)" << endl; }
 private:
     int val;
 };
@@ -834,22 +843,22 @@ private:
 class D1 : virtual public Base {
 public:
     D1() = default;
-    D1(int i) : Base(i) { std::cout << "D1(int)" << std::endl; }
-    D1(const D1 &d) : Base(d) { std::cout << "D1(const D1&)" << std::endl; }
+    D1(int i) : Base(i) { cout << "D1(int)" << endl; }
+    D1(const D1 &d) : Base(d) { cout << "D1(const D1&)" << endl; }
 };
 
 class D2 : virtual public Base {
 public:
     D2() = default;
-    D2(int i) : Base(i) { std::cout << "D2(int)" << std::endl; }
-    D2(const D2 &d) : Base(d) { std::cout << "D2(const D2&)" << std::endl; }
+    D2(int i) : Base(i) { cout << "D2(int)" << endl; }
+    D2(const D2 &d) : Base(d) { cout << "D2(const D2&)" << endl; }
 };
 
 class MI : public D1, public D2 {
 public:
     MI() = default;
-    MI(int i) : D1(i), D2(i) { std::cout << "MI(int)" << std::endl; }
-    MI(const MI &m) : D1(m), D2(m) { std::cout << "MI(const MI&)" << std::endl; }
+    MI(int i) : D1(i), D2(i) { cout << "MI(int)" << endl; }
+    MI(const MI &m) : D1(m), D2(m) { cout << "MI(const MI&)" << endl; }
 };
 
 // class Final : public MI, public Class {

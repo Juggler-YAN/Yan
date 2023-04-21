@@ -1,10 +1,9 @@
 #ifndef SALES_DATA_H
 #define SALES_DATA_H
 
-#include <algorithm>
-#include <numeric>
-#include <vector>
 #include <string>
+#include <stdexcept>
+#include <exception>
 
 using namespace std;
 
@@ -33,6 +32,14 @@ private:
 
 };
 
+class isbn_mismatch: public logic_error {
+public:
+    explicit isbn_mismatch(const string &s) : logic_error(s) {}
+    isbn_mismatch(const string &s, const string &lhs, const string &rhs) : 
+        logic_error(s), left(lhs), right(rhs) {}
+    const string left, right;
+};
+
 inline double Sales_data::avg_price() const {
 	if (units_sold) {
 		return revenue / units_sold;
@@ -43,6 +50,8 @@ inline double Sales_data::avg_price() const {
 }
 
 Sales_data& Sales_data::operator+=(const Sales_data &rhs) {
+    if (isbn() != rhs.isbn())
+        throw isbn_mismatch("wrong isbns", isbn(), rhs.isbn());
     units_sold += rhs.units_sold;
     revenue += rhs.revenue;
     return *this;
@@ -75,44 +84,6 @@ bool operator==(const Sales_data &lhs, const Sales_data &rhs) {
 	 return lhs.isbn() == rhs.isbn() && 
         lhs.units_sold == rhs.units_sold && 
         lhs.revenue == rhs.revenue;
-}
-
-bool compareIsbn(const Sales_data &sale1, const Sales_data &sale2) {
-    return sale1.isbn() < sale2.isbn();
-}
-
-struct matches {
-    vector<Sales_data>::size_type index;
-    vector<Sales_data>::const_iterator first;
-    vector<Sales_data>::const_iterator last;
-    matches(vector<Sales_data>::size_type i, vector<Sales_data>::const_iterator f, vector<Sales_data>::const_iterator l) : 
-        index(i), first(f), last(l) {}
-};
-
-vector<matches> findBook(const vector<vector<Sales_data>> &files,
-                              const string &book) {
-    vector<matches> ret;
-    for (auto it = files.cbegin(); it != files.cend(); ++it) {
-        auto found = equal_range(it->cbegin(), it->cend(), book, compareIsbn);
-        if (found.first != found.second) {
-            ret.push_back(matches(it-files.cbegin(), found.first, found.second));
-        }
-    }
-    return ret;
-}
-
-void reportResults(istream &in, ostream &os, const vector<vector<Sales_data>> &files) {
-    string s;
-    while (in >> s) {
-        auto trans = findBook(files, s);
-        if (trans.empty()) {
-            cout << s << " not found in any stores" << endl;
-            continue;
-        }
-        for (const auto &store : trans)
-            os << "store " << store.index << " sales " << accumulate(store.first, 
-                store.last, Sales_data(s)) << endl;
-    }
 }
 
 #endif
