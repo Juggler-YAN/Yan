@@ -9,5 +9,6 @@ Simply record the code I have written
 5. 深入理解计算机系统（第三版）
 6. 高性能
 7. 动手深度学习（第二版）
-
-
+8. CUDA C++ Programming Guide
+   - [ ] 线程块集群
+   - [ ] 分配线性内存的几种方式
