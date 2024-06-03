@@ -12,3 +12,6 @@ Simply record the code I have written
 8. CUDA C++ Programming Guide
    - [ ] 线程块集群
    - [ ] 分配线性内存的几种方式
+   - [ ] L2缓存管理
+   - [ ] shared_memory (gemm优化)
+   - [ ]
