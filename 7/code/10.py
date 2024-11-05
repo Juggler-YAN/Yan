@@ -3,8 +3,13 @@
 # 2023.9.1
 # 
 
+import numpy as np
 import torch
+import torchvision
 from torch import nn
+from torch.utils import data
+import matplotlib.pyplot as plt
+from torchvision import transforms
 
 # 生成数据集
 def load_data_fashion_mnist(batch_size, resize=None):
@@ -12,8 +17,8 @@ def load_data_fashion_mnist(batch_size, resize=None):
     if resize:
         trans.insert(0, transforms.Resize(resize))
     trans = transforms.Compose(trans)
-    mnist_train = torchvision.datasets.FashionMNIST(root="../data", train=True, transform=trans, download=True)
-    mnist_test = torchvision.datasets.FashionMNIST(root="../data", train=False, transform=trans, download=True)
+    mnist_train = torchvision.datasets.FashionMNIST(root="./data", train=True, transform=trans, download=True)
+    mnist_test = torchvision.datasets.FashionMNIST(root="./data", train=False, transform=trans, download=True)
     return (data.DataLoader(mnist_train, batch_size, shuffle=True, num_workers=4),
             data.DataLoader(mnist_test, batch_size, shuffle=False, num_workers=4))
 
@@ -116,3 +121,4 @@ va1, va2, va3 = train(net, train_iter, test_iter, loss, num_epochs, trainer)
 
 x = range(10)
 plt.plot(x, va1, x, va2, x, va3)
+plt.show()

@@ -3,11 +3,6 @@
 # 2023.9.1
 # 
 
-#
-# 权重衰减（缓解过拟合）
-# 2023.9.1
-# 
-
 import torch
 from torch.utils import data
 from torch import nn
@@ -64,12 +59,14 @@ def train(lambd):
     print('w的L2范数：', net[0].weight.norm().item())
     return train_loss, test_loss
 
-# # 不带惩罚项
+# 不带惩罚项
 # va1, va2 = train(lambd=0)
 # x = range(len(va1))
 # plt.plot(x, torch.tensor(va1), x, torch.tensor(va2))
+# plt.show()
 
 # 带惩罚项
 va1, va2 = train(lambd=3)
 x = range(len(va1))
 plt.plot(x, torch.tensor(va1), x, torch.tensor(va2))
+plt.show()

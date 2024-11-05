@@ -1,94 +1,138 @@
+#
+# alexNet
+# 2024.11.4
+#
+
+import matplotlib.pyplot as plt
 import torch
+import torchvision
+from torch.utils import data
 from torch import nn
+from torchvision import transforms
 
-# 参数访问
-# 单块
-net = nn.Sequential(nn.Linear(4, 8), nn.ReLU(), nn.Linear(8, 1))
-X = torch.rand(size=(2, 4))
-# print(net(X))
-# 访问目标参数
-print(net[2].state_dict())
-print(type(net[2].bias))
-print(net[2].bias)
-print(net[2].bias.data)
-# 一次性访问所有参数
-print(*[(name, param.shape) for name, param in net[0].named_parameters()])
-print(*[(name, param.shape) for name, param in net.named_parameters()])
-print(net.state_dict()['2.bias'].data)
+def try_gpu(i=0):
+    if torch.cuda.device_count() >= i + 1:
+        return torch.device(f'cuda:{i}')
+    return torch.device('cpu')
 
-# 嵌套块
-def block1():
-    return nn.Sequential(nn.Linear(4, 8), nn.ReLU(),
-                         nn.Linear(8, 4), nn.ReLU())
-def block2():
-    net = nn.Sequential()
-    for i in range(4):
-        # 在这里嵌套
-        net.add_module(f'block {i}', block1())
-    return net
-rgnet = nn.Sequential(block2(), nn.Linear(4, 1))
-rgnet(X)
-print(rgnet)
-# 访问目标参数
-rgnet[0][1][0].bias.data
+# dataset
+def load_data_fashion_mnist(batch_size, resize=None):
+    # if resize:
+    # trans = [transforms.Resize(resize), transforms.ToTensor()]
+    # else:
+        # trans = [transforms.ToTensor()]
+    trans = [transforms.ToTensor()]
+    if resize:
+        trans.insert(0, transforms.Resize(resize))
+    trans = transforms.Compose(trans)
+    mnist_train = torchvision.datasets.FashionMNIST(root="./data", train=True, transform=trans, download=True)
+    mnist_test = torchvision.datasets.FashionMNIST(root="./data", train=False, transform=trans, download=True)
+    return (data.DataLoader(mnist_train, batch_size, shuffle=True, num_workers=4),
+            data.DataLoader(mnist_test, batch_size, shuffle=False, num_workers=4))
 
+# accuracy
+def accuracy(y_hat, y):
+    if len(y_hat.shape) > 1 and y_hat.shape[1] > 1:
+        y_hat = y_hat.argmax(axis=1)
+    cmp = y_hat.type(y.dtype) == y
+    return float(cmp.type(y.dtype).sum())
 
+def evaluate_accuracy(net, data_iter, device=None):
+    if isinstance(net, torch.nn.Module):
+        net.eval()
+        if not device:
+            device = next(iter(net.parameters())).device
+    acc_nums = 0
+    nums = 0
+    with torch.no_grad():
+        for X, y in data_iter:
+            if isinstance(X, list):
+                # BERT微调所需的（之后将介绍）
+                X = [x.to(device) for x in X]
+            else:
+                X = X.to(device)
+            y = y.to(device)
+            acc_nums = acc_nums + accuracy(net(X), y)
+            nums = nums + y.numel()
+    return acc_nums / nums
 
-# 参数初始化
-# 内置初始化
-def init_normal(m):
-    if type(m) == nn.Linear:
-        nn.init.normal_(m.weight, mean=0, std=0.01)
-        nn.init.zeros_(m.bias)
-net.apply(init_normal)
-print(net[0].weight.data[0], net[0].bias.data[0])
+if __name__ == '__main__':
+    
+    # dataset
+    batch_size = 256
+    train_iter, test_iter = load_data_fashion_mnist(batch_size, resize=224)
 
-def init_constant(m):
-    if type(m) == nn.Linear:
-        nn.init.constant_(m.weight, 1)
-        nn.init.zeros_(m.bias)
-net.apply(init_constant)
-print(net[0].weight.data[0], net[0].bias.data[0])
+    learning_rate = 0.1
+    num_epochs = 100
 
-def init_xavier(m):
-    if type(m) == nn.Linear:
-        nn.init.xavier_uniform_(m.weight)
-def init_42(m):
-    if type(m) == nn.Linear:
-        nn.init.constant_(m.weight, 42)
+    # device
+    device = try_gpu()
+    # model
+    net = nn.Sequential(
+        # 这里使用一个11*11的更大窗口来捕捉对象。
+        # 同时，步幅为4，以减少输出的高度和宽度。
+        # 另外，输出通道的数目远大于LeNet
+        nn.Conv2d(1, 96, kernel_size=11, stride=4, padding=1), nn.ReLU(),
+        nn.MaxPool2d(kernel_size=3, stride=2),
+        # 减小卷积窗口，使用填充为2来使得输入与输出的高和宽一致，且增大输出通道数
+        nn.Conv2d(96, 256, kernel_size=5, padding=2), nn.ReLU(),
+        nn.MaxPool2d(kernel_size=3, stride=2),
+        # 使用三个连续的卷积层和较小的卷积窗口。
+        # 除了最后的卷积层，输出通道的数量进一步增加。
+        # 在前两个卷积层之后，汇聚层不用于减少输入的高度和宽度
+        nn.Conv2d(256, 384, kernel_size=3, padding=1), nn.ReLU(),
+        nn.Conv2d(384, 384, kernel_size=3, padding=1), nn.ReLU(),
+        nn.Conv2d(384, 256, kernel_size=3, padding=1), nn.ReLU(),
+        nn.MaxPool2d(kernel_size=3, stride=2),
+        nn.Flatten(),
+        # 这里，全连接层的输出数量是LeNet中的好几倍。使用dropout层来减轻过拟合
+        nn.Linear(6400, 4096), nn.ReLU(),
+        nn.Dropout(p=0.5),
+        nn.Linear(4096, 4096), nn.ReLU(),
+        nn.Dropout(p=0.5),
+        # 最后是输出层。由于这里使用Fashion-MNIST，所以用类别数为10，而非论文中的1000
+        nn.Linear(4096, 10))
+    def init_weights(m):
+        if type(m) == nn.Linear or type(m) == nn.Conv2d:
+            nn.init.xavier_uniform_(m.weight)
+    net.apply(init_weights)
+    net.to(device)
+    # loss
+    loss = nn.CrossEntropyLoss()
+    # opti
+    trainer = torch.optim.SGD(net.parameters(), lr=learning_rate)
 
-net[0].apply(init_xavier)
-net[2].apply(init_42)
-print(net[0].weight.data[0], net[2].weight.data)
+    # train
+    train_loss_arr = [0.0] * num_epochs
+    train_acc_arr = [0.0] * num_epochs
+    test_acc_arr = [0.0] * num_epochs
+    for epoch in range(num_epochs):
+        if isinstance(net, torch.nn.Module):
+            net.train()
+        train_loss = 0
+        train_acc = 0
+        train_nums = 0
+        for X, y in train_iter:
+            trainer.zero_grad()
+            X, y = X.to(device), y.to(device)
+            y_hat = net(X)
+            l = loss(y_hat, y)
+            l.backward()
+            trainer.step()
+            train_loss = train_loss + l.cpu().detach() * X.shape[0]
+            train_acc =  train_acc + accuracy(y_hat, y)
+            train_nums = train_nums + y.numel()
+        train_metrics = [train_loss / train_nums, train_acc / train_nums]
+        test_acc = evaluate_accuracy(net, test_iter)
+        print(f'轮次{epoch + 1}的训练损失和训练精度为{train_metrics[0]}和{train_metrics[1]}')
+        print(f'轮次{epoch + 1}的测试精度为{test_acc}')
+        train_loss_arr[epoch] = train_metrics[0]
+        train_acc_arr[epoch] = train_metrics[1]
+        test_acc_arr[epoch] = test_acc
 
-# 自定义初始化
-def my_init(m):
-    if type(m) == nn.Linear:
-        print("Init", *[(name, param.shape)
-                        for name, param in m.named_parameters()][0])
-        nn.init.uniform_(m.weight, -10, 10)
-        m.weight.data *= m.weight.data.abs() >= 5
-
-net.apply(my_init)
-print(net[0].weight)
-print(net[0].weight[:2])
-net[0].weight.data[:] += 1
-net[0].weight.data[0, 0] = 42
-net[0].weight.data[0]
-print(net[0].weight)
-
-
-
-# 参数绑定
-# 我们需要给共享层一个名称，以便可以引用它的参数
-shared = nn.Linear(8, 8)
-net = nn.Sequential(nn.Linear(4, 8), nn.ReLU(),
-                    shared, nn.ReLU(),
-                    shared, nn.ReLU(),
-                    nn.Linear(8, 1))
-net(X)
-# 检查参数是否相同
-print(net[2].weight.data[0] == net[4].weight.data[0])
-net[2].weight.data[0, 0] = 100
-# 确保它们实际上是同一个对象，而不只是有相同的值
-print(net[2].weight.data[0] == net[4].weight.data[0])
+    x = range(num_epochs)
+    plt.plot(x, train_loss_arr, label='train_loss')
+    plt.plot(x, train_acc_arr, label='train_acc')
+    plt.plot(x, test_acc_arr, label='test_acc')
+    plt.legend()
+    plt.show()

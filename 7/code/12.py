@@ -1,105 +1,115 @@
+#
+# LeNet
+# 2024.11.4
+#
+
+import matplotlib.pyplot as plt
 import torch
+import torchvision
+from torch.utils import data
 from torch import nn
-from torch.nn import functional as F
+from torchvision import transforms
 
-X = torch.rand(2, 20)
+def try_gpu(i=0):
+    if torch.cuda.device_count() >= i + 1:
+        return torch.device(f'cuda:{i}')
+    return torch.device('cpu')
 
-# 自定义层
-# 带参数
-class CenteredLayer(nn.Module):
-    def __init__(self):
-        super().__init__()
-    def forward(self, X):
-        return X - X.mean()
+# dataset
+def load_data_fashion_mnist(batch_size):
+    mnist_train = torchvision.datasets.FashionMNIST(root="./data", train=True, transform=transforms.ToTensor(), download=True)
+    mnist_test = torchvision.datasets.FashionMNIST(root="./data", train=False, transform=transforms.ToTensor(), download=True)
+    return (data.DataLoader(mnist_train, batch_size, shuffle=True, num_workers=4),
+            data.DataLoader(mnist_test, batch_size, shuffle=False, num_workers=4))
 
-layer = CenteredLayer()
-layer(torch.FloatTensor([1, 2, 3, 4, 5]))
+# accuracy
+def accuracy(y_hat, y):
+    if len(y_hat.shape) > 1 and y_hat.shape[1] > 1:
+        y_hat = y_hat.argmax(axis=1)
+    cmp = y_hat.type(y.dtype) == y
+    return float(cmp.type(y.dtype).sum())
 
-# 不带参数
-class MyLinear(nn.Module):
-    def __init__(self, in_units, units):
-        super().__init__()
-        self.weight = nn.Parameter(torch.randn(in_units, units))
-        self.bias = nn.Parameter(torch.zeros(units,))
-    def forward(self, X):
-        linear = torch.matmul(X, self.weight.data) + self.bias.data
-        return F.relu(linear)
+def evaluate_accuracy(net, data_iter, device=None):
+    if isinstance(net, torch.nn.Module):
+        net.eval()
+        if not device:
+            device = next(iter(net.parameters())).device
+    acc_nums = 0
+    nums = 0
+    with torch.no_grad():
+        for X, y in data_iter:
+            if isinstance(X, list):
+                # BERT微调所需的（之后将介绍）
+                X = [x.to(device) for x in X]
+            else:
+                X = X.to(device)
+            y = y.to(device)
+            acc_nums = acc_nums + accuracy(net(X), y)
+            nums = nums + y.numel()
+    return acc_nums / nums
 
-linear = MyLinear(5, 3)
-linear.bias
+if __name__ == '__main__':
+    
+    # dataset
+    batch_size = 256
+    train_iter, test_iter = load_data_fashion_mnist(batch_size)
 
-# 定义一个顺序块
-net = nn.Sequential(nn.Linear(20, 256), nn.ReLU(), nn.Linear(256, 10))
-# net[0].weight.data.fill_(1)
-# net[0].bias.data.fill_(0)
-# net[2].weight.data.fill_(1)
-# net[2].bias.data.fill_(0)
-print(net(X))
+    learning_rate = 0.1
+    num_epochs = 2
 
-# 自定义一个块
-class MLP(nn.Module):
-    # 用模型参数声明层。这里，我们声明两个全连接的层
-    def __init__(self):
-        # 调用MLP的父类Module的构造函数来执行必要的初始化。
-        # 这样，在类实例化时也可以指定其他函数参数，例如模型参数params（稍后将介绍）
-        super().__init__()
-        self.hidden = nn.Linear(20, 256)  # 隐藏层
-        self.out = nn.Linear(256, 10)  # 输出层
+    # device
+    device = try_gpu()
+    # model
+    net = nn.Sequential(
+        nn.Conv2d(1, 6, kernel_size=5, padding=2), nn.Sigmoid(),
+        nn.AvgPool2d(kernel_size=2, stride=2),
+        nn.Conv2d(6, 16, kernel_size=5), nn.Sigmoid(),
+        nn.AvgPool2d(kernel_size=2, stride=2),
+        nn.Flatten(),
+        nn.Linear(16 * 5 * 5, 120), nn.Sigmoid(),
+        nn.Linear(120, 84), nn.Sigmoid(),
+        nn.Linear(84, 10))
+    def init_weights(m):
+        if type(m) == nn.Linear or type(m) == nn.Conv2d:
+            nn.init.xavier_uniform_(m.weight)
+    net.apply(init_weights)
+    net.to(device)
+    # loss
+    loss = nn.CrossEntropyLoss()
+    # opti
+    trainer = torch.optim.SGD(net.parameters(), lr=learning_rate)
 
-    # 定义模型的前向传播，即如何根据输入X返回所需的模型输出
-    def forward(self, X):
-        # 注意，这里我们使用ReLU的函数版本，其在nn.functional模块中定义。
-        return self.out(F.relu(self.hidden(X)))
-net = MLP()
-print(net(X))
+    # train
+    train_loss_arr = [0.0] * num_epochs
+    train_acc_arr = [0.0] * num_epochs
+    test_acc_arr = [0.0] * num_epochs
+    for epoch in range(num_epochs):
+        if isinstance(net, torch.nn.Module):
+            net.train()
+        train_loss = 0
+        train_acc = 0
+        train_nums = 0
+        for X, y in train_iter:
+            trainer.zero_grad()
+            X, y = X.to(device), y.to(device)
+            y_hat = net(X)
+            l = loss(y_hat, y)
+            l.backward()
+            trainer.step()
+            train_loss = train_loss + l.cpu().detach() * X.shape[0]
+            train_acc =  train_acc + accuracy(y_hat, y)
+            train_nums = train_nums + y.numel()
+        train_metrics = [train_loss / train_nums, train_acc / train_nums]
+        test_acc = evaluate_accuracy(net, test_iter)
+        print(f'轮次{epoch + 1}的训练损失和训练精度为{train_metrics[0]}和{train_metrics[1]}')
+        print(f'轮次{epoch + 1}的测试精度为{test_acc}')
+        train_loss_arr[epoch] = train_metrics[0]
+        train_acc_arr[epoch] = train_metrics[1]
+        test_acc_arr[epoch] = test_acc
 
-# 自定义一个顺序块
-class MySequential(nn.Module):
-    def __init__(self, *args):
-        super().__init__()
-        for idx, module in enumerate(args):
-            # 这里，module是Module子类的一个实例。我们把它保存在'Module'类的成员
-            # 变量_modules中。_module的类型是OrderedDict
-            self._modules[str(idx)] = module
-
-    def forward(self, X):
-        # OrderedDict保证了按照成员添加的顺序遍历它们
-        for block in self._modules.values():
-            X = block(X)
-        return X
-net = MySequential(nn.Linear(20, 256), nn.ReLU(), nn.Linear(256, 10))
-print(net(X))
-
-# 自定义一个非顺序块
-class FixedHiddenMLP(nn.Module):
-    def __init__(self):
-        super().__init__()
-        # 不计算梯度的随机权重参数。因此其在训练期间保持不变
-        self.rand_weight = torch.rand((20, 20), requires_grad=False)
-        self.linear = nn.Linear(20, 20)
-
-    def forward(self, X):
-        X = self.linear(X)
-        # 使用创建的常量参数以及relu和mm函数
-        X = F.relu(torch.mm(X, self.rand_weight) + 1)
-        # 复用全连接层。这相当于两个全连接层共享参数
-        X = self.linear(X)
-        # 控制流
-        while X.abs().sum() > 1:
-            X /= 2
-        return X.sum()
-net = FixedHiddenMLP()
-print(net(X))
-
-# 块嵌套
-class NestMLP(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.net = nn.Sequential(nn.Linear(20, 64), nn.ReLU(),
-                                 nn.Linear(64, 32), nn.ReLU())
-        self.linear = nn.Linear(32, 16)
-
-    def forward(self, X):
-        return self.linear(self.net(X))
-chimera = nn.Sequential(NestMLP(), nn.Linear(16, 20), FixedHiddenMLP())
-print(chimera(X))
+    x = range(num_epochs)
+    plt.plot(x, train_loss_arr, label='train_loss')
+    plt.plot(x, train_acc_arr, label='train_acc')
+    plt.plot(x, test_acc_arr, label='test_acc')
+    plt.legend()
+    plt.show()

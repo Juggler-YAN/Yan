@@ -77,15 +77,18 @@ def train(train_features, test_features, train_labels, test_labels, num_epochs=4
 # va1, va2 = train(poly_features[:n_train, :4], poly_features[n_train:, :4], labels[:n_train], labels[n_train:])
 # x = range(len(va1))
 # plt.plot(x, torch.tensor(va1), x, torch.tensor(va2))
+# plt.show()
 
 # 从多项式特征中选择前2个维度，即1和x
 # 欠拟合
 # va1, va2 = train(poly_features[:n_train, :2], poly_features[n_train:, :2], labels[:n_train], labels[n_train:])
 # x = range(len(va1))
 # plt.plot(x, torch.tensor(va1), x, torch.tensor(va2))
+# plt.show()
 
 # 从多项式特征中选取所有维度
 # 过拟合
-va1, va2 = train(poly_features[:n_train, :], poly_features[n_train:, :], labels[:n_train], labels[n_train:], num_epochs=1500)
-x = range(len(va1))
-plt.plot(x, torch.tensor(va1), x, torch.tensor(va2))
+# va1, va2 = train(poly_features[:n_train, :], poly_features[n_train:, :], labels[:n_train], labels[n_train:], num_epochs=1500)
+# x = range(len(va1))
+# plt.plot(x, torch.tensor(va1), x, torch.tensor(va2))
+# plt.show()

@@ -3,9 +3,12 @@
 # 2023.9.1
 # 
 
+import numpy as np
 import torch
 import torchvision
 from torch import nn
+from torch.utils import data
+import matplotlib.pyplot as plt
 from torchvision import transforms
 
 def dropout_layer(X, dropout):
@@ -110,3 +113,4 @@ va1, va2, va3 = train(net, train_iter, test_iter, loss, num_epochs, trainer)
 
 x = range(10)
 plt.plot(x, va1, x, va2, x, va3)
+plt.show()

@@ -71,12 +71,14 @@ def train(lambd):
     print('w的L2范数是：', torch.norm(w).item())
     return train_loss, test_loss
 
-# # 不带惩罚项
+# 不带惩罚项
 # va1, va2 = train(lambd=0)
 # x = range(len(va1))
 # plt.plot(x, torch.tensor(va1), x, torch.tensor(va2))
+# plt.show()
 
 # 带惩罚项
 va1, va2 = train(lambd=3)
 x = range(len(va1))
 plt.plot(x, torch.tensor(va1), x, torch.tensor(va2))
+plt.show()
