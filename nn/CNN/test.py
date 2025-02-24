@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 
 from data.FashionMNIST import load_data
-from model.net import MLP, init_MLP_weights
+from model.net import resnet, init_weights
 
 # random
 seed = 42
@@ -17,12 +17,10 @@ random.seed(seed)
 # args
 class Args:
     def __init__(self) -> None:
-        self.batch_size = 256
+        self.batch_size = 64
         self.lr = 0.1
-        self.epochs = 10
-        # self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        # self.device = torch.device("cpu")
-        self.device = torch.device("cuda:0")
+        self.epochs = 2
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # dataset
 class Dataset():
@@ -30,9 +28,10 @@ class Dataset():
         self.flag = flag
         assert self.flag in ['train', 'val'], 'not implement!'
         if self.flag == 'train':
-            self.train_data, self.test_data = load_data(args.batch_size)
+            # self.train_data, self.test_data = load_data(args.batch_size)
+            self.train_data, self.test_data = load_data(args.batch_size, resize=224)
         else:
-            self.train_data, self.test_data = load_data(args.batch_size)
+            self.train_data, self.test_data = load_data(args.batch_size, resize=224)
 
 # model
 
@@ -76,10 +75,10 @@ def train():
         train_acc = 0
         train_nums = 0
         for X, y in data.train_data:
+            trainer.zero_grad()
             X, y = X.to(args.device), y.to(args.device)
             y_hat = net(X)
             l = loss(y_hat, y)
-            trainer.zero_grad()
             l.mean().backward()
             trainer.step()
             train_loss = train_loss + float(l.sum())
@@ -98,12 +97,12 @@ def train():
     # plot
     plt.figure(figsize=(12, 4))
     plt.subplot(121)
-    plt.plot(train_loss_arr, label='train_loss_arr')
+    plt.plot(train_loss_arr, label='train_loss')
     plt.title("loss")
     plt.legend()
     plt.subplot(122)
-    plt.plot(train_acc_arr, label='train_acc_arr')
-    plt.plot(test_acc_arr, label='test_acc_arr')
+    plt.plot(train_acc_arr, label='train_acc')
+    plt.plot(test_acc_arr, label='test_acc')
     plt.title("acc")
     plt.legend()
     plt.show()
@@ -114,8 +113,8 @@ if __name__ == '__main__':
     # dataset
     data = Dataset()
     # model
-    net = MLP
-    net.apply(init_MLP_weights)
+    net = resnet('resnet101')
+    net.apply(init_weights)
     net = net.to(args.device)
     # loss
     loss = nn.CrossEntropyLoss(reduction='none')
