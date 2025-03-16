@@ -210,35 +210,15 @@ class SigmoidBCELoss(nn.Module):
             inputs, target, weight=mask, reduction="none")
         return out.mean(dim=1)
 
-def train(net, data_iter, lr, num_epochs, device=try_gpu()):
-    def init_weights(m):
-        if type(m) == nn.Embedding:
-            nn.init.xavier_uniform_(m.weight)
-    net.apply(init_weights)
-    net = net.to(device)
-    optimizer = torch.optim.Adam(net.parameters(), lr=lr)
-    loss_arr = []
-    metric = [0.0] * 2
-    start = time.time()
-    for epoch in range(num_epochs):
-        num_batches = len(data_iter)
-        for i, batch in enumerate(data_iter):
-            optimizer.zero_grad()
-            center, context_negative, mask, label = [
-                data.to(device) for data in batch]
-
-            pred = skip_gram(center, context_negative, net[0], net[1])
-            l = (loss(pred.reshape(label.shape).float(), label.float(), mask)
-                     / mask.sum(axis=1) * mask.shape[1])
-            l.sum().backward()
-            optimizer.step()
-            metric[0] += l.sum()
-            metric[1] += l.numel()
-        loss_arr.append((metric[0] / metric[1]).item())
-    print(f'loss {metric[0] / metric[1]:.3f}, '
-          f'{metric[1] / (time.time() - start):.1f} tokens/sec on {str(device)}')
-    plt.plot(loss_arr)
-    plt.savefig("1.png")
+def get_similar_tokens(query_token, k, embed):
+    W = embed.weight.data
+    x = W[vocab[query_token]]
+    # 计算余弦相似性。增加1e-9以获得数值稳定性
+    cos = torch.mv(W, x) / torch.sqrt(torch.sum(W * W, dim=1) *
+                                    torch.sum(x * x) + 1e-9)
+    topk = torch.topk(cos, k=k+1)[1].cpu().numpy().astype('int32')
+    for i in topk[1:]:  # 删除输入词
+        print(f'cosine sim={float(cos[i]):.3f}: {vocab.to_tokens(i)}')
 
 if __name__ == '__main__':
 
@@ -291,3 +271,6 @@ if __name__ == '__main__':
     # plot
     plt.plot(loss_arr)
     plt.savefig("1.png")
+
+    # predict
+    get_similar_tokens('chip', 3, net[0])
