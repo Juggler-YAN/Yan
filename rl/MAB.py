@@ -1,3 +1,5 @@
+## 多臂老虎机
+
 import numpy as np
 import matplotlib.pyplot as plt
 
